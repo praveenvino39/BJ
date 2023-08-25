@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:eth_sig_util/constant/typed_data_version.dart';
+import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:wallet/core/core.dart';
 import 'package:wallet/core/cubit_helper.dart';
 import 'package:wallet/ui/browser/model/request.dart';
 import 'package:wallet/ui/browser/model/web_view_model.dart';
@@ -46,9 +48,7 @@ class DappResolver {
     switch (request.method) {
       case kEthRequestAccounts:
         Completer completer = Completer();
-        List connectedSites = box.get(
-            "connected-sites-${getWalletLoadedState(context).wallet.privateKey.address.hex}",
-            defaultValue: []);
+        List connectedSites = box.get("connected-sites", defaultValue: []);
         if (connectedSites.contains(webViewModel!.url!.origin)) {
           // Future.delayed(const Duration(milliseconds: 200), (() {
           completer.complete(
@@ -76,9 +76,7 @@ class DappResolver {
 
       case kEthAccounts:
         Completer completer = Completer();
-        List connectedSites = box.get(
-            "connected-sites-${getWalletLoadedState(context).wallet.privateKey.address.hex}",
-            defaultValue: []);
+        List connectedSites = box.get("connected-sites", defaultValue: []);
         if (connectedSites.contains(webViewModel!.url!.origin)) {
           completer.complete(
               [getWalletLoadedState(context).wallet.privateKey.address.hex]);
@@ -226,24 +224,29 @@ class DappResolver {
         return completer.future;
       case kWalletSwitchChain:
         Completer completer = Completer();
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => Material(
-              child: NetworkChangeSheet(
-                onApprove: (signature) {
-                  Navigator.of(context).pop();
-                  completer.complete(null);
-                },
-                onReject: (() {
-                  completer.completeError("User rejected");
-                }),
-                imageUrl: "",
-                connectingOrgin: webViewModel!.url!.origin,
-                chainId: request.params[0]["chainId"],
+        try {
+          final network = Core.networks.firstWhere((element) =>
+              intToHex(element.chainId) ==
+              intToHex(int.parse(request.params[0]["chainId"])));
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => Material(
+                child: NetworkChangeSheet(
+                  onApprove: (signature) {
+                    Navigator.of(context).pop();
+                    completer.complete(null);
+                  },
+                  onReject: (() {
+                    completer.completeError("User rejected");
+                  }),
+                  imageUrl: "",
+                  connectingOrgin: webViewModel!.url!.origin,
+                  chainId: request.params[0]["chainId"],
+                ),
               ),
             ),
-          ),
-        );
+          );
+        } catch (e) {}
         return completer.future;
 
       default:

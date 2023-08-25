@@ -52,6 +52,7 @@ class _NetworkChangeSheetState extends State<NetworkChangeSheet> {
       builder: (context, state) {
         state as WalletLoaded;
         return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               // clipBehavior: Clip.hardEdge,

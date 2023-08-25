@@ -58,17 +58,27 @@ class _BrowserViewState extends State<BrowserView> {
     return BlocListener<WalletCubit, WalletState>(
       listener: (context, state) async {
         if (state is WalletNetworkChanged) {
-          var web3WalletService = GetIt.I<WC2Service>();
-          web3WalletService.emitChainChanged(
-              getWalletLoadedState(context).currentNetwork.chainId.toString(),
-              getWalletLoadedState(context)
-                  .currentNetwork
-                  .nameSpace
-                  .toString());
-          log("WALLET ACCOUNT CHANGED");
+          webViewController?.postWebMessage(
+              message: WebMessage(
+                data: jsonEncode({
+                  "method": "wallet_networkChanged",
+                  "data": {
+                    "rpc": state.currentNetwork.url,
+                    "chainId": state.currentNetwork.chainId
+                  }
+                }),
+              ),
+              targetOrigin: WebUri("*"));
         }
         if (state is WalletAccountChanged) {
-          log("DAPP LOG ====> account changed");
+          webViewController?.postWebMessage(
+              message: WebMessage(
+                data: jsonEncode({
+                  "method": "wallet_accountChanged",
+                  "data": state.wallet.privateKey.address.hex
+                }),
+              ),
+              targetOrigin: WebUri("*"));
         }
       },
       child: Column(
@@ -121,7 +131,7 @@ class _BrowserViewState extends State<BrowserView> {
                 setState(() {});
               },
               onProgressChanged: (controller, progress) async {
-                    await attachWalletHandler();
+                await attachWalletHandler();
                 widget.webViewModel.progress =
                     double.parse(progress.toString()) * progressFactor;
                 this.progress =
@@ -151,7 +161,6 @@ class _BrowserViewState extends State<BrowserView> {
       ),
     );
   }
-
 
   attachWalletHandler() async {
     log("DAPP REQUEST ====> $isAttached");
@@ -199,6 +208,7 @@ class _BrowserViewState extends State<BrowserView> {
           }
         });
   }
+
   void loadHomepage() async {
     widget.webViewModel.webViewController
         ?.loadUrl(urlRequest: URLRequest(url: WebUri(homepageUrl)));

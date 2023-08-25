@@ -81,7 +81,7 @@ class _ConnectSheetState extends State<ConnectSheet>
                         ),
                       ),
                     ),
-        
+
                     const SizedBox(
                       height: 10,
                     ),
@@ -227,12 +227,10 @@ class _ConnectSheetState extends State<ConnectSheet>
                                     Box box =
                                         await Hive.openBox("user_preference");
                                     List<dynamic> connectedSites = box.get(
-                                        "connected-sites-${getWalletLoadedState(context).wallet.privateKey.address.hex}",
+                                        "connected-sites",
                                         defaultValue: []);
                                     connectedSites.add(widget.connectingOrgin);
-                                    box.put(
-                                        "connected-sites-${getWalletLoadedState(context).wallet.privateKey.address.hex}",
-                                        connectedSites);
+                                    box.put("connected-sites", connectedSites);
                                     widget.onApprove([
                                       getWalletLoadedState(context)
                                           .wallet

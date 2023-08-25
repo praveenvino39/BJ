@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wallet/constant.dart';
 import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet/core/cubit_helper.dart';
 import 'package:wallet/ui/browser/model/web_view_model.dart';
 import 'package:wallet/ui/browser/widgets/browser_url_field.dart';
 import 'package:wallet/ui/home/component/account_change_sheet.dart';
@@ -96,10 +98,10 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
                             ),
                       );
                     }),
-                    child: const AvatarWidget(
-                      radius: 30,
-                      address: "",
-                      // imageUrl: "assets/vector/eth.svg",
+                    child: Image.asset(
+                      getWalletLoadedState(context).currentNetwork.logo,
+                      width: 28,
+                      height: 28,
                     ),
                   ),
                   const SizedBox(

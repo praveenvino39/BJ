@@ -13,6 +13,7 @@ class Network {
   bool isMainnet;
   String symbol;
   String apiKey;
+  String logo;
   String priceId;
   String nameSpace;
 
@@ -29,6 +30,7 @@ class Network {
       required this.dotColor,
       required this.apiKey,
       required this.priceId,
+      required this.logo,
       required this.symbol,
       required this.nameSpace});
 }

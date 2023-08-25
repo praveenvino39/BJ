@@ -15,12 +15,10 @@ class _ConnectedSiteSheetState extends State<ConnectedSiteSheet> {
 
   @override
   void initState() {
-    List<dynamic> sites = (context.read<PreferenceCubit>().state
-            as PreferenceInitial)
-        .userPreference
-        .get(
-            "connected-sites-${getWalletLoadedState(context).wallet.privateKey.address.hex}",
-            defaultValue: []);
+    List<dynamic> sites =
+        (context.read<PreferenceCubit>().state as PreferenceInitial)
+            .userPreference
+            .get("connected-sites", defaultValue: []);
     this.sites = sites;
     setState(() {});
     super.initState();
@@ -28,15 +26,13 @@ class _ConnectedSiteSheetState extends State<ConnectedSiteSheet> {
 
   disconnectSite(String site) {
     this.sites!.remove(site);
-    (context.read<PreferenceCubit>().state as PreferenceInitial).userPreference.put(
-        "connected-sites-${getWalletLoadedState(context).wallet.privateKey.address.hex}",
-        this.sites);
-    List<dynamic> sites = (context.read<PreferenceCubit>().state
-            as PreferenceInitial)
+    (context.read<PreferenceCubit>().state as PreferenceInitial)
         .userPreference
-        .get(
-            "connected-sites-${getWalletLoadedState(context).wallet.privateKey.address.hex}",
-            defaultValue: []);
+        .put("connected-sites", this.sites);
+    List<dynamic> sites =
+        (context.read<PreferenceCubit>().state as PreferenceInitial)
+            .userPreference
+            .get("connected-sites", defaultValue: []);
     this.sites = sites;
     setState(() {});
   }

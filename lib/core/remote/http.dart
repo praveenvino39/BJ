@@ -13,14 +13,24 @@ import 'package:wallet/core/remote/response-model/erc20_transaction_log.dart';
 import 'package:wallet/core/remote/response-model/price_response.dart';
 import 'package:wallet/core/remote/response-model/transaction_log_result.dart';
 
-Future<PriceResponse?> getPrice(String priceId) async {
+Future<dynamic> getPrice(String priceId) async {
+  if (priceId == "phi-network") {
+    try {
+      Box box = await Hive.openBox("user_preference");
+      String currency = box.get("CURRENCY") ?? "usd";
+      var response = await Dio().get('https://phi.financial/api/token/phi');
+      return {"currentPrice": response.data['price_usd']};
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   try {
     Box box = await Hive.openBox("user_preference");
     String currency = box.get("CURRENCY") ?? "usd";
-    log("https://api.coingecko.com/api/v3/coins/markets?vs_currency=$currency&ids=$priceId");
     var response = await Dio().get(
         'https://api.coingecko.com/api/v3/coins/markets?vs_currency=$currency&ids=$priceId');
-    return PriceResponse.fromJson(response.data[0]);
+    return {"currentPrice": response.data[0]["current_price"]};
   } catch (e) {
     log(e.toString());
   }
@@ -100,14 +110,15 @@ Future<List<TransactionResult>?> getTransactionLog(
 
 Future<dynamic> callBlockChain(dynamic request, String networkRpcUrl) async {
   try {
-    Response response = await Dio().post(networkRpcUrl,
-        data: {
-          "id": math.Random().nextInt(9999999).toString(),
-          "jsonrpc": "2.0",
-          "method": request["method"],
-          "params": request["params"]
-        },
-        );
+    Response response = await Dio().post(
+      networkRpcUrl,
+      data: {
+        "id": math.Random().nextInt(9999999).toString(),
+        "jsonrpc": "2.0",
+        "method": request["method"],
+        "params": request["params"]
+      },
+    );
     return response.data;
   } catch (e) {
     log(jsonEncode(e));

@@ -55,6 +55,7 @@ class _TransactionConfirmationScreenState
   double high = 2;
   double selectedPriority = 0;
   double selectedMaxFee = 0;
+  bool readyToConfirm = false;
 
   EtherAmount? estimatedGasInWei;
   EtherAmount? maxFeeInWei;
@@ -68,6 +69,94 @@ class _TransactionConfirmationScreenState
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   TransactionPriority priority = TransactionPriority.medium;
 
+  estimateGasDetailForNative(WalletLoaded state) async {
+    if (state.currentNetwork.supportsEip1559) {
+      final basePriceInNative = await state.web3client.getGasPrice();
+      final basePrice = basePriceInNative.getValueInUnit(EtherUnit.gwei);
+      setState(() {
+        high = double.parse("3") + basePrice;
+        medium = double.parse("2") + basePrice;
+        low = double.parse("1") + basePrice;
+        selectedMaxFee = double.parse("2");
+        selectedPriority = double.parse("2");
+        estimatedGasInWei = EtherAmount.fromUnitAndValue(
+            EtherUnit.wei, (medium * pow(10, 9)).toInt() * gasLimit);
+        maxFeeInWei = EtherAmount.fromUnitAndValue(
+            EtherUnit.wei, (medium * pow(10, 9)).toInt() * gasLimit);
+        totalAmount =
+            widget.value + estimatedGasInWei!.getValueInUnit(EtherUnit.ether);
+        readyToConfirm = true;
+      });
+    } else {
+      if (getWalletLoadedState(context).currentNetwork.chainId == 144) {
+        final basePriceInNative = await state.web3client.getGasPrice();
+        double basePrice = basePriceInNative.getValueInUnit(EtherUnit.wei);
+        setState(() {
+          estimatedGasInWei = EtherAmount.fromUnitAndValue(
+              EtherUnit.wei, basePrice.toInt() * gasLimit);
+          totalAmount =
+              widget.value + estimatedGasInWei!.getValueInUnit(EtherUnit.ether);
+          readyToConfirm = true;
+        });
+      } else {
+        final basePriceInNative = await state.web3client.getGasPrice();
+        double basePrice = basePriceInNative.getValueInUnit(EtherUnit.gwei);
+        setState(() {
+          estimatedGasInWei = EtherAmount.fromUnitAndValue(
+              EtherUnit.wei, (basePrice * pow(10, 9)).toInt() * gasLimit);
+          totalAmount =
+              widget.value + estimatedGasInWei!.getValueInUnit(EtherUnit.ether);
+          readyToConfirm = true;
+        });
+      }
+    }
+  }
+
+  estimateGasDetailsForTokenAndNFT() async {
+    final amount = await estimateGasFromContract();
+    final basePriceInEthAmount =
+        await getWalletLoadedState(context).web3client.getGasPrice();
+    if (getWalletLoadedState(context).currentNetwork.supportsEip1559) {
+      double basePrice = basePriceInEthAmount.getValueInUnit(EtherUnit.gwei);
+      high = double.parse("3") + basePrice;
+      medium = double.parse("2") + basePrice;
+      low = double.parse("1") + basePrice;
+      selectedMaxFee = double.parse("2");
+      selectedPriority = double.parse("2");
+      estimatedGasInWei = EtherAmount.fromUnitAndValue(
+          EtherUnit.wei, (medium * pow(10, 9)).toInt() * amount);
+      maxFeeInWei = EtherAmount.fromUnitAndValue(
+          EtherUnit.wei, (medium * pow(10, 9)).toInt() * amount);
+      totalAmount = estimatedGasInWei!.getValueInUnit(EtherUnit.ether);
+      readyToConfirm = true;
+      setState(() {});
+    } else {
+      if (getWalletLoadedState(context).currentNetwork.chainId == 144) {
+        final basePriceInNative =
+            await getWalletLoadedState(context).web3client.getGasPrice();
+        double basePrice = basePriceInNative.getValueInUnit(EtherUnit.wei);
+        setState(() {
+          estimatedGasInWei = EtherAmount.fromUnitAndValue(
+              EtherUnit.wei, basePrice.toInt() * gasLimit);
+          totalAmount =
+              widget.value + estimatedGasInWei!.getValueInUnit(EtherUnit.ether);
+          readyToConfirm = true;
+        });
+      } else {
+        final basePriceInNative =
+            await getWalletLoadedState(context).web3client.getGasPrice();
+        double basePrice = basePriceInNative.getValueInUnit(EtherUnit.gwei);
+        setState(() {
+          estimatedGasInWei = EtherAmount.fromUnitAndValue(
+              EtherUnit.wei, (basePrice * pow(10, 9)).toInt() * gasLimit);
+          totalAmount =
+              widget.value + estimatedGasInWei!.getValueInUnit(EtherUnit.ether);
+          readyToConfirm = true;
+        });
+      }
+    }
+  }
+
   @override
   void initState() {
     setState(() {
@@ -77,42 +166,16 @@ class _TransactionConfirmationScreenState
       selectedMaxFee = (2 * 20) + double.parse("45.0");
       selectedPriority = double.parse("45.0");
       if (widget.token != state.currentNetwork.currency) {
-        estimateGasFromContract().then((value) {
-          estimatedGasInWei = EtherAmount.fromUnitAndValue(
-              EtherUnit.wei, (medium * pow(10, 9)).toInt() * gasLimit);
-          maxFeeInWei = EtherAmount.fromUnitAndValue(
-              EtherUnit.wei, (medium * pow(10, 9)).toInt() * gasLimit);
-          totalAmount = estimatedGasInWei!.getValueInUnit(EtherUnit.ether);
-          debugPrint((medium * pow(10, 8)).toString());
-        });
+        estimateGasDetailsForTokenAndNFT();
       } else {
-        getGasTrackerPrice().then((value) {
-          setState(() {
-            double basePrice = double.parse(value!.result.suggestBaseFee);
-            high = double.parse(value.result.fastGasPrice) + basePrice;
-            medium = double.parse(value.result.proposeGasPrice) + basePrice;
-            low = double.parse(value.result.safeGasPrice) + basePrice;
-            selectedMaxFee =
-                (2 * basePrice) + double.parse(value.result.fastGasPrice);
-            selectedPriority = double.parse(value.result.fastGasPrice);
-            estimatedGasInWei = EtherAmount.fromUnitAndValue(
-                EtherUnit.wei, (medium * pow(10, 9)).toInt() * gasLimit);
-            maxFeeInWei = EtherAmount.fromUnitAndValue(
-                EtherUnit.wei, (medium * pow(10, 9)).toInt() * gasLimit);
-            totalAmount = widget.value +
-                estimatedGasInWei!.getValueInUnit(EtherUnit.ether);
-          });
-          // debug.log("High gas price $high");
-        }).catchError((dynamic error) {
-          debugPrint(error);
-        });
+        estimateGasDetailForNative(state);
       }
     });
 
     super.initState();
   }
 
-  Future<void> estimateGasFromContract() async {
+  Future<int> estimateGasFromContract() async {
     var tokenCubit = context.read<TokenCubit>();
     var tokenState = context.read<TokenCubit>().state as TokenLoaded;
     var currentState = context.read<WalletCubit>().state as WalletLoaded;
@@ -137,10 +200,10 @@ class _TransactionConfirmationScreenState
       setState(() {
         gasLimit = gasRes.toInt();
       });
+      return gasRes.toInt();
     } else {
       var contractABI =
           ContractAbi.fromJson(jsonEncode(ERC721), widget.collectible!.name);
-
       _deployedContract = DeployedContract(contractABI,
           EthereumAddress.fromHex(widget.collectible!.tokenAddress));
 
@@ -156,6 +219,7 @@ class _TransactionConfirmationScreenState
       setState(() {
         gasLimit = gasRes.toInt();
       });
+      return gasRes.toInt();
     }
   }
 
@@ -201,15 +265,18 @@ class _TransactionConfirmationScreenState
                         width: 7,
                         height: 7,
                         decoration: BoxDecoration(
-                            color:
-                                (getWalletLoadedState(context)).currentNetwork.dotColor,
+                            color: (getWalletLoadedState(context))
+                                .currentNetwork
+                                .dotColor,
                             borderRadius: BorderRadius.circular(10)),
                       ),
                       const SizedBox(
                         width: 5,
                       ),
                       Text(
-                        getWalletLoadedState(context).currentNetwork.networkName,
+                        getWalletLoadedState(context)
+                            .currentNetwork
+                            .networkName,
                         style: const TextStyle(
                             fontWeight: FontWeight.w100,
                             fontSize: 12,
@@ -333,7 +400,10 @@ class _TransactionConfirmationScreenState
                                       AvatarWidget(
                                         radius: 40,
                                         address: getWalletLoadedState(context)
-                                            .wallet.privateKey.address.hex,
+                                            .wallet
+                                            .privateKey
+                                            .address
+                                            .hex,
                                       ),
                                       const SizedBox(
                                         width: 10,
@@ -479,63 +549,74 @@ class _TransactionConfirmationScreenState
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      showModalBottomSheet(
-                                        context: context,
-                                        backgroundColor: Colors.transparent,
-                                        builder: (context) {
-                                          return GasSettings(
-                                            maxFeeInWei: maxFeeInWei!,
-                                            maxFee: selectedMaxFee,
-                                            maxPriority: selectedPriority,
-                                            gasLimit: gasLimit,
-                                            priority: priority,
-                                            estimatedGasInWei:
-                                                estimatedGasInWei!,
-                                            changePriority: changePriority,
-                                            low: low,
-                                            medium: medium,
-                                            high: high,
-                                            token: widget.collectible
-                                                        ?.tokenAddress !=
-                                                    null
-                                                ? widget
-                                                    .collectible!.tokenAddress
-                                                : widget.token!,
-                                            onAdvanceOptionClicked: () {
-                                              Navigator.of(context).pop();
-                                              _scaffoldKey.currentState
-                                                  ?.showBottomSheet((context) {
+                                      getWalletLoadedState(context)
+                                              .currentNetwork
+                                              .supportsEip1559
+                                          ? showModalBottomSheet(
+                                              context: context,
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              builder: (context) {
                                                 return GasSettings(
-                                                    maxFeeInWei: maxFeeInWei!,
-                                                    maxFee: selectedMaxFee,
-                                                    maxPriority:
-                                                        selectedPriority,
-                                                    gasLimit: gasLimit,
-                                                    priority: priority,
-                                                    estimatedGasInWei:
-                                                        estimatedGasInWei!,
-                                                    token: widget.collectible
-                                                                ?.tokenAddress !=
-                                                            null
-                                                        ? widget.collectible!
-                                                            .tokenAddress
-                                                        : widget.token!,
-                                                    changePriority:
-                                                        changePriority,
-                                                    showAdvance: true,
-                                                    low: low,
-                                                    medium: medium,
-                                                    high: high);
-                                              });
-                                            },
-                                          );
-                                        },
-                                        enableDrag: false,
-                                        isScrollControlled: false,
-                                      );
+                                                  maxFeeInWei: maxFeeInWei!,
+                                                  maxFee: selectedMaxFee,
+                                                  maxPriority: selectedPriority,
+                                                  gasLimit: gasLimit,
+                                                  priority: priority,
+                                                  estimatedGasInWei:
+                                                      estimatedGasInWei!,
+                                                  changePriority:
+                                                      changePriority,
+                                                  low: low,
+                                                  medium: medium,
+                                                  high: high,
+                                                  token: widget.collectible
+                                                              ?.tokenAddress !=
+                                                          null
+                                                      ? widget.collectible!
+                                                          .tokenAddress
+                                                      : widget.token!,
+                                                  onAdvanceOptionClicked: () {
+                                                    Navigator.of(context).pop();
+                                                    _scaffoldKey.currentState
+                                                        ?.showBottomSheet(
+                                                            (context) {
+                                                      return GasSettings(
+                                                          maxFeeInWei:
+                                                              maxFeeInWei!,
+                                                          maxFee:
+                                                              selectedMaxFee,
+                                                          maxPriority:
+                                                              selectedPriority,
+                                                          gasLimit: gasLimit,
+                                                          priority: priority,
+                                                          estimatedGasInWei:
+                                                              estimatedGasInWei!,
+                                                          token: widget
+                                                                      .collectible
+                                                                      ?.tokenAddress !=
+                                                                  null
+                                                              ? widget
+                                                                  .collectible!
+                                                                  .tokenAddress
+                                                              : widget.token!,
+                                                          changePriority:
+                                                              changePriority,
+                                                          showAdvance: true,
+                                                          low: low,
+                                                          medium: medium,
+                                                          high: high);
+                                                    });
+                                                  },
+                                                );
+                                              },
+                                              enableDrag: false,
+                                              isScrollControlled: false,
+                                            )
+                                          : null;
                                     },
                                     child: Text(
-                                      "${estimatedGasInWei?.getValueInUnit(EtherUnit.ether).toDouble().toStringAsFixed(6)} ${getWalletLoadedState(context).currentNetwork.currency}",
+                                      "${estimatedGasInWei?.getValueInUnit(EtherUnit.ether).toDouble().toStringAsFixed(15)} ${getWalletLoadedState(context).currentNetwork.currency}",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: kPrimaryColor,
@@ -547,45 +628,55 @@ class _TransactionConfirmationScreenState
                               const SizedBox(
                                 height: 7,
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    priority == TransactionPriority.medium
-                                        ? AppLocalizations.of(context)!
-                                            .likelyIn30Second
-                                        : priority == TransactionPriority.low
-                                            ? AppLocalizations.of(context)!
-                                                .mayBeIn30Second
-                                            : priority ==
-                                                    TransactionPriority.high
-                                                ? AppLocalizations.of(context)!
-                                                    .likelyIn15Second
-                                                : "Custom gas fee",
-                                    style: TextStyle(
-                                        overflow: TextOverflow.ellipsis,
-                                        fontWeight: FontWeight.bold,
-                                        color: priority ==
-                                                    TransactionPriority.low ||
-                                                priority ==
-                                                    TransactionPriority.custom
-                                            ? Colors.red
-                                            : Colors.green),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "${AppLocalizations.of(context)!.maxFee}: ",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                          "${maxFeeInWei?.getValueInUnit(EtherUnit.ether).toDouble().toStringAsFixed(6)} ${getWalletLoadedState(context).currentNetwork.currency}"),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                              getWalletLoadedState(context)
+                                      .currentNetwork
+                                      .supportsEip1559
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          priority == TransactionPriority.medium
+                                              ? AppLocalizations.of(context)!
+                                                  .likelyIn30Second
+                                              : priority ==
+                                                      TransactionPriority.low
+                                                  ? AppLocalizations.of(
+                                                          context)!
+                                                      .mayBeIn30Second
+                                                  : priority ==
+                                                          TransactionPriority
+                                                              .high
+                                                      ? AppLocalizations.of(
+                                                              context)!
+                                                          .likelyIn15Second
+                                                      : "Custom gas fee",
+                                          style: TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              fontWeight: FontWeight.bold,
+                                              color: priority ==
+                                                          TransactionPriority
+                                                              .low ||
+                                                      priority ==
+                                                          TransactionPriority
+                                                              .custom
+                                                  ? Colors.red
+                                                  : Colors.green),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "${AppLocalizations.of(context)!.maxFee}: ",
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                                "${maxFeeInWei?.getValueInUnit(EtherUnit.ether).toDouble().toStringAsFixed(6)} ${getWalletLoadedState(context).currentNetwork.currency}"),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  : SizedBox(),
                               const SizedBox(
                                 height: 10,
                               ),
@@ -606,34 +697,38 @@ class _TransactionConfirmationScreenState
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold),
                                   ),
-                                   Text(
-                                    "$totalAmount ${getWalletLoadedState(context).currentNetwork.currency}",
-                                    style:
-                                        const TextStyle(fontWeight: FontWeight.bold),
+                                  Text(
+                                    "${totalAmount.toStringAsFixed(18)} ${getWalletLoadedState(context).currentNetwork.currency}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
                               const SizedBox(
                                 height: 7,
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Expanded(child: SizedBox()),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "${AppLocalizations.of(context)!.maxAmount}: ",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                          "${maxFeeInWei?.getValueInUnit(EtherUnit.ether)} ${getWalletLoadedState(context).currentNetwork.currency}")
-                                    ],
-                                  ),
-                                ],
-                              ),
+                              getWalletLoadedState(context)
+                                      .currentNetwork
+                                      .supportsEip1559
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Expanded(child: SizedBox()),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "${AppLocalizations.of(context)!.maxAmount}: ",
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                                "${maxFeeInWei?.getValueInUnit(EtherUnit.ether)} ${getWalletLoadedState(context).currentNetwork.currency}")
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  : SizedBox(),
                             ],
                           ),
                         ),
@@ -641,47 +736,58 @@ class _TransactionConfirmationScreenState
                         WalletButton(
                             type: WalletButtonType.filled,
                             textContent: "Confirm and Approve",
-                            onPressed: () {
-                              if (widget.token ==
-                                  getWalletLoadedState(context).currentNetwork.currency) {
-                                context.read<WalletCubit>().sendTransaction(
-                                    widget.to,
-                                    widget.value,
-                                    selectedPriority,
-                                    selectedMaxFee,
-                                    gasLimit);
-                                return;
-                              }
-                              if (widget.collectible != null) {
-                                // print_debug.log("message");
-                                context
-                                    .read<CollectibleCubit>()
-                                    .sendNFTTransaction(
-                                        widget.to,
-                                        widget.from,
-                                        widget.value,
-                                        gasLimit,
-                                        selectedPriority,
-                                        selectedMaxFee,
-                                        widget.collectible!,
-                                        getWalletLoadedState(context).wallet,
+                            onPressed: readyToConfirm
+                                ? () {
+                                    if (widget.token ==
                                         getWalletLoadedState(context)
-                                            .currentNetwork);
-                              } else {
-                                print("GAS LIMIT $gasLimit");
-                                context.read<TokenCubit>().sendTokenTransaction(
-                                    widget.to,
-                                    widget.value,
-                                    gasLimit,
-                                    selectedPriority,
-                                    selectedMaxFee,
-                                    selectedToken!,
-                                    _deployedContract!,
-                                    getWalletLoadedState(context).wallet,
-                                    getWalletLoadedState(context)
-                                        .currentNetwork);
-                              }
-                            }),
+                                            .currentNetwork
+                                            .currency) {
+                                      context
+                                          .read<WalletCubit>()
+                                          .sendTransaction(
+                                              widget.to,
+                                              widget.value,
+                                              selectedPriority,
+                                              selectedMaxFee,
+                                              gasLimit,
+                                              getWalletLoadedState(context)
+                                                  .currentNetwork);
+                                      return;
+                                    }
+                                    if (widget.collectible != null) {
+                                      // print_debug.log("message");
+                                      context
+                                          .read<CollectibleCubit>()
+                                          .sendNFTTransaction(
+                                              widget.to,
+                                              widget.from,
+                                              widget.value,
+                                              gasLimit,
+                                              selectedPriority,
+                                              selectedMaxFee,
+                                              widget.collectible!,
+                                              getWalletLoadedState(context)
+                                                  .wallet,
+                                              getWalletLoadedState(context)
+                                                  .currentNetwork);
+                                    } else {
+                                      context
+                                          .read<TokenCubit>()
+                                          .sendTokenTransaction(
+                                              widget.to,
+                                              widget.value,
+                                              gasLimit,
+                                              selectedPriority,
+                                              selectedMaxFee,
+                                              selectedToken!,
+                                              _deployedContract!,
+                                              getWalletLoadedState(context)
+                                                  .wallet,
+                                              getWalletLoadedState(context)
+                                                  .currentNetwork);
+                                    }
+                                  }
+                                : null),
                         const SizedBox(
                           height: 20,
                         )

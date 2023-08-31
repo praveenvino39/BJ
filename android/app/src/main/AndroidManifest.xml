@@ -2,7 +2,7 @@
     package="com.cryptodev.wallet.wallet">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="Cryptomask"
+        android:label="Phimask"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

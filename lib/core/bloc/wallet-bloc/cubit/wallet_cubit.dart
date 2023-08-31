@@ -634,7 +634,7 @@ class WalletCubit extends Cubit<WalletState> {
   }
 
   sendTransaction(String to, double value, double selectedPriority,
-      double selectedMaxFee, int gasLimit) async {
+      double selectedMaxFee, int gasLimit, Network network) async {
     WalletLoaded state = this.state as WalletLoaded;
 
     try {
@@ -642,14 +642,21 @@ class WalletCubit extends Cubit<WalletState> {
           EthereumAddress.fromHex(state.wallet.privateKey.address.hex));
       BigInt chainID = await state.web3client.getChainId();
       Transaction transaction = Transaction(
+        gasPrice: network.chainId == 144
+            ? EtherAmount.inWei(BigInt.parse("2"))
+            : null,
         to: EthereumAddress.fromHex(to),
         value: EtherAmount.fromUnitAndValue(
             EtherUnit.wei, BigInt.from(value * pow(10, 18))),
         nonce: nonce,
-        maxPriorityFeePerGas: EtherAmount.fromUnitAndValue(
-            EtherUnit.wei, (selectedPriority * pow(10, 9)).toInt()),
-        maxFeePerGas: EtherAmount.fromUnitAndValue(
-            EtherUnit.wei, (selectedMaxFee * pow(10, 9)).toInt()),
+        maxPriorityFeePerGas: network.supportsEip1559
+            ? EtherAmount.fromUnitAndValue(
+                EtherUnit.wei, (selectedPriority * pow(10, 9)).toInt())
+            : null,
+        maxFeePerGas: network.supportsEip1559
+            ? EtherAmount.fromUnitAndValue(
+                EtherUnit.wei, (selectedMaxFee * pow(10, 9)).toInt())
+            : null,
         maxGas: gasLimit,
       );
       String transactionHash = await state.web3client.sendTransaction(

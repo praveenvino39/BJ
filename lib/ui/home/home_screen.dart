@@ -22,6 +22,7 @@ import 'package:wallet/ui/buy-screen/BuyScreen.dart';
 import 'package:wallet/ui/collectibles/collectibles_tab.dart';
 import 'package:wallet/ui/home/component/account_change_sheet.dart';
 import 'package:wallet/ui/login-screen/login_screen.dart';
+import 'package:wallet/ui/shared/wallet_text.dart';
 import 'package:wallet/ui/swap_screen/swap_screen.dart';
 import 'package:wallet/ui/token-dashboard-screen/token_dashboard_screen.dart';
 import 'package:wallet/ui/token/token_tab.dart';
@@ -57,7 +58,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scafoldKey = GlobalKey();
   final GlobalKey<ScaffoldState> _fakeScafoldKey = GlobalKey();
   int index = 0;
-
   Timer? timer;
   Timer? fiatTimer;
 
@@ -85,23 +85,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       setState(() {
         accountName = getAccountName(getWalletLoadedState(context));
       });
+      setupWalletConnect();
     }
-    setupWalletConnect();
     super.initState();
   }
 
   setupWalletConnect() async {
-    WC2Service web3service = WC2Service(
-        address: getWalletLoadedState(context).wallet.privateKey.address.hex,
-        chainId:
-            getWalletLoadedState(context).currentNetwork.chainId.toString(),
-        nameSpace: getWalletLoadedState(context).currentNetwork.nameSpace,
-        preference: getPreference(context),
-        privateKey: getWalletLoadedState(context).wallet.privateKey,
-        networks: Core.networks);
-    GetIt.I.registerSingleton<WC2Service>(web3service);
-    web3service.create();
-    await web3service.init();
+    // WC2Service web3service = WC2Service(
+    //     address: getWalletLoadedState(context).wallet.privateKey.address.hex,
+    //     chainId:
+    //         getWalletLoadedState(context).currentNetwork.chainId.toString(),
+    //     nameSpace: getWalletLoadedState(context).currentNetwork.nameSpace,
+    //     preference: getPreference(context),
+    //     privateKey: getWalletLoadedState(context).wallet.privateKey,
+    //     networks: Core.networks);
+    // GetIt.I.registerSingleton<WC2Service>(web3service);
+    // web3service.create();
+    // await web3service.init();
+    // setState(() {
+    //   isBrowserInitialized = true;
+    // });
   }
 
   updateBalance(WalletLoaded state, bool updateFiat) async {
@@ -122,11 +125,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   updateFiatBalance(double? balance) async {
-    PriceResponse? priceModel =
+    dynamic priceModel =
         await getPrice(getWalletLoadedState(context).currentNetwork.priceId);
     if (priceModel != null) {
       setState(() {
-        balanceInUSD = (priceModel.currentPrice *
+        balanceInUSD = (priceModel["currentPrice"] *
                 (balance ?? getWalletLoadedState(context).balanceInNative))
             .toString();
       });
@@ -205,6 +208,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           .address
                           .hex);
             });
+            setupWalletConnect();
           }
           if (state is WalletLogout) {
             Navigator.popUntil(context, (route) => false);

@@ -93,10 +93,17 @@ class TokenCubit extends Cubit<TokenState> {
           wallet.privateKey,
           Transaction(
             maxGas: gasLimit,
-            maxPriorityFeePerGas: EtherAmount.fromUnitAndValue(
-                EtherUnit.wei, (selectedPriority * pow(10, 9)).toInt()),
-            maxFeePerGas: EtherAmount.fromUnitAndValue(
-                EtherUnit.wei, (selectedMaxFee * pow(10, 9)).toInt()),
+            gasPrice: network.chainId == 144
+                ? EtherAmount.inWei(BigInt.parse("2"))
+                : null,
+            maxPriorityFeePerGas: network.supportsEip1559
+                ? EtherAmount.fromUnitAndValue(
+                    EtherUnit.wei, (selectedPriority * pow(10, 9)).toInt())
+                : null,
+            maxFeePerGas: network.supportsEip1559
+                ? EtherAmount.fromUnitAndValue(
+                    EtherUnit.wei, (selectedMaxFee * pow(10, 9)).toInt())
+                : null,
             to: EthereumAddress.fromHex(selectedToken.tokenAddress),
             data: deployedContract.function("transfer").encodeCall([
               EthereumAddress.fromHex(to),

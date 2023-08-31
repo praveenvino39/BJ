@@ -16,6 +16,7 @@ import 'package:wallet/core/cubit_helper.dart';
 import 'package:wallet/core/remote/http.dart';
 import 'package:wallet/core/web3wallet_service.dart';
 import 'package:wallet/ui/browser/model/web_view_model.dart';
+import 'package:wallet/ui/browser/widgets/browser_url_field.dart';
 import 'package:wallet/ui/dapp_widgets/dapp_resolver.dart';
 
 class BrowserView extends StatefulWidget {
@@ -41,7 +42,6 @@ class _BrowserViewState extends State<BrowserView> {
   bool dissableProgressAnimation = false;
   bool isAttached = false;
   PullToRefreshController refreshController = PullToRefreshController();
-  WC2Service web3service = GetIt.I<WC2Service>();
 
   @override
   void initState() {
@@ -181,6 +181,15 @@ class _BrowserViewState extends State<BrowserView> {
         handlerName: 'wallet',
         callback: (args) async {
           var request = args[0];
+          if (request == "metamask_showAutocomplete") {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => BrowserUrlField(
+                  onUrlSubmit: widget.onUrlSubmit,
+                  webViewModel: widget.webViewModel,
+                  certified: certified,
+                  url: url?.toString() ?? ""),
+            ));
+          }
           if (request == "open_url_bar") {
             log("console from dart =====> ${args[0]}");
             widget.onUrlSubmit(args[1], widget.webViewModel);
@@ -215,15 +224,6 @@ class _BrowserViewState extends State<BrowserView> {
   }
 
   void handleRequestToWalletConnect(Uri url) async {
-    if (url.queryParameters["symKey"] != null) {
-      try {
-        await web3service.web3Wallet!.pair(uri: url);
-      } catch (e) {
-        Get.dialog(AlertDialog(
-          title: const Text("Error in connection"),
-          content: Text(e.toString()),
-        ));
-      }
-    }
+    if (url.queryParameters["symKey"] != null) {}
   }
 }

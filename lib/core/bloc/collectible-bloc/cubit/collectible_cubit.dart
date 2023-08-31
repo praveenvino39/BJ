@@ -132,10 +132,17 @@ class CollectibleCubit extends Cubit<CollectibleState> {
           wallet.privateKey,
           Transaction(
             maxGas: gasLimit,
-            maxPriorityFeePerGas: EtherAmount.fromUnitAndValue(
-                EtherUnit.wei, (selectedPriority * math.pow(10, 9)).toInt()),
-            maxFeePerGas: EtherAmount.fromUnitAndValue(
-                EtherUnit.wei, (selectedMaxFee * math.pow(10, 9)).toInt()),
+            gasPrice: network.chainId == 144
+                ? EtherAmount.inWei(BigInt.parse("2"))
+                : null,
+            maxPriorityFeePerGas: network.supportsEip1559
+                ? EtherAmount.fromUnitAndValue(
+                    EtherUnit.wei, (selectedPriority * math.pow(10, 9)).toInt())
+                : null,
+            maxFeePerGas: network.supportsEip1559
+                ? EtherAmount.fromUnitAndValue(
+                    EtherUnit.wei, (selectedMaxFee * math.pow(10, 9)).toInt())
+                : null,
             to: EthereumAddress.fromHex(collectible.tokenAddress),
             data: deployedContract.function("transferFrom").encodeCall([
               EthereumAddress.fromHex(from),

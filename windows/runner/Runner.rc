@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.cryptodev.wallet" "\0"
-            VALUE "FileDescription", "wallet" "\0"
+            VALUE "FileDescription", "Phimask" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "wallet" "\0"
+            VALUE "InternalName", "Phimask" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.cryptodev.wallet. All rights reserved." "\0"
             VALUE "OriginalFilename", "wallet.exe" "\0"
-            VALUE "ProductName", "wallet" "\0"
+            VALUE "ProductName", "Phimask" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

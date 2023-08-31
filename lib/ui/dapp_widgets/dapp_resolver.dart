@@ -164,7 +164,7 @@ class DappResolver {
                     completer.completeError("User rejected");
                   }),
                   connectingOrgin: webViewModel!.url!.origin,
-                  messageToBeSigned: request.params[1],
+                  messageToBeSigned: request.params[0],
                   version: TypedDataVersion.V1,
                 ));
         return completer.future;

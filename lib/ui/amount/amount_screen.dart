@@ -86,18 +86,17 @@ class _AmountScreenState extends State<AmountScreen> {
               isValidAmount = false;
             });
           }
-        }else{
-          if(widget.token.balance >= amount){
+        } else {
+          if (widget.token.balance >= amount) {
             setState(() {
               isValidAmount = true;
             });
-          }else{
+          } else {
             setState(() {
               isValidAmount = false;
             });
           }
         }
-        
       } catch (e) {
         log(e.toString());
       }
@@ -250,7 +249,10 @@ class _AmountScreenState extends State<AmountScreen> {
                       onPressed: onAmountConfirmed,
                       type: WalletButtonType.filled,
                     )
-                  : const Text("Insufficient fund", style: TextStyle(color: Colors.red),),
+                  : const Text(
+                      "Insufficient fund",
+                      style: TextStyle(color: Colors.red),
+                    ),
               const SizedBox(
                 height: 20,
               )

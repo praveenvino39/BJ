@@ -15,6 +15,7 @@ class Network {
   String apiKey;
   String logo;
   String priceId;
+  bool supportsEip1559;
   String nameSpace;
 
   Network(
@@ -32,5 +33,6 @@ class Network {
       required this.priceId,
       required this.logo,
       required this.symbol,
+      this.supportsEip1559 = false,
       required this.nameSpace});
 }

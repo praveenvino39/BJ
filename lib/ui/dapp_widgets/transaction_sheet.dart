@@ -49,34 +49,65 @@ class _TransactionSheetState extends State<TransactionSheet> {
 
   prepareTransaction() async {
     var currentState = getWalletLoadedState(context);
+    if (getWalletLoadedState(context).currentNetwork.chainId == 144) {
+      var networkGasPrice = await currentState.web3client.getGasPrice();
+      var gasPrice = EtherAmount.fromUnitAndValue(
+          EtherUnit.wei, networkGasPrice.getValueInUnit(EtherUnit.wei).toInt());
+      setState(() {
+        this.gasPrice = gasPrice;
+      });
 
-    var gasPrice = await currentState.web3client.getGasPrice();
-    setState(() {
-      this.gasPrice = gasPrice;
-    });
+      transaction = Transaction(
+        gasPrice: gasPrice,
+        data: widget.transaction["data"] != null
+            ? Uint8List.fromList(hexToBytes(widget.transaction["data"]))
+            : null,
+        from: widget.transaction["from"] != null
+            ? EthereumAddress.fromHex(widget.transaction["from"])
+            : null,
+        to: widget.transaction["to"] != null
+            ? EthereumAddress.fromHex(widget.transaction["to"])
+            : null,
+        value: widget.transaction["value"] != null
+            ? EtherAmount.fromUnitAndValue(
+                EtherUnit.wei,
+                widget.transaction["value"],
+              )
+            : null,
+        maxGas: widget.transaction["gas"] != null
+            ? hexToDartInt(widget.transaction["gas"])
+            : null,
+      );
+      setState(() {});
+    } else {
+      var gasPrice = await currentState.web3client.getGasPrice();
+      setState(() {
+        this.gasPrice = gasPrice;
+      });
 
-    transaction = Transaction(
-      gasPrice: gasPrice,
-      data: widget.transaction["data"] != null
-          ? Uint8List.fromList(hexToBytes(widget.transaction["data"]))
-          : null,
-      from: widget.transaction["from"] != null
-          ? EthereumAddress.fromHex(widget.transaction["from"])
-          : null,
-      to: widget.transaction["to"] != null
-          ? EthereumAddress.fromHex(widget.transaction["to"])
-          : null,
-      value: widget.transaction["value"] != null
-          ? EtherAmount.fromUnitAndValue(
-              EtherUnit.wei,
-              widget.transaction["value"],
-            )
-          : null,
-      maxGas: widget.transaction["gas"] != null
-          ? hexToDartInt(widget.transaction["gas"])
-          : null,
-    );
-    setState(() {});
+      transaction = Transaction(
+        gasPrice: gasPrice,
+        data: widget.transaction["data"] != null
+            ? Uint8List.fromList(hexToBytes(widget.transaction["data"]))
+            : null,
+        from: widget.transaction["from"] != null
+            ? EthereumAddress.fromHex(widget.transaction["from"])
+            : null,
+        to: widget.transaction["to"] != null
+            ? EthereumAddress.fromHex(widget.transaction["to"])
+            : null,
+        value: widget.transaction["value"] != null
+            ? EtherAmount.fromUnitAndValue(
+                EtherUnit.wei,
+                widget.transaction["value"],
+              )
+            : null,
+        maxGas: widget.transaction["gas"] != null
+            ? hexToDartInt(widget.transaction["gas"])
+            : null,
+      );
+      setState(() {});
+    }
   }
 
   @override

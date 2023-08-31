@@ -18,7 +18,6 @@ import 'package:wallet/core/remote/response-model/price_response.dart';
 import 'package:wallet/core/web3wallet_service.dart';
 import 'package:wallet/ui/browser/browser_screen.dart';
 import 'package:wallet/ui/browser/widgets/wallet_connect_dialog.dart';
-import 'package:wallet/ui/buy-screen/BuyScreen.dart';
 import 'package:wallet/ui/collectibles/collectibles_tab.dart';
 import 'package:wallet/ui/home/component/account_change_sheet.dart';
 import 'package:wallet/ui/login-screen/login_screen.dart';
@@ -369,30 +368,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           )),
                       actions: [
                           IconButton(
-                            onPressed: () {
-                              Get.dialog(WalletConnectDialog(
-                                onConnect: (s) async {
-                                  var url = Uri.parse(s);
-                                  if (url.queryParameters["symKey"] != null) {
-                                    try {
-                                      var web3WalletService =
-                                          GetIt.I<WC2Service>();
-                                      await web3WalletService.web3Wallet!
-                                          .pair(uri: url);
-                                    } catch (e) {
-                                      Get.dialog(AlertDialog(
-                                        title:
-                                            const Text("Error in connection"),
-                                        content: Text(e.toString()),
-                                      ));
-                                    }
-                                  }
-                                },
-                              ));
-                            },
+                            onPressed: () {},
                             icon: const Icon(
                               Icons.add,
-                              color: Colors.black,
+                              color: Colors.white,
                             ),
                           ),
                         ])
@@ -647,37 +626,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                             Text(
                                               AppLocalizations.of(context)!
                                                   .send,
-                                              style:
-                                                  const TextStyle(fontSize: 12),
-                                            )
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 15,
-                                        ),
-                                        Column(
-                                          children: [
-                                            Container(
-                                              clipBehavior: Clip.hardEdge,
-                                              decoration: const BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: kPrimaryColor,
-                                              ),
-                                              child: IconButton(
-                                                onPressed: () {
-                                                  Navigator.of(context)
-                                                      .pushNamed(
-                                                          BuyScreen.route);
-                                                },
-                                                icon: const Icon(
-                                                  Icons.add,
-                                                  size: 24,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              AppLocalizations.of(context)!.buy,
                                               style:
                                                   const TextStyle(fontSize: 12),
                                             )

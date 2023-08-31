@@ -1077,14 +1077,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
-  ramp_flutter:
-    dependency: "direct main"
-    description:
-      name: ramp_flutter
-      sha256: "7ef189f4e84882ad3c1cb4fd4553fc1a5ccde30ab71a8c0cf5b31659471e2374"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.2"
   rational:
     dependency: transitive
     description:

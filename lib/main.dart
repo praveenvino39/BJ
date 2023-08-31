@@ -22,7 +22,6 @@ import 'package:wallet/core/model/collectible_model.dart';
 import 'package:wallet/core/model/token_model.dart';
 import 'package:wallet/ui/amount/amount_screen.dart';
 import 'package:wallet/ui/block-web-view/block_web_view.dart';
-import 'package:wallet/ui/buy-screen/BuyScreen.dart';
 import 'package:wallet/ui/collectibles/import_collectible_screen.dart';
 import 'package:wallet/ui/home/home_screen.dart';
 import 'package:wallet/ui/import-account/import_account_screen.dart';
@@ -256,10 +255,7 @@ class _MyAppState extends State<MyApp> {
                           collectible: collectible,
                         ));
               }
-              if (setting.name == BuyScreen.route) {
-                return MaterialPageRoute(
-                    builder: (context) => const BuyScreen());
-              }
+
               if (setting.name == SwapConfirmScreen.route) {
                 CoinGeckoToken tokenFrom =
                     (setting.arguments as dynamic)["tokenFrom"];

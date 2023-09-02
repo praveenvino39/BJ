@@ -58,7 +58,7 @@ class ReceiveSheet extends StatelessWidget {
                 // width: MediaQuery.of(context).size.width / 1.8,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
-                    color: Colors.orange.shade100.withAlpha(90),
+                    color: kPrimaryColor.withAlpha(30),
                     borderRadius: BorderRadius.circular(40)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

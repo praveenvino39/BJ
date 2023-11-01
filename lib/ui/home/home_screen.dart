@@ -90,20 +90,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   setupWalletConnect() async {
-    // WC2Service web3service = WC2Service(
-    //     address: getWalletLoadedState(context).wallet.privateKey.address.hex,
-    //     chainId:
-    //         getWalletLoadedState(context).currentNetwork.chainId.toString(),
-    //     nameSpace: getWalletLoadedState(context).currentNetwork.nameSpace,
-    //     preference: getPreference(context),
-    //     privateKey: getWalletLoadedState(context).wallet.privateKey,
-    //     networks: Core.networks);
-    // GetIt.I.registerSingleton<WC2Service>(web3service);
-    // web3service.create();
-    // await web3service.init();
-    // setState(() {
-    //   isBrowserInitialized = true;
-    // });
+    WC2Service web3service = WC2Service(
+        address: getWalletLoadedState(context).wallet.privateKey.address.hex,
+        chainId:
+            getWalletLoadedState(context).currentNetwork.chainId.toString(),
+        nameSpace: getWalletLoadedState(context).currentNetwork.nameSpace,
+        preference: getPreference(context),
+        privateKey: getWalletLoadedState(context).wallet.privateKey,
+        networks: Core.networks);
+    GetIt.I.registerSingleton<WC2Service>(web3service);
+    web3service.create();
+    await web3service.init();
+    setState(() {
+      // isBrowserInitialized = true;
+    });
   }
 
   updateBalance(WalletLoaded state, bool updateFiat) async {

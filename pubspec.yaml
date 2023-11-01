@@ -32,7 +32,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter    
   intl: ^0.17.0
-  web3dart: 2.5.3
   introduction_screen: ^3.0.1
   flutter_svg: ^1.1.4
   google_fonts: ^3.0.1
@@ -69,6 +68,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_inappwebview: ^6.0.0-beta.21
   font_awesome_flutter: ^10.4.0
+  jazzicon: ^1.1.0
+  web3dart: ^2.5.3
 
 dev_dependencies:
   hive_generator: ^1.1.3

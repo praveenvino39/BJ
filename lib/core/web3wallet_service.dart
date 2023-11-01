@@ -89,8 +89,7 @@ class WC2Service {
             sendTransactionFuture.complete(txHash);
           },
           onReject: () {
-            Get.back();
-            sendTransactionFuture.complete(null);
+            sendTransactionFuture.completeError("User rejected");
           },
         );
         return sendTransactionFuture.future;
@@ -315,7 +314,7 @@ class WC2Service {
                 textContent: "Reject",
                 onPressed: () {
                   Get.back();
-                  return signFuture.complete(null);
+                  return signFuture.completeError("User rejected");
                 })
           ],
         ));
@@ -568,7 +567,8 @@ class WC2Service {
                               textContent: "Yes, Reject",
                               onPressed: () {
                                 Get.back();
-                                completor.complete(true);
+                                Get.back();
+                                onReject();
                               }),
                         ),
                         Expanded(

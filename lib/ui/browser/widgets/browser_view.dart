@@ -42,6 +42,7 @@ class _BrowserViewState extends State<BrowserView> {
   bool dissableProgressAnimation = false;
   bool isAttached = false;
   PullToRefreshController refreshController = PullToRefreshController();
+  WC2Service web3service = GetIt.I<WC2Service>();
 
   @override
   void initState() {
@@ -58,6 +59,9 @@ class _BrowserViewState extends State<BrowserView> {
     return BlocListener<WalletCubit, WalletState>(
       listener: (context, state) async {
         if (state is WalletNetworkChanged) {
+          web3service.initHandlers(
+              getWalletLoadedState(context).currentNetwork.nameSpace,
+              state.currentNetwork.chainId.toString());
           webViewController?.postWebMessage(
               message: WebMessage(
                 data: jsonEncode({
@@ -224,6 +228,15 @@ class _BrowserViewState extends State<BrowserView> {
   }
 
   void handleRequestToWalletConnect(Uri url) async {
-    if (url.queryParameters["symKey"] != null) {}
+    if (url.queryParameters["symKey"] != null) {
+      try {
+        await web3service.web3Wallet!.pair(uri: url);
+      } catch (e) {
+        Get.dialog(AlertDialog(
+          title: const Text("Error in connection"),
+          content: Text(e.toString()),
+        ));
+      }
+    }
   }
 }

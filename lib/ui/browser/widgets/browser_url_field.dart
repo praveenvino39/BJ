@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive/hive.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/ui/browser/model/web_view_model.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
 
 class BrowserUrlField extends StatefulWidget {
   static const route = "browser_url_bar";

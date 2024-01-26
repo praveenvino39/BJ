@@ -1,9 +1,9 @@
 import 'dart:developer' as pd;
 import 'package:flutter/material.dart';
-import 'package:wallet/constant.dart';
+import 'package:wallet_cryptomask/constant.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 
 class SetupPassphraseScreen extends StatefulWidget {
   static const route = "setup_passphrase_screen";
@@ -27,7 +27,8 @@ class _SetupPassphraseScreenState extends State<SetupPassphraseScreen> {
     List<String> generatedMnemonic = bip39.generateMnemonic().split(" ");
     do {
       generatedMnemonic = bip39.generateMnemonic().split(" ");
-    } while (generatedMnemonic.toSet().toList().length != generatedMnemonic.length);
+    } while (
+        generatedMnemonic.toSet().toList().length != generatedMnemonic.length);
     setState(() {
       passpharse = generatedMnemonic;
       pd.log(passpharse.join(" "));
@@ -45,13 +46,13 @@ class _SetupPassphraseScreenState extends State<SetupPassphraseScreen> {
             height: 30,
           ),
           Text(
-           AppLocalizations.of(context)!.writeSecretRecoveryPhrase,
+            AppLocalizations.of(context)!.writeSecretRecoveryPhrase,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(
             height: 10,
           ),
-           Text(
+          Text(
             AppLocalizations.of(context)!.yourSecretRecoveryPhrase,
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14),
@@ -93,7 +94,8 @@ class _SetupPassphraseScreenState extends State<SetupPassphraseScreen> {
                       Text(
                         AppLocalizations.of(context)!.makeSureNoOneWatching,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.white, fontSize: 12),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 12),
                       ),
                       const SizedBox(
                         height: 10,
@@ -117,7 +119,7 @@ class _SetupPassphraseScreenState extends State<SetupPassphraseScreen> {
                               });
                             },
                             child: Text(
-                             AppLocalizations.of(context)!.view,
+                              AppLocalizations.of(context)!.view,
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 12),
                             ),

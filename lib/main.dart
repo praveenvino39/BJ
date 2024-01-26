@@ -12,35 +12,38 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:wallet/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
-import 'package:wallet/core/bloc/preference-bloc/cubit/preference_cubit.dart';
-import 'package:wallet/core/bloc/token-bloc/cubit/token_cubit.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/locale_provider/cubit/locale_cubit.dart';
-import 'package:wallet/core/model/coin_gecko_token_model.dart';
-import 'package:wallet/core/model/collectible_model.dart';
-import 'package:wallet/core/model/token_model.dart';
-import 'package:wallet/ui/amount/amount_screen.dart';
-import 'package:wallet/ui/block-web-view/block_web_view.dart';
-import 'package:wallet/ui/collectibles/import_collectible_screen.dart';
-import 'package:wallet/ui/home/home_screen.dart';
-import 'package:wallet/ui/import-account/import_account_screen.dart';
-import 'package:wallet/ui/login-screen/login_screen.dart';
-import 'package:wallet/ui/onboard/create_wallet_screen.dart';
-import 'package:wallet/ui/onboard/onboard_screen.dart';
-import 'package:wallet/ui/onboard/wallet_setup_screen.dart';
-import 'package:wallet/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
-import 'package:wallet/ui/setttings/general_settings_screen/general_settings_screen.dart';
-import 'package:wallet/ui/setttings/security_settings_screen/security_settings_screen.dart';
-import 'package:wallet/ui/setttings/settings_screen.dart';
-import 'package:wallet/ui/swap_confirm_screen.dart/swap_confirm_screen.dart';
-import 'package:wallet/ui/swap_screen/swap_screen.dart';
-import 'package:wallet/ui/token-dashboard-screen/token_dashboard_screen.dart';
-import 'package:wallet/ui/token/component/import_token.dart';
-import 'package:wallet/ui/transaction-confirmation/transaction_confirmation.dart';
-import 'package:wallet/ui/transaction-history/transaction_history_screen.dart';
-import 'package:wallet/ui/transfer/transfer_screen.dart';
-import 'package:wallet/ui/webview/web_view_screen.dart';
+import 'package:wallet_cryptomask/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/preference-bloc/cubit/preference_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/locale_provider/cubit/locale_cubit.dart';
+import 'package:wallet_cryptomask/core/model/coin_gecko_token_model.dart';
+import 'package:wallet_cryptomask/core/model/collectible_model.dart';
+import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/ui/amount/amount_screen.dart';
+import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
+import 'package:wallet_cryptomask/ui/collectibles/import_collectible_screen.dart';
+import 'package:wallet_cryptomask/ui/home/home_screen.dart';
+import 'package:wallet_cryptomask/ui/import-account/import_account_screen.dart';
+import 'package:wallet_cryptomask/ui/login-screen/login_screen.dart';
+import 'package:wallet_cryptomask/ui/screens/confirm_passphrase/confirm_passphrase_screen.dart';
+import 'package:wallet_cryptomask/ui/screens/create_password/create_password_screen.dart';
+import 'package:wallet_cryptomask/ui/screens/create_wallet_screen.dart';
+import 'package:wallet_cryptomask/ui/screens/generate_passphrase/generate_passphrase_screen.dart';
+import 'package:wallet_cryptomask/ui/screens/onboarding/onboard_screen.dart';
+import 'package:wallet_cryptomask/ui/screens/wallet_setup/wallet_setup_screen.dart';
+import 'package:wallet_cryptomask/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
+import 'package:wallet_cryptomask/ui/setttings/general_settings_screen/general_settings_screen.dart';
+import 'package:wallet_cryptomask/ui/setttings/security_settings_screen/security_settings_screen.dart';
+import 'package:wallet_cryptomask/ui/setttings/settings_screen.dart';
+import 'package:wallet_cryptomask/ui/swap_confirm_screen.dart/swap_confirm_screen.dart';
+import 'package:wallet_cryptomask/ui/swap_screen/swap_screen.dart';
+import 'package:wallet_cryptomask/ui/token-dashboard-screen/token_dashboard_screen.dart';
+import 'package:wallet_cryptomask/ui/token/component/import_token.dart';
+import 'package:wallet_cryptomask/ui/transaction-confirmation/transaction_confirmation.dart';
+import 'package:wallet_cryptomask/ui/transaction-history/transaction_history_screen.dart';
+import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
+import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 
 import 'constant.dart';
 
@@ -61,11 +64,13 @@ void main() async {
   FlutterSecureStorage fss = const FlutterSecureStorage();
   String? wallet = await fss.read(key: "wallet");
   Widget? initialWidget;
-  if (wallet != null) {
-    initialWidget = const LoginScreen();
-  } else {
-    initialWidget = const OnboardScreen();
-  }
+  // if (wallet != null) {
+  //   initialWidget = const LoginScreen();
+  // } else {
+  //   initialWidget = const OnboardScreen();
+  // }
+  initialWidget = const OnboardScreen();
+
   Box box = await Hive.openBox("user_preference");
   String locale = (await box.get("LOCALE")) ?? "en";
   log(initialWidget.toString());
@@ -152,6 +157,18 @@ class _MyAppState extends State<MyApp> {
                 return MaterialPageRoute(
                     builder: (context) => const WalletSetupScreen());
               }
+              if (setting.name == CreatePasswordScreen.route) {
+                return MaterialPageRoute(
+                    builder: (context) => const CreatePasswordScreen());
+              }
+              if (setting.name == GeneratePassPhraseScreen.route) {
+                return MaterialPageRoute(
+                    builder: (context) => const GeneratePassPhraseScreen());
+              }
+              if (setting.name == ConfirmPassPhraseScreen.route) {
+                return MaterialPageRoute(
+                    builder: (context) => const ConfirmPassPhraseScreen());
+              }
               if (setting.name == SecuritySettingsScreen.route) {
                 return MaterialPageRoute(
                     builder: (context) => const SecuritySettingsScreen());
@@ -180,11 +197,8 @@ class _MyAppState extends State<MyApp> {
                     builder: (context) => const CreateWalletScreen());
               }
               if (setting.name == HomeScreen.route) {
-                String password = (setting.arguments! as dynamic)["password"];
                 return MaterialPageRoute(
-                    builder: (context) => HomeScreen(
-                          password: password,
-                        ));
+                    builder: (context) => const HomeScreen());
               }
               if (setting.name == SettingsScreen.route) {
                 return MaterialPageRoute(

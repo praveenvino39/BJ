@@ -4,10 +4,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
-import 'package:wallet/ui/transaction-confirmation/transaction_confirmation.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/transaction-confirmation/transaction_confirmation.dart';
 import 'package:web3dart/web3dart.dart';
 
 class GasSettings extends StatefulWidget {
@@ -113,7 +113,7 @@ class _GasSettingsState extends State<GasSettings> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
-                     const  SizedBox(
+                      const SizedBox(
                         height: 20,
                         width: double.infinity,
                       ),
@@ -143,7 +143,7 @@ class _GasSettingsState extends State<GasSettings> {
                       ),
                       Text(
                           "${widget.estimatedGasInWei.getValueInUnit(EtherUnit.ether)} ETH",
-                          style:const  TextStyle(
+                          style: const TextStyle(
                               fontSize: 40, fontWeight: FontWeight.normal)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -196,10 +196,11 @@ class _GasSettingsState extends State<GasSettings> {
                                       _gasLimit.text = "21000";
                                     }
                                     _maxFee.text = widget.low.toString();
-                                    _maxPriorityFee.text = widget.low.toString();
+                                    _maxPriorityFee.text =
+                                        widget.low.toString();
                                     widget.maxFee = widget.low;
                                     widget.maxPriority = widget.low;
-              
+
                                     updatePriority(widget.low);
                                     updateGasLimit();
                                     updateMaxPriorityEth();
@@ -219,12 +220,13 @@ class _GasSettingsState extends State<GasSettings> {
                                       widget.gasLimit = 21000;
                                       _gasLimit.text = "21000";
                                     }
-              
+
                                     _maxFee.text = widget.medium.toString();
                                     widget.maxFee = widget.medium;
                                     widget.maxPriority = widget.medium;
-              
-                                    _maxPriorityFee.text = widget.medium.toString();
+
+                                    _maxPriorityFee.text =
+                                        widget.medium.toString();
                                     updatePriority(widget.medium);
                                     updateGasLimit();
                                     updateMaxPriorityEth();
@@ -244,11 +246,12 @@ class _GasSettingsState extends State<GasSettings> {
                                       widget.gasLimit = 21000;
                                       _gasLimit.text = "21000";
                                     }
-              
+
                                     _maxFee.text = widget.high.toString();
                                     widget.maxFee = widget.high;
                                     widget.maxPriority = widget.high;
-                                    _maxPriorityFee.text = widget.high.toString();
+                                    _maxPriorityFee.text =
+                                        widget.high.toString();
                                     updatePriority(widget.high);
                                     updateGasLimit();
                                     updateMaxPriorityEth();
@@ -294,7 +297,7 @@ class _GasSettingsState extends State<GasSettings> {
                           ],
                         ),
                       ),
-                     const  SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
                       Padding(
@@ -302,7 +305,7 @@ class _GasSettingsState extends State<GasSettings> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children:const [
+                          children: const [
                             Text("Low"),
                             Expanded(
                                 child: SizedBox(
@@ -315,7 +318,7 @@ class _GasSettingsState extends State<GasSettings> {
                               width: double.infinity,
                               height: 3,
                             )),
-                           Text("High"),
+                            Text("High"),
                           ],
                         ),
                       ),
@@ -329,7 +332,7 @@ class _GasSettingsState extends State<GasSettings> {
                                   onTap: () => widget.onAdvanceOptionClicked!(),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children:const  [
+                                    children: const [
                                       Text(
                                         "Advance options",
                                         style: TextStyle(
@@ -370,7 +373,8 @@ class _GasSettingsState extends State<GasSettings> {
                                                 "Gas limit",
                                                 style: TextStyle(
                                                     fontSize: 14,
-                                                    fontWeight: FontWeight.bold),
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
                                             ],
                                           )),
@@ -379,47 +383,52 @@ class _GasSettingsState extends State<GasSettings> {
                                       ),
                                       Container(
                                         decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(5),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                             border: Border.all(
-                                                width: 1, color: kPrimaryColor)),
+                                                width: 1,
+                                                color: kPrimaryColor)),
                                         child: Row(
                                           children: [
                                             IconButton(
                                                 onPressed: () {
                                                   setState(() {
                                                     widget.priority =
-                                                        TransactionPriority.custom;
-                                                    _gasLimit.text =
-                                                        (widget.gasLimit -= 1000)
-                                                            .toString();
+                                                        TransactionPriority
+                                                            .custom;
+                                                    _gasLimit.text = (widget
+                                                            .gasLimit -= 1000)
+                                                        .toString();
                                                     updateGasLimit();
                                                   });
                                                 },
-                                                icon:const  Icon(Icons.remove_circle)),
+                                                icon: const Icon(
+                                                    Icons.remove_circle)),
                                             Expanded(
                                                 child: TextFormField(
                                               textAlign: TextAlign.center,
                                               controller: _gasLimit,
-                                              decoration:
-                                                  const InputDecoration.collapsed(
-                                                      hintText: '0'),
+                                              decoration: const InputDecoration
+                                                  .collapsed(hintText: '0'),
                                             )),
                                             IconButton(
                                                 onPressed: () {
                                                   setState(() {
                                                     widget.priority =
-                                                        TransactionPriority.custom;
-                                                    _gasLimit.text =
-                                                        (widget.gasLimit += 1000)
-                                                            .toString();
+                                                        TransactionPriority
+                                                            .custom;
+                                                    _gasLimit.text = (widget
+                                                            .gasLimit += 1000)
+                                                        .toString();
                                                     updateGasLimit();
                                                   });
                                                 },
-                                                icon: const Icon(Icons.add_circle)),
+                                                icon: const Icon(
+                                                    Icons.add_circle)),
                                           ],
                                         ),
                                       ),
-                                     const  SizedBox(
+                                      const SizedBox(
                                         height: 20,
                                       ),
                                       Padding(
@@ -433,7 +442,8 @@ class _GasSettingsState extends State<GasSettings> {
                                                 "Max priority fee (GWEI)",
                                                 style: TextStyle(
                                                     fontSize: 14,
-                                                    fontWeight: FontWeight.bold),
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
                                             ],
                                           )),
@@ -442,30 +452,34 @@ class _GasSettingsState extends State<GasSettings> {
                                       ),
                                       Container(
                                         decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(5),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                             border: Border.all(
-                                                width: 1, color: kPrimaryColor)),
+                                                width: 1,
+                                                color: kPrimaryColor)),
                                         child: Row(
                                           children: [
                                             IconButton(
                                                 onPressed: () {
                                                   setState(() {
                                                     widget.priority =
-                                                        TransactionPriority.custom;
+                                                        TransactionPriority
+                                                            .custom;
                                                     _maxPriorityFee.text =
-                                                        (widget.maxPriority -= 1)
+                                                        (widget.maxPriority -=
+                                                                1)
                                                             .toString();
                                                     updateMaxPriorityEth();
                                                   });
                                                 },
-                                                icon: const Icon(Icons.remove_circle)),
+                                                icon: const Icon(
+                                                    Icons.remove_circle)),
                                             Expanded(
                                                 child: TextFormField(
                                               textAlign: TextAlign.center,
                                               controller: _maxPriorityFee,
-                                              decoration:
-                                                  const InputDecoration.collapsed(
-                                                      hintText: '0'),
+                                              decoration: const InputDecoration
+                                                  .collapsed(hintText: '0'),
                                             )),
                                             Expanded(
                                                 child: Text(
@@ -476,15 +490,18 @@ class _GasSettingsState extends State<GasSettings> {
                                                 onPressed: () {
                                                   setState(() {
                                                     widget.priority =
-                                                        TransactionPriority.custom;
-              
+                                                        TransactionPriority
+                                                            .custom;
+
                                                     _maxPriorityFee.text =
-                                                        (widget.maxPriority += 1)
+                                                        (widget.maxPriority +=
+                                                                1)
                                                             .toString();
                                                     updateMaxPriorityEth();
                                                   });
                                                 },
-                                                icon:const  Icon(Icons.add_circle)),
+                                                icon: const Icon(
+                                                    Icons.add_circle)),
                                           ],
                                         ),
                                       ),
@@ -502,7 +519,8 @@ class _GasSettingsState extends State<GasSettings> {
                                                 "Max fee (GWEI)",
                                                 style: TextStyle(
                                                     fontSize: 14,
-                                                    fontWeight: FontWeight.bold),
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
                                             ],
                                           )),
@@ -511,31 +529,34 @@ class _GasSettingsState extends State<GasSettings> {
                                       ),
                                       Container(
                                         decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(5),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                             border: Border.all(
-                                                width: 1, color: kPrimaryColor)),
+                                                width: 1,
+                                                color: kPrimaryColor)),
                                         child: Row(
                                           children: [
                                             IconButton(
                                                 onPressed: () {
                                                   setState(() {
                                                     widget.priority =
-                                                        TransactionPriority.custom;
-              
-                                                    _maxFee.text = (widget.maxFee -=
-                                                            1)
-                                                        .toString();
+                                                        TransactionPriority
+                                                            .custom;
+
+                                                    _maxFee.text =
+                                                        (widget.maxFee -= 1)
+                                                            .toString();
                                                     updateMaxFeeEth();
                                                   });
                                                 },
-                                                icon: const Icon(Icons.remove_circle)),
+                                                icon: const Icon(
+                                                    Icons.remove_circle)),
                                             Expanded(
                                                 child: TextFormField(
                                               textAlign: TextAlign.center,
                                               controller: _maxFee,
-                                              decoration:
-                                                  const InputDecoration.collapsed(
-                                                      hintText: '0'),
+                                              decoration: const InputDecoration
+                                                  .collapsed(hintText: '0'),
                                             )),
                                             Expanded(
                                                 child: Text(
@@ -546,15 +567,17 @@ class _GasSettingsState extends State<GasSettings> {
                                                 onPressed: () {
                                                   setState(() {
                                                     widget.priority =
-                                                        TransactionPriority.custom;
-              
-                                                    _maxFee.text = (widget.maxFee +=
-                                                            1)
-                                                        .toString();
+                                                        TransactionPriority
+                                                            .custom;
+
+                                                    _maxFee.text =
+                                                        (widget.maxFee += 1)
+                                                            .toString();
                                                     updateMaxFeeEth();
                                                   });
                                                 },
-                                                icon:const  Icon(Icons.add_circle)),
+                                                icon: const Icon(
+                                                    Icons.add_circle)),
                                           ],
                                         ),
                                       )
@@ -578,7 +601,7 @@ class _GasSettingsState extends State<GasSettings> {
                                       //             controller: _gasLimit,
                                       //             cursorColor: kPrimaryColor,
                                       //             decoration: InputDecoration(
-              
+
                                       //               fillColor: Colors.red,
                                       //                 contentPadding: EdgeInsets.all(0),
                                       //                 suffix: IconButton(
@@ -740,7 +763,9 @@ class _GasSettingsState extends State<GasSettings> {
                                 )
                               ],
                             ),
-                      const SizedBox(height: 20,),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       WalletButton(
                           type: WalletButtonType.filled,
                           textContent: "Save",
@@ -758,9 +783,13 @@ class _GasSettingsState extends State<GasSettings> {
                                     widget.priority, widget.gasLimit);
                                 Navigator.of(context).pop();
                               }
-                              if (widget.priority == TransactionPriority.medium) {
-                                widget.changePriority(widget.medium, widget.medium,
-                                    widget.priority, widget.gasLimit);
+                              if (widget.priority ==
+                                  TransactionPriority.medium) {
+                                widget.changePriority(
+                                    widget.medium,
+                                    widget.medium,
+                                    widget.priority,
+                                    widget.gasLimit);
                                 Navigator.of(context).pop();
                               }
                               if (widget.priority == TransactionPriority.high) {

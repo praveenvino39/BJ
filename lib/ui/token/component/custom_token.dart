@@ -3,12 +3,12 @@ import 'dart:developer';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/token-bloc/cubit/token_cubit.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/cubit_helper.dart';
-import 'package:wallet/core/model/token_model.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomToken extends StatefulWidget {

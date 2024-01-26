@@ -6,17 +6,17 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/ERC20.dart';
-import 'package:wallet/core/abi.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/model/coin_gecko_token_model.dart';
-import 'package:wallet/core/model/token_model.dart';
-import 'package:wallet/core/remote/http.dart';
-import 'package:wallet/ui/home/component/avatar_component.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
-import 'package:wallet/ui/swap_confirm_screen.dart/swap_confirm_screen.dart';
-import 'package:wallet/utils.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/ERC20.dart';
+import 'package:wallet_cryptomask/core/abi.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/model/coin_gecko_token_model.dart';
+import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/remote/http.dart';
+import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/swap_confirm_screen.dart/swap_confirm_screen.dart';
+import 'package:wallet_cryptomask/utils.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

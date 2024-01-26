@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:wallet/ui/webview/web_view_screen.dart';
+import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 
 class CreatePasswordCmp extends StatefulWidget {
   final Function? onNext;
@@ -46,7 +46,8 @@ class _CreatePasswordCmpState extends State<CreatePasswordCmp> {
               child: Text(
                 AppLocalizations.of(context)!.thisPasswordWill,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
               ),
             ),
             const SizedBox(
@@ -202,7 +203,7 @@ class _CreatePasswordCmpState extends State<CreatePasswordCmp> {
                   if (_formKey.currentState?.validate() == true) {
                     if (!isTermsAccepted) {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        backgroundColor: Colors.red,
+                          backgroundColor: Colors.red,
                           content: Text(
                               "You must to accept the terms and condition to use Cryptomask")));
                       return;

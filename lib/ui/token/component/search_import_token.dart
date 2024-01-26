@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/token-bloc/cubit/token_cubit.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/core.dart';
-import 'package:wallet/core/cubit_helper.dart';
-import 'package:wallet/core/model/token_model.dart';
-import 'package:wallet/ui/home/component/avatar_component.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/core.dart';
+import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchImportToken extends StatefulWidget {
@@ -43,8 +43,8 @@ class _SearchImportTokenState extends State<SearchImportToken> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       AppLocalizations.of(context)!.top20Token,
-                      style:
-                          const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(
@@ -98,9 +98,9 @@ class _SearchImportTokenState extends State<SearchImportToken> {
                     listener: (context, state) {
                       if (state is TokenAdded) {
                         Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar( SnackBar(
-                          content: Text(AppLocalizations.of(context)!.tokenAddedSuccesfully),
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(AppLocalizations.of(context)!
+                              .tokenAddedSuccesfully),
                           backgroundColor: Colors.green,
                         ));
                       }
@@ -108,7 +108,8 @@ class _SearchImportTokenState extends State<SearchImportToken> {
                     builder: (context, state) {
                       return WalletButton(
                           type: WalletButtonType.filled,
-                          textContent: AppLocalizations.of(context)!.importToken,
+                          textContent:
+                              AppLocalizations.of(context)!.importToken,
                           onPressed: selectedToken != null
                               ? () {
                                   context.read<TokenCubit>().addToken(
@@ -129,7 +130,7 @@ class _SearchImportTokenState extends State<SearchImportToken> {
                   )
                 ],
               )
-            :  Center(
+            : Center(
                 child: Text(AppLocalizations.of(context)!.thisFeatureInMainnet),
               );
       },

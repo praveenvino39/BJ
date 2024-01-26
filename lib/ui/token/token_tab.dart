@@ -2,12 +2,12 @@ import 'dart:async';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/token-bloc/cubit/token_cubit.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/model/token_model.dart';
-import 'package:wallet/ui/token/component/import_token_tile.dart';
-import 'package:wallet/ui/token/component/token_tile.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/ui/token/component/import_token_tile.dart';
+import 'package:wallet_cryptomask/ui/token/component/token_tile.dart';
 import 'package:web3dart/web3dart.dart';
 
 class TokenTab extends StatefulWidget {
@@ -56,8 +56,7 @@ class _TokenTabState extends State<TokenTab> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<WalletCubit, WalletState>(
-      listener: (context, state) {
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return SizedBox(
           width: MediaQuery.of(context).size.width,

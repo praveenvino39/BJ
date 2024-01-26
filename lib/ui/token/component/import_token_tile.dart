@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/ui/token/component/import_token.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/ui/token/component/import_token.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ImportTokenTile extends StatelessWidget {

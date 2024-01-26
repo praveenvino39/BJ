@@ -8,10 +8,10 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
-import 'package:wallet/core/abi.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/model/collectible_model.dart';
-import 'package:wallet/core/model/network_model.dart';
+import 'package:wallet_cryptomask/core/abi.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/model/collectible_model.dart';
+import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:web3dart/web3dart.dart';
 
 part 'collectible_state.dart';

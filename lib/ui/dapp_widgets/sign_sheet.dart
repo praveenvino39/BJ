@@ -6,12 +6,12 @@ import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:ethers/crypto/formatting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/cubit_helper.dart';
-import 'package:wallet/ui/home/component/avatar_component.dart';
-import 'package:wallet/ui/shared/chain_change_sheet.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
-import 'package:wallet/utils.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
+import 'package:wallet_cryptomask/ui/shared/chain_change_sheet.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/utils.dart';
 
 class SignSheet extends StatefulWidget {
   final Function(String) onApprove;

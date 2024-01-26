@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:wallet/ui/browser/model/request.dart';
+import 'package:wallet_cryptomask/ui/browser/model/request.dart';
 
 const int kIntMaxValue = 9007199254740991;
 
@@ -19,7 +19,12 @@ class RpcRequest {
   }
 
   toJson() {
-    return {"id": Random().nextInt(9999999), "jsonrpc": jsonrpc, "method": method, "params": params};
+    return {
+      "id": Random().nextInt(9999999),
+      "jsonrpc": jsonrpc,
+      "method": method,
+      "params": params
+    };
   }
 }
 

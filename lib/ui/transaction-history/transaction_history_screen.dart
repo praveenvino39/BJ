@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/remote/http.dart';
-import 'package:wallet/core/remote/response-model/transaction_log_result.dart';
-import 'package:wallet/ui/block-web-view/block_web_view.dart';
-import 'package:wallet/ui/transaction-history/widget/transaction_tile.dart';
-import 'package:wallet/utils.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/remote/http.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/transaction_log_result.dart';
+import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
+import 'package:wallet_cryptomask/ui/transaction-history/widget/transaction_tile.dart';
+import 'package:wallet_cryptomask/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TransactionHistoryScreen extends StatefulWidget {
@@ -65,7 +65,7 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                           ),
                           Text(
                             state.currentNetwork.networkName,
-                            style:const  TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.w100,
                                 fontSize: 12,
                                 color: Colors.black),
@@ -99,10 +99,11 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                                       var date =
                                           DateTime.fromMicrosecondsSinceEpoch(
                                               int.parse(snapshot
-                                                      .data![index]
-                                                      .timeStamp) *
+                                                      .data![index].timeStamp) *
                                                   1000000);
-                                      return TransactionTile(date: date, data: snapshot.data![index]);
+                                      return TransactionTile(
+                                          date: date,
+                                          data: snapshot.data![index]);
                                     }),
                               ),
                               Padding(
@@ -112,16 +113,15 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                                     Navigator.of(context).pushNamed(
                                         BlockWebView.router,
                                         arguments: {
-                                          "title": state
-                                              .currentNetwork
-                                              .networkName,
+                                          "title":
+                                              state.currentNetwork.networkName,
                                           "url": viewAddressOnEtherScan(
                                               state.currentNetwork,
                                               state.wallet.privateKey.address
                                                   .hex)
                                         });
                                   },
-                                  child:const  Text(
+                                  child: const Text(
                                     "View full history on Explorer",
                                     style: TextStyle(color: kPrimaryColor),
                                   ),
@@ -133,7 +133,8 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                       : Center(
                           child: Text(
                             AppLocalizations.of(context)!.youHaveNoTransaction,
-                            style: const TextStyle(fontSize: 18, color: Colors.grey),
+                            style: const TextStyle(
+                                fontSize: 18, color: Colors.grey),
                           ),
                         );
                 } else {

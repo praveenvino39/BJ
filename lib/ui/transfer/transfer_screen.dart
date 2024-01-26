@@ -3,18 +3,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/model/collectible_model.dart';
-import 'package:wallet/core/model/token_model.dart';
-import 'package:wallet/ui/amount/amount_screen.dart';
-import 'package:wallet/ui/home/component/account_change_sheet.dart';
-import 'package:wallet/ui/home/component/avatar_component.dart';
-import 'package:wallet/ui/scan/scanner_screen.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
-import 'package:wallet/ui/transaction-confirmation/transaction_confirmation.dart';
-import 'package:wallet/ui/transfer/component/receiver_address_suggest_widget.dart';
-import 'package:wallet/utils.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/model/collectible_model.dart';
+import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/ui/amount/amount_screen.dart';
+import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
+import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
+import 'package:wallet_cryptomask/ui/scan/scanner_screen.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/transaction-confirmation/transaction_confirmation.dart';
+import 'package:wallet_cryptomask/ui/transfer/component/receiver_address_suggest_widget.dart';
+import 'package:wallet_cryptomask/utils.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -40,7 +40,8 @@ class _TransferScreenState extends State<TransferScreen> {
   void initState() {
     Hive.openBox("user_preference").then((box) {
       setState(() {
-        recentTransactionAddress = box.get("RECENT-TRANSACTION-ADDRESS", defaultValue: []);
+        recentTransactionAddress =
+            box.get("RECENT-TRANSACTION-ADDRESS", defaultValue: []);
       });
     });
 
@@ -326,7 +327,8 @@ class _TransferScreenState extends State<TransferScreen> {
                         height: 10,
                       ),
                       ReceiverAddressSuggestionWidget(
-                          recentTransactionList: recentTransactionAddress.reversed.toList(),
+                          recentTransactionList:
+                              recentTransactionAddress.reversed.toList(),
                           isAddressValid: isAddressValid,
                           onAccountSelect: (address) {
                             _address.text = address;

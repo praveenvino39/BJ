@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/core/bloc/preference-bloc/cubit/preference_cubit.dart';
-import 'package:wallet/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/core/bloc/preference-bloc/cubit/preference_cubit.dart';
+import 'package:wallet_cryptomask/core/cubit_helper.dart';
 
 class ConnectedSiteSheet extends StatefulWidget {
   const ConnectedSiteSheet({super.key});

@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/utils.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class BlockWebView extends StatefulWidget {
@@ -32,7 +32,7 @@ class _BlockWebViewState extends State<BlockWebView> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon:const  Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: kPrimaryColor,
             )),
@@ -49,19 +49,15 @@ class _BlockWebViewState extends State<BlockWebView> {
         ],
         title: Center(
           child: Text(
-            widget.isTransaction ? "Transaction History" : "${widget.title} Explorer",
+            widget.isTransaction
+                ? "Transaction History"
+                : "${widget.title} Explorer",
             style: const TextStyle(color: kPrimaryColor, fontSize: 16),
           ),
         ),
       ),
-      body: WebView(
-        onWebViewCreated: (WebViewController webViewController) {
-          _controller = webViewController;
-        },
-        onPageFinished: (url) =>
-            widget.isTransaction ? _controller.scrollTo(0, 1800) : {},
-        initialUrl: widget.url,
-        javascriptMode: JavascriptMode.unrestricted,
+      body: WebViewWidget(
+        controller: _controller,
       ),
     );
   }

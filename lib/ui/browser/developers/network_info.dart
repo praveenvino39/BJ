@@ -5,7 +5,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mime/mime.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet/ui/browser/model/web_view_model.dart';
+import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
 // import 'package:charts_flutter/flutter.dart' as charts;
 
 class NetworkInfo extends StatefulWidget {
@@ -148,8 +148,8 @@ class _NetworkInfoState extends State<NetworkInfo> {
               return Row(children: <Widget>[
                 InkWell(
                     onTap: () {
-                      Clipboard.setData(
-                          ClipboardData(text: loadedResoruce.url?.toString()));
+                      Clipboard.setData(ClipboardData(
+                          text: loadedResoruce.url?.toString() ?? ""));
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/ui/home/home_screen.dart';
-import 'package:wallet/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/ui/home/home_screen.dart';
+import 'package:wallet_cryptomask/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 
 class ImportAccount extends StatefulWidget {
   static const route = "import_account";
@@ -147,7 +147,8 @@ class _ImportAccountState extends State<ImportAccount> {
                             }, alreadyExist: () {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(const SnackBar(
-                                content: Text("You're trying to import account that already exist"),
+                                content: Text(
+                                    "You're trying to import account that already exist"),
                                 backgroundColor: Colors.red,
                               ));
                             });

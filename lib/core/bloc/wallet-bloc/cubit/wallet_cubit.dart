@@ -14,14 +14,14 @@ import 'package:get/route_manager.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart'; //You can also import the browser version
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:wallet/core/ERC20.dart';
-import 'package:wallet/core/abi.dart';
-import 'package:wallet/core/core.dart';
-import 'package:wallet/core/model/collectible_model.dart';
-import 'package:wallet/core/model/network_model.dart';
-import 'package:wallet/core/model/token_model.dart';
-import 'package:wallet/core/model/wallet_model.dart';
-import 'package:wallet/core/remote/http.dart';
+import 'package:wallet_cryptomask/core/ERC20.dart';
+import 'package:wallet_cryptomask/core/abi.dart';
+import 'package:wallet_cryptomask/core/core.dart';
+import 'package:wallet_cryptomask/core/model/collectible_model.dart';
+import 'package:wallet_cryptomask/core/model/network_model.dart';
+import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/model/wallet_model.dart';
+import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:web3dart/web3dart.dart';
 
 part 'wallet_state.dart';

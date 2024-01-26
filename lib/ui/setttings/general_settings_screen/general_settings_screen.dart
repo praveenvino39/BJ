@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:wallet/constant.dart';
+import 'package:wallet_cryptomask/constant.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/locale_provider/cubit/locale_cubit.dart';
-import 'package:wallet/core/remote/http.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/locale_provider/cubit/locale_cubit.dart';
+import 'package:wallet_cryptomask/core/remote/http.dart';
 
 class GeneralSettingsScreen extends StatefulWidget {
   static String route = "general_setting_screen";

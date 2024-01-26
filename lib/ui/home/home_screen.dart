@@ -2,44 +2,46 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:wallet/config.dart';
-import 'package:wallet/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
-import 'package:wallet/core/bloc/preference-bloc/cubit/preference_cubit.dart';
-import 'package:wallet/core/bloc/token-bloc/cubit/token_cubit.dart';
-import 'package:wallet/core/core.dart';
-import 'package:wallet/core/cubit_helper.dart';
-import 'package:wallet/core/model/token_model.dart';
-import 'package:wallet/core/remote/http.dart';
-import 'package:wallet/core/remote/response-model/price_response.dart';
-import 'package:wallet/core/web3wallet_service.dart';
-import 'package:wallet/ui/browser/browser_screen.dart';
-import 'package:wallet/ui/browser/widgets/wallet_connect_dialog.dart';
-import 'package:wallet/ui/collectibles/collectibles_tab.dart';
-import 'package:wallet/ui/home/component/account_change_sheet.dart';
-import 'package:wallet/ui/login-screen/login_screen.dart';
-import 'package:wallet/ui/shared/wallet_text.dart';
-import 'package:wallet/ui/swap_screen/swap_screen.dart';
-import 'package:wallet/ui/token-dashboard-screen/token_dashboard_screen.dart';
-import 'package:wallet/ui/token/token_tab.dart';
+import 'package:wallet_cryptomask/config.dart';
+import 'package:wallet_cryptomask/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/preference-bloc/cubit/preference_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
+import 'package:wallet_cryptomask/core/core.dart';
+import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/remote/http.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/price_response.dart';
+import 'package:wallet_cryptomask/core/web3wallet_service.dart';
+import 'package:wallet_cryptomask/ui/browser/browser_screen.dart';
+import 'package:wallet_cryptomask/ui/browser/widgets/wallet_connect_dialog.dart';
+import 'package:wallet_cryptomask/ui/collectibles/collectibles_tab.dart';
+import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
+import 'package:wallet_cryptomask/ui/login-screen/login_screen.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/ui/swap_screen/swap_screen.dart';
+import 'package:wallet_cryptomask/ui/token-dashboard-screen/token_dashboard_screen.dart';
+import 'package:wallet_cryptomask/ui/token/token_tab.dart';
 import 'package:web3dart/web3dart.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/ui/home/component/drawer_component.dart';
-import 'package:wallet/ui/home/component/receive_sheet.dart';
-import 'package:wallet/ui/transfer/transfer_screen.dart';
-import 'package:wallet/utils.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/ui/home/component/drawer_component.dart';
+import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
+import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
+import 'package:wallet_cryptomask/utils.dart';
 import 'component/avatar_component.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   static String route = "home_screen";
 
-  final String password;
-  const HomeScreen({Key? key, required this.password}) : super(key: key);
+  // final String password;
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -63,29 +65,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-    if (context.read<WalletCubit>().state is! WalletLoaded) {
-      context.read<WalletCubit>().initialize(
-        widget.password,
-        onError: (p0) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(p0)));
-        },
-      );
-    }
-    if (context.read<WalletCubit>().state is WalletUnlocked ||
-        context.read<WalletCubit>().state is WalletSendTransactionSuccess ||
-        context.read<WalletCubit>().state is WalletLoaded) {
-      context
-          .read<WalletCubit>()
-          .getCurrenctCurrency()
-          .then((value) => currency = value);
-      updateBalanceTimer();
-      updateFiatBalanceTimer();
-      setState(() {
-        accountName = getAccountName(getWalletLoadedState(context));
-      });
-      setupWalletConnect();
-    }
+    const FlutterSecureStorage().read(key: 'password').then((password) {
+      if (context.read<WalletCubit>().state is! WalletLoaded) {
+        context.read<WalletCubit>().initialize(
+          password ?? "",
+          onError: (p0) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(p0)));
+          },
+        );
+      }
+      if (context.read<WalletCubit>().state is WalletUnlocked ||
+          context.read<WalletCubit>().state is WalletSendTransactionSuccess ||
+          context.read<WalletCubit>().state is WalletLoaded) {
+        context
+            .read<WalletCubit>()
+            .getCurrenctCurrency()
+            .then((value) => currency = value);
+        updateBalanceTimer();
+        updateFiatBalanceTimer();
+        setState(() {
+          accountName = getAccountName(getWalletLoadedState(context));
+        });
+        setupWalletConnect();
+      }
+    });
+
     super.initState();
   }
 

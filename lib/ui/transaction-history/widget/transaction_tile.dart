@@ -4,14 +4,14 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/model/token_model.dart';
-import 'package:wallet/core/remote/response-model/transaction_log_result.dart';
-import 'package:wallet/ui/block-web-view/block_web_view.dart';
-import 'package:wallet/ui/home/component/avatar_component.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
-import 'package:wallet/utils.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/transaction_log_result.dart';
+import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
+import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/utils.dart';
 
 class TransactionTile extends StatefulWidget {
   final DateTime date;
@@ -26,10 +26,8 @@ class TransactionTile extends StatefulWidget {
 class _TransactionTileState extends State<TransactionTile> {
   Token? selectedToken;
 
-
   @override
   void initState() {
-    
     super.initState();
   }
 

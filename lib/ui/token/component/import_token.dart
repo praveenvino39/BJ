@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
-import 'package:wallet/core/cubit_helper.dart';
-import 'package:wallet/ui/token/component/custom_token.dart';
-import 'package:wallet/ui/token/component/search_import_token.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
+import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/ui/token/component/custom_token.dart';
+import 'package:wallet_cryptomask/ui/token/component/search_import_token.dart';
 
 class ImportTokenScreen extends StatefulWidget {
   static const String route = "import_token_screen";

@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/config.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
-import 'package:wallet/core/bloc/token-bloc/cubit/token_cubit.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/cubit_helper.dart';
-import 'package:wallet/core/model/collectible_model.dart';
-import 'package:wallet/core/model/token_model.dart';
-import 'package:wallet/core/remote/http.dart';
-import 'package:wallet/core/remote/response-model/erc20_transaction_log.dart';
-import 'package:wallet/core/remote/response-model/transaction_log_result.dart';
-import 'package:wallet/ui/block-web-view/block_web_view.dart';
-import 'package:wallet/ui/home/component/account_change_sheet.dart';
-import 'package:wallet/ui/home/component/avatar_component.dart';
-import 'package:wallet/ui/home/component/receive_sheet.dart';
-import 'package:wallet/ui/transaction-history/widget/token_transaction_tile.dart';
-import 'package:wallet/ui/transaction-history/widget/transaction_tile.dart';
-import 'package:wallet/ui/transfer/transfer_screen.dart';
-import 'package:wallet/utils.dart';
+import 'package:wallet_cryptomask/config.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/core/model/collectible_model.dart';
+import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/remote/http.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/erc20_transaction_log.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/transaction_log_result.dart';
+import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
+import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
+import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
+import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
+import 'package:wallet_cryptomask/ui/transaction-history/widget/token_transaction_tile.dart';
+import 'package:wallet_cryptomask/ui/transaction-history/widget/transaction_tile.dart';
+import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
+import 'package:wallet_cryptomask/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TokenDashboardScreen extends StatefulWidget {
@@ -79,7 +79,7 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
         ),
         BlocListener<TokenCubit, TokenState>(
           listener: (context, state) {
-             if (state is TokenDeleted) {
+            if (state is TokenDeleted) {
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text("Token deleted succesfully"),
@@ -102,7 +102,6 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                 backgroundColor: Colors.green,
               ));
             }
-            
           },
         ),
       ],
@@ -157,9 +156,8 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                         width: 7,
                         height: 7,
                         decoration: BoxDecoration(
-                            color: (state as WalletLoaded)
-                                .currentNetwork
-                                .dotColor,
+                            color:
+                                (state as WalletLoaded).currentNetwork.dotColor,
                             borderRadius: BorderRadius.circular(10)),
                       ),
                       const SizedBox(
@@ -258,9 +256,10 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                             ],
                                           ),
                                         )
-                                      :  Center(
+                                      : Center(
                                           child: Text(
-                                            AppLocalizations.of(context)!.youHaveNoTransaction,
+                                            AppLocalizations.of(context)!
+                                                .youHaveNoTransaction,
                                             style: const TextStyle(
                                                 fontSize: 18,
                                                 color: Colors.grey),
@@ -476,7 +475,7 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                     ),
                                     Text(
                                       AppLocalizations.of(context)!.send,
-                                      style:const TextStyle(fontSize: 12),
+                                      style: const TextStyle(fontSize: 12),
                                     )
                                   ],
                                 ),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:wallet/config.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/ui/setttings/general_settings_screen/general_settings_screen.dart';
+import 'package:wallet_cryptomask/config.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/ui/setttings/general_settings_screen/general_settings_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:wallet/ui/setttings/security_settings_screen/security_settings_screen.dart';
-import 'package:wallet/ui/webview/web_view_screen.dart';
+import 'package:wallet_cryptomask/ui/setttings/security_settings_screen/security_settings_screen.dart';
+import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const route = "settings_screen";
@@ -60,8 +60,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Navigator.of(context).pushNamed(GeneralSettingsScreen.route);
                 },
                 title: Text(AppLocalizations.of(context)!.general),
-                subtitle: Text(
-                    AppLocalizations.of(context)!.generalDescription),
+                subtitle:
+                    Text(AppLocalizations.of(context)!.generalDescription),
                 trailing: const Icon(Icons.arrow_forward_ios),
               ),
               Container(
@@ -70,9 +70,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 color: Colors.grey.withAlpha(60),
               ),
               ListTile(
-                onTap: () =>Navigator.of(context).pushNamed(SecuritySettingsScreen.route),
-                title:  Text(AppLocalizations.of(context)!.security),
-                subtitle: Text(AppLocalizations.of(context)!.securityDescription),
+                onTap: () => Navigator.of(context)
+                    .pushNamed(SecuritySettingsScreen.route),
+                title: Text(AppLocalizations.of(context)!.security),
+                subtitle:
+                    Text(AppLocalizations.of(context)!.securityDescription),
                 trailing: const Icon(Icons.arrow_forward_ios),
               ),
               Container(
@@ -90,9 +92,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 height: 1,
                 color: Colors.grey.withAlpha(60),
               ),
-              InkWell(onTap: (){
-                Navigator.of(context).pushNamed(WebViewScreen.router, arguments: {"title": "About", "url": aboutUrl});
-              },child: ListTile(title: Text(AppLocalizations.of(context)!.about(AppLocalizations.of(context)!.appName)))),
+              InkWell(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(WebViewScreen.router,
+                        arguments: {"title": "About", "url": aboutUrl});
+                  },
+                  child: ListTile(
+                      title: Text(AppLocalizations.of(context)!
+                          .about(AppLocalizations.of(context)!.appName)))),
             ],
           ),
         ),

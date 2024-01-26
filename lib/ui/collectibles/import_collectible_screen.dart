@@ -1,12 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/cubit_helper.dart';
-import 'package:wallet/core/model/collectible_model.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/core/model/collectible_model.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ImportCollectibleScreen extends StatefulWidget {
@@ -49,9 +48,8 @@ class _ImportCollectibleScreenState extends State<ImportCollectibleScreen> {
         }
         if (state is CollectibleError) {
           // Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-            content: Text(
-                AppLocalizations.of(context)!.nftOwnedSomeone),
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(AppLocalizations.of(context)!.nftOwnedSomeone),
             backgroundColor: Colors.red,
           ));
         }
@@ -93,8 +91,8 @@ class _ImportCollectibleScreenState extends State<ImportCollectibleScreen> {
                 child: Center(
                   child: Column(
                     children: [
-                       Text(AppLocalizations.of(context)!.importCollectible,
-                          style: const  TextStyle(
+                      Text(AppLocalizations.of(context)!.importCollectible,
+                          style: const TextStyle(
                               fontWeight: FontWeight.w200,
                               color: Colors.black)),
                       Row(
@@ -113,7 +111,9 @@ class _ImportCollectibleScreenState extends State<ImportCollectibleScreen> {
                             width: 5,
                           ),
                           Text(
-                            getWalletLoadedState(context).currentNetwork.networkName,
+                            getWalletLoadedState(context)
+                                .currentNetwork
+                                .networkName,
                             style: const TextStyle(
                                 fontWeight: FontWeight.w100,
                                 fontSize: 12,
@@ -141,11 +141,11 @@ class _ImportCollectibleScreenState extends State<ImportCollectibleScreen> {
                   const SizedBox(
                     height: 30,
                   ),
-                   Padding(
-                    padding:  const EdgeInsets.symmetric(horizontal: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       AppLocalizations.of(context)!.tokenAddress,
-                      style:  const TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ),
                   Padding(
@@ -155,7 +155,8 @@ class _ImportCollectibleScreenState extends State<ImportCollectibleScreen> {
                       controller: _tokenAddress,
                       validator: (String? string) {
                         if (string?.isEmpty == true) {
-                          return AppLocalizations.of(context)!.thisFieldNotEmpty;
+                          return AppLocalizations.of(context)!
+                              .thisFieldNotEmpty;
                         }
                         return null;
                       },
@@ -174,11 +175,11 @@ class _ImportCollectibleScreenState extends State<ImportCollectibleScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                   Padding(
-                    padding:  const EdgeInsets.symmetric(horizontal: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       AppLocalizations.of(context)!.tokenName,
-                      style:  const TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ),
                   Padding(
@@ -187,7 +188,8 @@ class _ImportCollectibleScreenState extends State<ImportCollectibleScreen> {
                       controller: _tokenName,
                       validator: (String? string) {
                         if (string?.isEmpty == true) {
-                          return AppLocalizations.of(context)!.thisFieldNotEmpty;
+                          return AppLocalizations.of(context)!
+                              .thisFieldNotEmpty;
                         }
                         return null;
                       },
@@ -206,11 +208,11 @@ class _ImportCollectibleScreenState extends State<ImportCollectibleScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                   Padding(
-                    padding: const  EdgeInsets.symmetric(horizontal: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       AppLocalizations.of(context)!.tokenID,
-                      style: const  TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ),
                   Padding(

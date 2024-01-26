@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 
 import '../../../constant.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -62,13 +63,12 @@ class _CircleStepperState extends State<CircleStepper> {
                   const SizedBox(
                     height: 5,
                   ),
-                  Text(
+                  WalletText(
                     AppLocalizations.of(context)!.createPassword,
-                    style: TextStyle(
-                        fontSize: 9,
-                        color: widget.currentIndex >= 0
-                            ? kPrimaryColor
-                            : Colors.black),
+                    localizeKey: 'createPassword',
+                    textVarient: TextVarient.body5,
+                    color:
+                        widget.currentIndex >= 0 ? kPrimaryColor : Colors.black,
                   )
                 ],
               ),
@@ -104,13 +104,12 @@ class _CircleStepperState extends State<CircleStepper> {
                   const SizedBox(
                     height: 5,
                   ),
-                  Text(
-                   AppLocalizations.of(context)!.secureWallet,
-                    style: TextStyle(
-                        fontSize: 9,
-                        color: widget.currentIndex >= 1
-                            ? kPrimaryColor
-                            : Colors.black),
+                  WalletText(
+                    '',
+                    localizeKey: 'secureWallet',
+                    textVarient: TextVarient.body5,
+                    color:
+                        widget.currentIndex >= 1 ? kPrimaryColor : Colors.black,
                   )
                 ],
               ),
@@ -144,13 +143,12 @@ class _CircleStepperState extends State<CircleStepper> {
                   const SizedBox(
                     height: 5,
                   ),
-                  Text(
-                    AppLocalizations.of(context)!.confirmSeed,
-                    style: TextStyle(
-                        fontSize: 9,
-                        color: widget.currentIndex >= 2
-                            ? kPrimaryColor
-                            : Colors.black),
+                  WalletText(
+                    '',
+                    localizeKey: 'confirmSeed',
+                    textVarient: TextVarient.body5,
+                    color:
+                        widget.currentIndex >= 2 ? kPrimaryColor : Colors.black,
                   )
                 ],
               ),

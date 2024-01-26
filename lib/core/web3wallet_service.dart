@@ -9,16 +9,16 @@ import 'package:ethers/crypto/formatting.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:wallet/core/model/network_model.dart';
-import 'package:wallet/core/model/wc_ethereum_transaction.dart';
-import 'package:wallet/ui/dapp_widgets/connect_sheet.dart';
-import 'package:wallet/ui/dapp_widgets/network_change_sheet.dart';
-import 'package:wallet/ui/dapp_widgets/transaction_sheet.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
-import 'package:wallet/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/core/model/network_model.dart';
+import 'package:wallet_cryptomask/core/model/wc_ethereum_transaction.dart';
+import 'package:wallet_cryptomask/ui/dapp_widgets/connect_sheet.dart';
+import 'package:wallet_cryptomask/ui/dapp_widgets/network_change_sheet.dart';
+import 'package:wallet_cryptomask/ui/dapp_widgets/transaction_sheet.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
 import 'package:web3dart/web3dart.dart';
-import 'package:wallet/core/core.dart' as i_core;
+import 'package:wallet_cryptomask/core/core.dart' as i_core;
 
 class WC2Service {
   Web3Wallet? web3Wallet;

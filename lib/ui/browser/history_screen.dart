@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:wallet/constant.dart';
+import 'package:wallet_cryptomask/constant.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/core/bloc/preference-bloc/cubit/preference_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/preference-bloc/cubit/preference_cubit.dart';
 
 class HistoryScreen extends StatefulWidget {
   static const route = "favouritee_site_screen";

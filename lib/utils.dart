@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/model/network_model.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/model/network_model.dart';
 
 String showEllipse(String string) {
   int length = string.length;
@@ -23,20 +23,22 @@ String getAccountName(WalletLoaded state) {
           element.wallet.privateKey.address.hex ==
           state.wallet.privateKey.address.hex)
       .accountName;
-} 
+}
 
-Future<void> copyAddressToClipBoard(
-    String address, BuildContext context,{bool isPk = false}) async {
+Future<void> copyAddressToClipBoard(String address, BuildContext context,
+    {bool isPk = false}) async {
   log(address);
   await Clipboard.setData(
     ClipboardData(text: address),
   );
   // ignore: use_build_context_synchronously
   ScaffoldMessenger.of(context).showSnackBar(
-     SnackBar(
+    SnackBar(
       elevation: 10,
       backgroundColor: Colors.green,
-      content: Text( isPk ? "Privatekey copied to clipboard" :"Public address copied to clipboard"),
+      content: Text(isPk
+          ? "Privatekey copied to clipboard"
+          : "Public address copied to clipboard"),
     ),
   );
 }

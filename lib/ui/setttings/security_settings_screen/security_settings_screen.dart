@@ -1,14 +1,11 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:wallet/core/cubit_helper.dart';
-import 'package:wallet/utils.dart';
+import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/utils.dart';
 import 'package:web3dart/crypto.dart';
-
 
 class SecuritySettingsScreen extends StatefulWidget {
   static const route = "security_settings_screen";
@@ -23,9 +20,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<WalletCubit, WalletState>(
-      listener: (context, state) {
-
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -39,7 +34,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
             ),
             shadowColor: Colors.transparent,
             backgroundColor: Colors.transparent,
-            title:  Padding(
+            title: Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 70, 10),
               child: SizedBox(
                 width: double.infinity,
@@ -62,39 +57,49 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-                 Text(
+                Text(
                   AppLocalizations.of(context)!.showPrivateKey,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 7,
                 ),
-                 InkWell(
-                  onLongPress: (){
+                InkWell(
+                  onLongPress: () {
                     setState(() {
                       showPrivateKey = true;
-                      copyAddressToClipBoard(bytesToHex(getWalletLoadedState(context).wallet.privateKey.privateKey), context, isPk: true);
+                      copyAddressToClipBoard(
+                          bytesToHex(getWalletLoadedState(context)
+                              .wallet
+                              .privateKey
+                              .privateKey),
+                          context,
+                          isPk: true);
                     });
                   },
-                  onTap: (){
+                  onTap: () {
                     setState(() {
                       showPrivateKey = true;
                     });
                   },
-                   child: Text( !showPrivateKey ?
-                      AppLocalizations.of(context)!.tapHereToReveal : bytesToHex(getWalletLoadedState(context).wallet.privateKey.privateKey)),
-                 ),
+                  child: Text(!showPrivateKey
+                      ? AppLocalizations.of(context)!.tapHereToReveal
+                      : bytesToHex(getWalletLoadedState(context)
+                          .wallet
+                          .privateKey
+                          .privateKey)),
+                ),
                 const SizedBox(
                   height: 7,
                 ),
                 const SizedBox(
                   height: 20,
-                
                 ),
                 const SizedBox(
                   height: 7,
                 )
-                
+
                 // FutureBuilder<List<String>?>(
                 //     future: getSupportedVsCurrency(),
                 //     builder: (context, snapshot) {

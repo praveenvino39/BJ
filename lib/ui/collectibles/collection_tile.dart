@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:wallet/ui/token-dashboard-screen/token_dashboard_screen.dart';
+import 'package:wallet_cryptomask/ui/token-dashboard-screen/token_dashboard_screen.dart';
 
 class CollectionTile extends StatefulWidget {
   final String symbol;

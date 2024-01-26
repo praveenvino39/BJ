@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/ui/home/component/avatar_component.dart';
-import 'package:wallet/utils.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
+import 'package:wallet_cryptomask/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReceiverAddressSuggestionWidget extends StatelessWidget {
@@ -89,37 +89,44 @@ class ReceiverAddressSuggestionWidget extends StatelessWidget {
                   width: double.infinity,
                 ),
                 Expanded(
-                  child: recentTransactionList.isNotEmpty ? ListView.builder(
-                    itemCount: recentTransactionList.length,
-                    shrinkWrap: true, // Set this
-                    itemBuilder: ((context, index) => Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      width: 1,
-                                      color: Colors.grey.withAlpha(70)))),
-                          child: ListTile(
-                            onTap: ()=> onAccountSelect(recentTransactionList[index]),
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 2, horizontal: 16),
-                            title:
-                                Text(showEllipse(recentTransactionList[index])),
-                            leading: AvatarWidget(
-                              radius: 30,
-                              address: recentTransactionList[index],
-                            ),
+                  child: recentTransactionList.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: recentTransactionList.length,
+                          shrinkWrap: true, // Set this
+                          itemBuilder: ((context, index) => Container(
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            width: 1,
+                                            color: Colors.grey.withAlpha(70)))),
+                                child: ListTile(
+                                  onTap: () => onAccountSelect(
+                                      recentTransactionList[index]),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 2, horizontal: 16),
+                                  title: Text(showEllipse(
+                                      recentTransactionList[index])),
+                                  leading: AvatarWidget(
+                                    radius: 30,
+                                    address: recentTransactionList[index],
+                                  ),
+                                ),
+                              )),
+                        )
+                      : Center(
+                          child: Column(
+                            children: const [
+                              Expanded(
+                                  child: Center(
+                                      child: Text("No recent transaction"))),
+                              // ElevatedButton(onPressed: (){
+                              //   Hive.openBox("user_preference").then((box) {
+                              //     box.delete("RECENT-TRANSACTION-ADDRESS");
+                              //   });
+                              // }, child: const Text("Clear"))
+                            ],
                           ),
-                        )),
-                  ): Center(child: Column(
-                    children:  const [
-                      Expanded(child: Center(child: Text("No recent transaction"))),
-                      // ElevatedButton(onPressed: (){
-                      //   Hive.openBox("user_preference").then((box) {
-                      //     box.delete("RECENT-TRANSACTION-ADDRESS");
-                      //   });
-                      // }, child: const Text("Clear"))
-                    ],
-                  ),),
+                        ),
                 ),
               ],
             ),

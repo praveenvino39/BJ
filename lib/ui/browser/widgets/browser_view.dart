@@ -9,15 +9,15 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/route_manager.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
-import 'package:wallet/config.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/cubit_helper.dart';
-import 'package:wallet/core/remote/http.dart';
-import 'package:wallet/core/web3wallet_service.dart';
-import 'package:wallet/ui/browser/model/web_view_model.dart';
-import 'package:wallet/ui/browser/widgets/browser_url_field.dart';
-import 'package:wallet/ui/dapp_widgets/dapp_resolver.dart';
+import 'package:wallet_cryptomask/config.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/core/remote/http.dart';
+import 'package:wallet_cryptomask/core/web3wallet_service.dart';
+import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
+import 'package:wallet_cryptomask/ui/browser/widgets/browser_url_field.dart';
+import 'package:wallet_cryptomask/ui/dapp_widgets/dapp_resolver.dart';
 
 class BrowserView extends StatefulWidget {
   final WebViewModel webViewModel;

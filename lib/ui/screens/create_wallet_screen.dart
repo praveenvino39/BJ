@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/config.dart';
-import 'package:wallet/ui/home/home_screen.dart';
-import 'package:wallet/ui/onboard/component/circle_stepper.dart';
-import 'package:wallet/ui/onboard/component/confirm-passphrase/confirm_passphrase.dart';
-import 'package:wallet/ui/onboard/component/create-password/create_password_component.dart';
-import 'package:wallet/ui/onboard/component/setup-passpharse/setup_passphrase_screen.dart';
+import 'package:wallet_cryptomask/config.dart';
+import 'package:wallet_cryptomask/ui/home/home_screen.dart';
+import 'package:wallet_cryptomask/ui/onboard/component/circle_stepper.dart';
+import 'package:wallet_cryptomask/ui/onboard/component/confirm-passphrase/confirm_passphrase.dart';
+import 'package:wallet_cryptomask/ui/onboard/component/create-password/create_password_component.dart';
+import 'package:wallet_cryptomask/ui/onboard/component/setup-passpharse/setup_passphrase_screen.dart';
 
 import '../../constant.dart';
-import 'component/create-password/create_password_component.dart';
-import 'component/create-password/bloc/create_wallet_cubit.dart';
+import '../onboard/component/create-password/bloc/create_wallet_cubit.dart';
 
 class CreateWalletScreen extends StatefulWidget {
   static String route = "create_wallet_screen";
@@ -59,7 +58,7 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
             ),
             shadowColor: Colors.transparent,
             backgroundColor: Colors.transparent,
-            title:  const Padding(
+            title: const Padding(
               padding: EdgeInsets.fromLTRB(10, 10, 70, 10),
               child: SizedBox(
                 width: double.infinity,

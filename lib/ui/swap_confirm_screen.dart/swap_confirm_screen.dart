@@ -8,15 +8,15 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slider_button/slider_button.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/abi.dart';
-import 'package:wallet/core/bloc/token-bloc/cubit/token_cubit.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/cubit_helper.dart';
-import 'package:wallet/core/model/coin_gecko_token_model.dart';
-import 'package:wallet/ui/home/component/avatar_component.dart';
-import 'package:wallet/ui/home/home_screen.dart';
-import 'package:wallet/utils.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/abi.dart';
+import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/core/model/coin_gecko_token_model.dart';
+import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
+import 'package:wallet_cryptomask/ui/home/home_screen.dart';
+import 'package:wallet_cryptomask/utils.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -101,10 +101,13 @@ class _SwapConfirmScreenState extends State<SwapConfirmScreen> {
               HomeScreen.route, (Route<dynamic> route) => false,
               arguments: {"password": getWalletLoadedState(context).password});
           showSuccessSnackbar(
-              context, AppLocalizations.of(context)!.transactionSubmitted, AppLocalizations.of(context)!.waitingForConfirmation);
+              context,
+              AppLocalizations.of(context)!.transactionSubmitted,
+              AppLocalizations.of(context)!.waitingForConfirmation);
         }
-        if(state is TokenError){
-          showErrorSnackBar(context, AppLocalizations.of(context)!.transactionFailed, state.error);
+        if (state is TokenError) {
+          showErrorSnackBar(context,
+              AppLocalizations.of(context)!.transactionFailed, state.error);
         }
       },
       child: BlocBuilder<WalletCubit, WalletState>(builder: (context, state) {
@@ -186,7 +189,8 @@ class _SwapConfirmScreenState extends State<SwapConfirmScreen> {
                   const Expanded(child: SizedBox()),
                   Container(
                     // width: 80,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                         color: kPrimaryColor,
                         borderRadius: BorderRadius.circular(20)),
@@ -242,7 +246,8 @@ class _SwapConfirmScreenState extends State<SwapConfirmScreen> {
                 children: [
                   const Expanded(child: SizedBox()),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                         color: kPrimaryColor,
                         borderRadius: BorderRadius.circular(20)),

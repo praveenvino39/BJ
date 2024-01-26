@@ -1,8 +1,7 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/ui/browser/widgets/browser_view.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/ui/browser/widgets/browser_view.dart';
 
 class BrowserTabView extends StatefulWidget {
   final List<BrowserView> tabs;
@@ -100,10 +99,18 @@ class _TabTileState extends State<TabTile> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: Row(
                   children: [
-                    Image.asset(widget.browserView.webViewModel.favicon?.url.toString() ?? "", width: 30, height: 30, errorBuilder: (context, error, stackTrace) {
-                      return const Icon(Icons.public);
-                    },),
-                    const SizedBox(width: 10,),
+                    Image.asset(
+                      widget.browserView.webViewModel.favicon?.url.toString() ??
+                          "",
+                      width: 30,
+                      height: 30,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.public);
+                      },
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     Expanded(
                         child: Text(widget.browserView.webViewModel.title ??
                             "New tab")),

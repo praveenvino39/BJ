@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
-import 'package:wallet/utils.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReceiveSheet extends StatelessWidget {
@@ -41,7 +41,7 @@ class ReceiveSheet extends StatelessWidget {
                 height: 10,
               ),
               Text(AppLocalizations.of(context)!.receive),
-              QrImage(
+              QrImageView(
                 data: address,
                 version: QrVersions.auto,
                 size: 200.0,

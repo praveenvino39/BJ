@@ -3,7 +3,7 @@
 
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 // import 'package:provider/provider.dart';
-// import 'package:wallet/ui/browser/helpers/utils.dart';
+// import 'package:wallet_cryptomask/ui/browser/helpers/utils.dart';
 
 // class StorageManager extends StatefulWidget {
 //   const StorageManager({Key? key}) : super(key: key);

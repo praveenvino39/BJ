@@ -6,12 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:new_version/new_version.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wallet/config.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/ui/home/home_screen.dart';
-import 'package:wallet/ui/onboard/create_wallet_screen.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/config.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/ui/home/home_screen.dart';
+import 'package:wallet_cryptomask/ui/screens/create_wallet_screen.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -155,114 +155,114 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 10,
-              ),
-              const Expanded(child: SizedBox()),
-              const Center(
-                child: Text(
-                  appName,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w300,
-                      fontSize: 25,
-                      letterSpacing: 5),
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: const Text(
-                    "Welcome Back!",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-                  )),
-              const SizedBox(
-                height: 30,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text("Password"),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: TextFormField(
-                  controller: passwordController,
-                  obscureText: true,
-                  validator: (String? string) {
-                    if (string!.isEmpty) {
-                      return "Password shouldn't be empty";
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                      hintText: "Enter password to unlock the wallet",
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: kPrimaryColor)),
-                      errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: kPrimaryColor)),
-                      border: OutlineInputBorder(borderSide: BorderSide())),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              !isLoading
-                  ? WalletButton(
-                      type: WalletButtonType.outline,
-                      textContent: "Open Wallet",
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          Future.delayed(
-                            const Duration(milliseconds: 200),
-                            () {
-                              context.read<WalletCubit>().initialize(
-                                passwordController.text,
-                                onError: ((p0) {
-                                  setState(() {
-                                    isLoading = false;
-                                  });
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      backgroundColor: Colors.red,
-                                      content: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.error,
-                                            color: Colors.white,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  1.30,
-                                              child: const Text(
-                                                  "Password incorrect, provider valid password"))
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }),
-                              );
-                            },
-                          );
-                        }
-                      })
-                  : const Center(
-                      child: CircularProgressIndicator(color: kPrimaryColor)),
+              // const SizedBox(
+              //   height: 10,
+              // ),
+              // const Expanded(child: SizedBox()),
+              // const Center(
+              //   child: Text(
+              //     appName,
+              //     style: TextStyle(
+              //         color: Colors.black,
+              //         fontWeight: FontWeight.w300,
+              //         fontSize: 25,
+              //         letterSpacing: 5),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 30,
+              // ),
+              // SizedBox(
+              //     width: MediaQuery.of(context).size.width,
+              //     child: const Text(
+              //       "Welcome Back!",
+              //       textAlign: TextAlign.center,
+              //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+              //     )),
+              // const SizedBox(
+              //   height: 30,
+              // ),
+              // const Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 16),
+              //   child: Text("Password"),
+              // ),
+              // const SizedBox(
+              //   height: 10,
+              // ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 16),
+              //   child: TextFormField(
+              //     controller: passwordController,
+              //     obscureText: true,
+              //     validator: (String? string) {
+              //       if (string!.isEmpty) {
+              //         return "Password shouldn't be empty";
+              //       }
+              //       return null;
+              //     },
+              //     decoration: const InputDecoration(
+              //         hintText: "Enter password to unlock the wallet",
+              //         enabledBorder: OutlineInputBorder(
+              //             borderSide: BorderSide(color: Colors.grey)),
+              //         focusedBorder: OutlineInputBorder(
+              //             borderSide: BorderSide(color: kPrimaryColor)),
+              //         errorBorder: OutlineInputBorder(
+              //             borderSide: BorderSide(color: kPrimaryColor)),
+              //         border: OutlineInputBorder(borderSide: BorderSide())),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
+              // !isLoading
+              //     ? WalletButton(
+              //         type: WalletButtonType.outline,
+              //         textContent: "Open Wallet",
+              //         onPressed: () {
+              //           if (_formKey.currentState!.validate()) {
+              //             setState(() {
+              //               isLoading = true;
+              //             });
+              //             Future.delayed(
+              //               const Duration(milliseconds: 200),
+              //               () {
+              //                 context.read<WalletCubit>().initialize(
+              //                   passwordController.text,
+              //                   onError: ((p0) {
+              //                     setState(() {
+              //                       isLoading = false;
+              //                     });
+              //                     ScaffoldMessenger.of(context).showSnackBar(
+              //                       SnackBar(
+              //                         backgroundColor: Colors.red,
+              //                         content: Row(
+              //                           children: [
+              //                             const Icon(
+              //                               Icons.error,
+              //                               color: Colors.white,
+              //                             ),
+              //                             const SizedBox(
+              //                               width: 10,
+              //                             ),
+              //                             SizedBox(
+              //                                 width: MediaQuery.of(context)
+              //                                         .size
+              //                                         .width /
+              //                                     1.30,
+              //                                 child: const Text(
+              //                                     "Password incorrect, provider valid password"))
+              //                           ],
+              //                         ),
+              //                       ),
+              //                     );
+              //                   }),
+              //                 );
+              //               },
+              //             );
+              //           }
+              //         })
+              //     : const Center(
+              //         child: CircularProgressIndicator(color: kPrimaryColor)),
               const Expanded(child: SizedBox()),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),

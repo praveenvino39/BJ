@@ -1,7 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:wallet/core/model/network_model.dart';
-import 'package:wallet/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/model/network_model.dart';
+import 'package:wallet_cryptomask/core/model/token_model.dart';
 
 class Core {
   static List<Network> networks = [

@@ -45,8 +45,10 @@ class CreateWalletCubit extends Cubit<CreateWalletState> {
             sendPort: receiverPort.sendPort));
     receiverPort.listen((data) async {
       FlutterSecureStorage fss = const FlutterSecureStorage();
-      await fss.write(key: "wallet", value: jsonEncode([(data as Wallet).toJson()]));
+      await fss.write(
+          key: "wallet", value: jsonEncode([(data as Wallet).toJson()]));
       await fss.write(key: "seed_phrase", value: passphrase);
+      await fss.write(key: "password", value: password);
       Box box = await Hive.openBox("user_preference");
       box.put(data.privateKey.address.hex, "Account 1");
       printLog.log("SAVED ${await fss.read(key: "wallet")}");

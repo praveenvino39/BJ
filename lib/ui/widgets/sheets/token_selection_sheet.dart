@@ -1,9 +1,9 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/core/bloc/token-bloc/cubit/token_cubit.dart';
-import 'package:wallet/core/model/token_model.dart';
-import 'package:wallet/ui/token/component/token_tile.dart';
+import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
+import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/ui/token/component/token_tile.dart';
 
 class TokenSelectionSheet extends StatefulWidget {
   final Function(Token selectedToken) onTokenSelect;
@@ -54,7 +54,7 @@ class _TokenSelectionSheetState extends State<TokenSelectionSheet> {
                     widget.onTokenSelect(state.tokens[index]);
                   },
                   child: TokenTile(
-                    decimal: state.tokens[index].decimal,
+                      decimal: state.tokens[index].decimal,
                       imageUrl: state.tokens[index].imageUrl,
                       symbol: state.tokens[index].symbol,
                       balance: Decimal.zero,

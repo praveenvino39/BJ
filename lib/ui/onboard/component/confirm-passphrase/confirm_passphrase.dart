@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'package:ethers/signers/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ConfirmPassphrase extends StatefulWidget {

@@ -3,13 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:wallet/constant.dart';
-import 'package:wallet/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet/core/remote/response-model/erc20_transaction_log.dart';
-import 'package:wallet/ui/block-web-view/block_web_view.dart';
-import 'package:wallet/ui/home/component/avatar_component.dart';
-import 'package:wallet/ui/shared/wallet_button.dart';
-import 'package:wallet/utils.dart';
+import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/erc20_transaction_log.dart';
+import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
+import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/utils.dart';
 
 class TokenTransferTile extends StatefulWidget {
   final DateTime date;
@@ -42,11 +42,11 @@ class _TokenTransferTileState extends State<TokenTransferTile> {
                                   .address
                                   .hex
                                   .toLowerCase()
-                          ?  Text(
+                          ? Text(
                               "Sent ${widget.data.tokenSymbol}",
                               style: const TextStyle(fontSize: 16),
                             )
-                          :  Text(
+                          : Text(
                               "Receive ${widget.data.tokenSymbol}",
                               style: const TextStyle(fontSize: 16),
                             ),

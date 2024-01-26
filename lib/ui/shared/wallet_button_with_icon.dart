@@ -1,7 +1,6 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:wallet/constant.dart';
+import 'package:wallet_cryptomask/constant.dart';
 import 'dart:io' show Platform;
 
 enum WalletButtonType { outline, filled }
@@ -32,14 +31,18 @@ class _WalletButtonWithIconState extends State<WalletButtonWithIcon> {
         width: double.infinity,
         child: OutlinedButton(
           style: OutlinedButton.styleFrom(
-            padding: kIsWeb || Platform.isMacOS ? const EdgeInsets.symmetric( horizontal: 17.0, vertical: 22) : const EdgeInsets.symmetric( horizontal: 17.0, vertical: 10),
+            padding: kIsWeb || Platform.isMacOS
+                ? const EdgeInsets.symmetric(horizontal: 17.0, vertical: 22)
+                : const EdgeInsets.symmetric(horizontal: 17.0, vertical: 10),
             primary: widget.type == WalletButtonType.filled
                 ? widget.onPressed != null
                     ? Colors.white
                     : Colors.grey
                 : kPrimaryColor,
             backgroundColor: widget.type == WalletButtonType.filled
-                ? widget.onPressed != null ? kPrimaryColor : kPrimaryColor.withAlpha(80)
+                ? widget.onPressed != null
+                    ? kPrimaryColor
+                    : kPrimaryColor.withAlpha(80)
                 : Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
@@ -53,10 +56,13 @@ class _WalletButtonWithIconState extends State<WalletButtonWithIcon> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               widget.icon,
-              const SizedBox(width: 4,),
+              const SizedBox(
+                width: 4,
+              ),
               Text(
                 widget.textContent,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
             ],
           ),

@@ -3,12 +3,12 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:wallet/config.dart';
-import 'package:wallet/ui/browser/helpers/utils.dart';
-import 'package:wallet/ui/browser/model/web_view_model.dart';
-import 'package:wallet/ui/browser/widgets/browser_app_bar.dart';
-import 'package:wallet/ui/browser/widgets/browser_tab_view.dart';
-import 'package:wallet/ui/browser/widgets/browser_view.dart';
+import 'package:wallet_cryptomask/config.dart';
+import 'package:wallet_cryptomask/ui/browser/helpers/utils.dart';
+import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
+import 'package:wallet_cryptomask/ui/browser/widgets/browser_app_bar.dart';
+import 'package:wallet_cryptomask/ui/browser/widgets/browser_tab_view.dart';
+import 'package:wallet_cryptomask/ui/browser/widgets/browser_view.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart' as native;
 

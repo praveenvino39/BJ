@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wallet/ui/browser/developers/javascript_console.dart';
+import 'package:wallet_cryptomask/ui/browser/developers/javascript_console.dart';
 
 class DevelopersPage extends StatefulWidget {
   const DevelopersPage({Key? key}) : super(key: key);
@@ -36,7 +36,7 @@ class _DevelopersPageState extends State<DevelopersPage> {
           ),
           title: const Text('Developers'),
         ),
-        body:  const TabBarView(
+        body: const TabBarView(
           physics: NeverScrollableScrollPhysics(),
           children: [
             JavaScriptConsole(),

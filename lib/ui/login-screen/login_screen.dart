@@ -22,6 +22,7 @@ import 'package:wallet_cryptomask/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class LoginScreen extends StatefulWidget {
+  static const route = "login_screen_route";
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
@@ -150,23 +151,13 @@ class _LoginScreenState extends State<LoginScreen> {
       walletProvider
           .openWallet(password: passwordController.text)
           .then((value) {
+        walletProvider.hideLoading();
         Navigator.of(context).pushNamed(HomeScreen.route);
       }).catchError((e) {
         walletProvider.hideLoading();
         showErrorSnackBar(
             context, 'Error', getText(context, key: 'passwordIncorrect'));
       });
-
-      // context.read<WalletCubit>().initialize(
-      //   passwordController.text,
-      //   onError: ((p0) {
-      //     walletProvider.hideLoading();
-      //     showErrorSnackBar(
-      //         context, 'Error', getText(context, key: 'passwordIncorrect'));
-      //   }),
-      //   //   // );
-      //   // },
-      // );
     }
   }
 

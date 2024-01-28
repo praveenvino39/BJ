@@ -16,19 +16,21 @@ part 'create_wallet_state.dart';
 class CreatePasswordIsolateType {
   String privateKey;
   String password;
-  String passpharse;
   SendPort sendPort;
   CreatePasswordIsolateType(
       {required this.privateKey,
-      required this.passpharse,
       required this.password,
       required this.sendPort});
 }
 
 void createWalletWithPasswordIsolate(CreatePasswordIsolateType args) {
-  Wallet wallet = Wallet.createNew(
-      EthPrivateKey.fromHex(args.privateKey), args.password, Random());
-  args.sendPort.send(wallet);
+  try {
+    Wallet wallet = Wallet.createNew(
+        EthPrivateKey.fromHex(args.privateKey), args.password, Random());
+    args.sendPort.send(wallet);
+  } catch (e) {
+    args.sendPort.send(e);
+  }
 }
 
 class CreateWalletCubit extends Cubit<CreateWalletState> {
@@ -40,7 +42,6 @@ class CreateWalletCubit extends Cubit<CreateWalletState> {
         createWalletWithPasswordIsolate,
         CreatePasswordIsolateType(
             privateKey: privateKey,
-            passpharse: passphrase,
             password: password,
             sendPort: receiverPort.sendPort));
     receiverPort.listen((data) async {

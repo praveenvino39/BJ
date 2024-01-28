@@ -227,8 +227,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         body: Scaffold(
           key: _scafoldKey,
           drawer: DrawerComponent(
-            address: walletProvider.activeWallet.wallet.privateKey.address.hex,
-            balanceInUSD: walletProvider.getPreferedBalance(),
+            onReceiveHandler: onReceiveHandler,
+            onSendHandler: onSendHandler,
           ),
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: index,

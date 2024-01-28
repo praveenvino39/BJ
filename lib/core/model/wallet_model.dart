@@ -5,5 +5,6 @@ class WalletModel {
   Wallet wallet;
   String accountName;
 
-  WalletModel({required this.balance, required this.wallet, required this.accountName});
+  WalletModel(
+      {required this.balance, required this.wallet, required this.accountName});
 }

@@ -165,6 +165,14 @@ class _MyAppState extends State<MyApp> {
                   return MaterialPageRoute(
                       builder: (context) => const WalletSetupScreen());
                 }
+                if (setting.name == OnboardScreen.route) {
+                  return MaterialPageRoute(
+                      builder: (context) => const OnboardScreen());
+                }
+                if (setting.name == LoginScreen.route) {
+                  return MaterialPageRoute(
+                      builder: (context) => const LoginScreen());
+                }
                 if (setting.name == CreatePasswordScreen.route) {
                   return MaterialPageRoute(
                       builder: (context) => const CreatePasswordScreen());

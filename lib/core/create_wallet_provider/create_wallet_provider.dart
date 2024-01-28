@@ -42,7 +42,6 @@ class CreateWalletProvider extends ChangeNotifier {
         createWalletWithPasswordIsolate,
         CreatePasswordIsolateType(
             privateKey: privateKey,
-            passpharse: passphrase,
             password: password,
             sendPort: receiverPort.sendPort));
     receiverPort.listen((data) async {

@@ -1,8 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/import-account/import_account_screen.dart';
@@ -16,8 +16,6 @@ class AccountChangeSheet extends StatefulWidget {
 }
 
 class _AccountChangeSheetState extends State<AccountChangeSheet> {
-  bool isAccountCreating = false;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -94,21 +92,19 @@ class _AccountChangeSheetState extends State<AccountChangeSheet> {
             ),
             InkWell(
               onTap: () {
-                // setState(() {
-                //   isAccountCreating = true;
-                // });
                 Provider.of<WalletProvider>(context, listen: false)
-                    .createNewAccount();
-                // await context
-                //     .read<WalletCubit>()
-                //     .createNewAccount(state.password!);
-                setState(() {
-                  isAccountCreating = false;
+                    .showLoading();
+
+                Provider.of<WalletProvider>(context, listen: false)
+                    .createNewAccount()
+                    .then((value) {
+                  Provider.of<WalletProvider>(context, listen: false)
+                      .hideLoading();
                 });
               },
-              child: isAccountCreating
+              child: Provider.of<WalletProvider>(context).loading
                   ? const Center(
-                      child: CircularProgressIndicator(color: kPrimaryColor),
+                      child: LinearProgressIndicator(color: kPrimaryColor),
                     )
                   : const Text(
                       "Create New Account",

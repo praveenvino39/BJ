@@ -1,29 +1,135 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet_cryptomask/core/cubit_helper.dart';
-import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
 import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
+import 'package:wallet_cryptomask/ui/login-screen/login_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/onboarding/onboard_screen.dart';
 import 'package:wallet_cryptomask/ui/setttings/settings_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button_with_icon.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/transaction-history/transaction_history_screen.dart';
-import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
 import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 
-class DrawerComponent extends StatelessWidget {
-  final String address;
-  final double balanceInUSD;
+class DrawerComponent extends StatefulWidget {
+  final Function() onReceiveHandler;
+  final Function() onSendHandler;
   const DrawerComponent(
-      {Key? key, required this.address, required this.balanceInUSD})
+      {Key? key, required this.onReceiveHandler, required this.onSendHandler})
       : super(key: key);
+
+  @override
+  State<DrawerComponent> createState() => _DrawerComponentState();
+}
+
+class _DrawerComponentState extends State<DrawerComponent> {
+  onTransactionHistoryHandler() {
+    Navigator.of(context).pushNamed(TransactionHistoryScreen.route);
+  }
+
+  onSharePublicAddressHandler() {
+    sharePublicAddress(Provider.of<WalletProvider>(context, listen: false)
+        .activeWallet
+        .wallet
+        .privateKey
+        .address
+        .hex);
+  }
+
+  viewOnExplorerHandler() {
+    Navigator.of(context).pushNamed(BlockWebView.router, arguments: {
+      "title": Provider.of<WalletProvider>(context, listen: false)
+          .activeNetwork
+          .networkName,
+      "url": viewAddressOnEtherScan(
+        Provider.of<WalletProvider>(context, listen: false).activeNetwork,
+        Provider.of<WalletProvider>(context, listen: false)
+            .activeWallet
+            .wallet
+            .privateKey
+            .address
+            .hex,
+      )
+    });
+  }
+
+  onSettingsHandler() {
+    Navigator.of(context).pushNamed(SettingsScreen.route);
+  }
+
+  onGetHelpHandler() {
+    Navigator.of(context).pushNamed(WebViewScreen.router,
+        arguments: {"title": "Help", "url": helpUrl});
+  }
+
+  onLogoutHandler() {
+    Provider.of<WalletProvider>(context, listen: false).logout().then((value) {
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(LoginScreen.route, (route) => false);
+    });
+  }
+
+  onDeleteWalletHandler() {
+    var alert = AlertDialog(
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(kPrimaryColor)),
+            child: const WalletText(
+              '',
+              localizeKey: 'cancel',
+              color: Colors.white,
+            ),
+          ),
+          ElevatedButton(
+              onPressed: () {
+                Provider.of<WalletProvider>(context, listen: false)
+                    .eraseWallet()
+                    .then((value) {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      OnboardScreen.route, (route) => false);
+                });
+              },
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.red)),
+              child: const WalletText(
+                '',
+                localizeKey: "Erase and continue",
+                color: Colors.white,
+              )),
+        ],
+        title: const Text("Confirmation"),
+        content: SizedBox(
+          child: RichText(
+            text: const TextSpan(
+              children: [
+                TextSpan(
+                    text:
+                        'This action will erase all previous wallets and all funds will be lost. Make sure you can restore with your saved 12 word secret phrase and private keys for each wallet before you erase!.'),
+                TextSpan(
+                    text: ' This action is irreversible',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.red))
+              ],
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        ));
+
+    showDialog(context: context, builder: (context) => alert);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,27 +152,23 @@ class DrawerComponent extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(
-                              height: 50,
+                            addHeight(SpacingSize.xl),
+                            const WalletText(
+                              '',
+                              localizeKey: 'appName',
+                              textVarient: TextVarient.hero,
                             ),
-                            const Text(
-                              appName,
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 25,
-                                  letterSpacing: 5),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
+                            addHeight(SpacingSize.s),
                             AvatarWidget(
                               radius: 65,
-                              address: address,
+                              address: Provider.of<WalletProvider>(context)
+                                  .activeWallet
+                                  .wallet
+                                  .privateKey
+                                  .address
+                                  .hex,
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            addHeight(SpacingSize.xs),
                             InkWell(
                               onTap: () {
                                 Navigator.of(context).pop;
@@ -77,25 +179,33 @@ class DrawerComponent extends StatelessWidget {
                               },
                               child: Row(
                                 children: [
-                                  Text(
-                                    getAccountName(state as WalletLoaded),
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600),
+                                  WalletText(
+                                    '',
+                                    localizeKey:
+                                        Provider.of<WalletProvider>(context)
+                                            .getAccountName(),
+                                    textVarient: TextVarient.body1,
+                                    bold: true,
                                   ),
                                   const Icon(Icons.arrow_drop_down)
                                 ],
                               ),
                             ),
-                            Text(
-                                "${state.balanceInNative} ${state.currentNetwork.currency}"),
-                            const SizedBox(
-                              height: 5,
+                            WalletText(
+                              '',
+                              localizeKey: Provider.of<WalletProvider>(context)
+                                  .getNativeBalanceFormatted(),
                             ),
-                            Text(showEllipse(address)),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            addHeight(SpacingSize.xs),
+                            WalletText('',
+                                localizeKey: showEllipse(
+                                    Provider.of<WalletProvider>(context)
+                                        .activeWallet
+                                        .wallet
+                                        .privateKey
+                                        .address
+                                        .hex)),
+                            addHeight(SpacingSize.xs),
                           ],
                         ),
                       ),
@@ -114,37 +224,14 @@ class DrawerComponent extends StatelessWidget {
                                 size: 15,
                               ),
                               textContent: AppLocalizations.of(context)!.send,
-                              onPressed: () {
-                                Navigator.of(context).pushNamed(
-                                    TransferScreen.route,
-                                    arguments: {
-                                      "balance":
-                                          (state).balanceInNative.toString(),
-                                      "token": Token(
-                                          tokenAddress: "",
-                                          symbol: getWalletLoadedState(context)
-                                              .currentNetwork
-                                              .symbol,
-                                          decimal: 18,
-                                          balance: 0,
-                                          balanceInFiat: 0)
-                                    });
-                              },
+                              onPressed: widget.onSendHandler,
                             )),
-                            // SizedBox(
-                            //   width: 10,
-                            // ),
+                            addHeight(SpacingSize.xs),
                             Expanded(
                               child: WalletButtonWithIcon(
                                   textContent:
                                       AppLocalizations.of(context)!.receive,
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) =>
-                                            ReceiveSheet(address: address));
-                                  },
+                                  onPressed: widget.onReceiveHandler,
                                   icon: const Icon(
                                     Icons.call_received,
                                     size: 15,
@@ -175,19 +262,7 @@ class DrawerComponent extends StatelessWidget {
                             height: 20,
                           ),
                           InkWell(
-                            onTap: () {
-                              Navigator.of(context)
-                                  .pushNamed(TransactionHistoryScreen.route);
-                              // Navigator.of(context)
-                              //     .pushNamed(BlockWebView.router, arguments: {
-                              //   "title": (state as WalletLoaded)
-                              //       .currentNetwork
-                              //       .networkName,
-                              //   "url": viewAddressOnEtherScan(
-                              //       state.currentNetwork, address),
-                              //   "isTransaction": true
-                              // });
-                            },
+                            onTap: onTransactionHistoryHandler,
                             child: Row(
                               children: [
                                 const Icon(Icons.menu),
@@ -216,7 +291,7 @@ class DrawerComponent extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: InkWell(
-                        onTap: () => sharePublicAddress(address),
+                        onTap: onSharePublicAddressHandler,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -234,15 +309,7 @@ class DrawerComponent extends StatelessWidget {
                               height: 20,
                             ),
                             InkWell(
-                              onTap: () {
-                                Navigator.of(context)
-                                    .pushNamed(BlockWebView.router, arguments: {
-                                  "title": (state).currentNetwork.networkName,
-                                  "url": viewAddressOnEtherScan(
-                                      state.currentNetwork,
-                                      state.wallet.privateKey.address.hex)
-                                });
-                              },
+                              onTap: viewOnExplorerHandler,
                               child: Row(
                                 children: [
                                   const Icon(Icons.remove_red_eye),
@@ -275,10 +342,7 @@ class DrawerComponent extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           InkWell(
-                            onTap: () {
-                              Navigator.of(context)
-                                  .pushNamed(SettingsScreen.route);
-                            },
+                            onTap: onSettingsHandler,
                             child: Row(
                               children: [
                                 const Icon(Icons.settings_outlined),
@@ -293,11 +357,7 @@ class DrawerComponent extends StatelessWidget {
                             height: 20,
                           ),
                           InkWell(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                  WebViewScreen.router,
-                                  arguments: {"title": "Help", "url": helpUrl});
-                            },
+                            onTap: onGetHelpHandler,
                             child: Row(
                               children: [
                                 const Icon(Icons.help_outline_rounded),
@@ -312,9 +372,7 @@ class DrawerComponent extends StatelessWidget {
                             height: 20,
                           ),
                           InkWell(
-                            onTap: () {
-                              context.read<WalletCubit>().logout();
-                            },
+                            onTap: onLogoutHandler,
                             child: Row(
                               children: [
                                 const Icon(Icons.logout),
@@ -329,63 +387,7 @@ class DrawerComponent extends StatelessWidget {
                             height: 20,
                           ),
                           InkWell(
-                            onTap: () {
-                              var alert = AlertDialog(
-                                  actions: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  kPrimaryColor)),
-                                      child: const Text("Cancel"),
-                                    ),
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          context
-                                              .read<WalletCubit>()
-                                              .eraseWallet();
-                                          Navigator.of(context)
-                                              .pushAndRemoveUntil(
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const OnboardScreen(),
-                                                  ),
-                                                  (route) => false);
-                                        },
-                                        style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    Colors.red)),
-                                        child:
-                                            const Text("Erase and continue")),
-                                  ],
-                                  title: const Text("Confirmation"),
-                                  content: SizedBox(
-                                    child: RichText(
-                                      text: const TextSpan(
-                                        children: [
-                                          TextSpan(
-                                              text:
-                                                  'This action will erase all previous wallets and all funds will be lost. Make sure you can restore with your saved 12 word secret phrase and private keys for each wallet before you erase!.'),
-                                          TextSpan(
-                                              text:
-                                                  ' This action is irreversible',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.red))
-                                        ],
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                    ),
-                                  ));
-
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => alert);
-                            },
+                            onTap: onDeleteWalletHandler,
                             child: Row(
                               children: [
                                 const Icon(

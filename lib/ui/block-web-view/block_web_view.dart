@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -23,7 +24,7 @@ class BlockWebView extends StatefulWidget {
 }
 
 class _BlockWebViewState extends State<BlockWebView> {
-  late WebViewController _controller;
+  final WebViewController _controller = WebViewController();
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +57,10 @@ class _BlockWebViewState extends State<BlockWebView> {
           ),
         ),
       ),
-      body: WebViewWidget(
-        controller: _controller,
-      ),
+      body: InAppWebView(
+          initialUrlRequest: URLRequest(
+        url: WebUri(widget.url),
+      )),
     );
   }
 }

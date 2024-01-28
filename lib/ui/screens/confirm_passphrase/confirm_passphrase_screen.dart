@@ -3,6 +3,7 @@
 import 'package:ethers/signers/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/create_wallet_provider/create_wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/home/home_screen.dart';
 import 'package:wallet_cryptomask/ui/onboard/component/circle_stepper.dart';
@@ -33,6 +34,7 @@ class ConfirmPassPhraseScreenState extends State<ConfirmPassPhraseScreen> {
   List<String> passpharse = [];
   String password = "";
   late final CreateWalletProvider createWalletProvider;
+  late final WalletProvider walletProvider;
 
   List<String> disabledWords = [];
 
@@ -54,6 +56,7 @@ class ConfirmPassPhraseScreenState extends State<ConfirmPassPhraseScreen> {
   void initState() {
     setState(() {
       createWalletProvider = context.read<CreateWalletProvider>();
+      walletProvider = context.read<WalletProvider>();
       passpharse = createWalletProvider.getPassphrase();
     });
     super.initState();
@@ -66,7 +69,8 @@ class ConfirmPassPhraseScreenState extends State<ConfirmPassPhraseScreen> {
       String password = createWalletProvider.getPassword();
       await createWalletProvider.createWalletWithPassword(
           passPhrase, password, walletKey.privateKey!);
-      Navigator.pushNamedAndRemoveUntil(
+      await walletProvider.openWallet(password: password);
+      await Navigator.pushNamedAndRemoveUntil(
           context, HomeScreen.route, (route) => false);
     } catch (e) {
       showErrorSnackBar(context, "Error", e.toString());

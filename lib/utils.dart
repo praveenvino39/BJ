@@ -127,6 +127,51 @@ showErrorSnackBar(BuildContext context, String errorTitle, String error) {
   ));
 }
 
+showPositiveSnackBar(BuildContext context, String errorTitle, String error) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    backgroundColor: Colors.green,
+    content: Row(
+      children: [
+        const SizedBox(
+            width: 25,
+            height: 25,
+            child: Icon(
+              Icons.check,
+              color: Colors.white,
+            )),
+        const SizedBox(
+          width: 20,
+        ),
+        SizedBox(
+          height: 60,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                errorTitle,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 4,
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 1.4,
+                height: 35,
+                child: Text(
+                  error,
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+    duration: const Duration(seconds: 7),
+  ));
+}
+
 shareSendUrl(String address) async {
   await Share.share("https://wallet.app.link/send/$address");
 }

@@ -16,6 +16,7 @@ import 'package:wallet_cryptomask/core/bloc/collectible-bloc/cubit/collectible_c
 import 'package:wallet_cryptomask/core/bloc/preference-bloc/cubit/preference_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/create_wallet_provider/create_wallet_provider.dart';
 import 'package:wallet_cryptomask/core/locale_provider/cubit/locale_cubit.dart';
 import 'package:wallet_cryptomask/core/model/coin_gecko_token_model.dart';
@@ -66,12 +67,11 @@ void main() async {
   FlutterSecureStorage fss = const FlutterSecureStorage();
   String? wallet = await fss.read(key: "wallet");
   Widget? initialWidget;
-  // if (wallet != null) {
-  //   initialWidget = const LoginScreen();
-  // } else {
-  //   initialWidget = const OnboardScreen();
-  // }
-  initialWidget = const OnboardScreen();
+  if (wallet != null) {
+    initialWidget = const LoginScreen();
+  } else {
+    initialWidget = const OnboardScreen();
+  }
 
   Box box = await Hive.openBox("user_preference");
   String locale = (await box.get("LOCALE")) ?? "en";
@@ -104,6 +104,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String locale = "";
+  final fss = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -134,8 +135,14 @@ class _MyAppState extends State<MyApp> {
       child: BlocConsumer<LocaleCubit, LocaleState>(
         listener: (context, state) {},
         builder: (context, state) {
-          return ChangeNotifierProvider(
-            create: (ctx) => CreateWalletProvider(const FlutterSecureStorage()),
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider(
+                  create: (ctx) => CreateWalletProvider(fss)),
+              ChangeNotifierProvider(
+                  create: (ctx) =>
+                      WalletProvider(fss, widget.userPreferenceBox)),
+            ],
             child: GetMaterialApp(
               locale: Locale.fromSubtags(
                   languageCode: (state as LocaleInitial).locale),

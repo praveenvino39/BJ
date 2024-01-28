@@ -3,15 +3,23 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:new_version/new_version.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/home/home_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/create_wallet_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
+import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -24,9 +32,11 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
   bool isLoading = false;
+  late WalletProvider walletProvider;
 
   @override
   void initState() {
+    walletProvider = context.read<WalletProvider>();
     if (Platform.isAndroid) {
       InAppUpdate.checkForUpdate().then((update) {
         if (update.updateAvailability == UpdateAvailability.updateAvailable) {
@@ -134,201 +144,147 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
   }
 
+  openWalletHandler() async {
+    if (_formKey.currentState!.validate()) {
+      walletProvider.showLoading();
+      walletProvider
+          .openWallet(password: passwordController.text)
+          .then((value) {
+        Navigator.of(context).pushNamed(HomeScreen.route);
+      }).catchError((e) {
+        walletProvider.hideLoading();
+        showErrorSnackBar(
+            context, 'Error', getText(context, key: 'passwordIncorrect'));
+      });
+
+      // context.read<WalletCubit>().initialize(
+      //   passwordController.text,
+      //   onError: ((p0) {
+      //     walletProvider.hideLoading();
+      //     showErrorSnackBar(
+      //         context, 'Error', getText(context, key: 'passwordIncorrect'));
+      //   }),
+      //   //   // );
+      //   // },
+      // );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<WalletCubit, WalletState>(
-      listener: (context, state) {
-        if (state is WalletUnlocked) {
-          Navigator.of(context).popUntil((route) => route.isFirst);
-          Navigator.of(context).pushReplacementNamed(HomeScreen.route,
-              arguments: {"password": passwordController.text});
-          // Navigator.of(context).pushNamed(HomeScreen.route, arguments: {"password": passwordController.text});
-        }
-        if (state is WalletErased) {
-          Navigator.of(context).pushNamed(CreateWalletScreen.route);
-        }
-      },
-      child: Scaffold(
-        body: Form(
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // const SizedBox(
-              //   height: 10,
-              // ),
-              // const Expanded(child: SizedBox()),
-              // const Center(
-              //   child: Text(
-              //     appName,
-              //     style: TextStyle(
-              //         color: Colors.black,
-              //         fontWeight: FontWeight.w300,
-              //         fontSize: 25,
-              //         letterSpacing: 5),
-              //   ),
-              // ),
-              // const SizedBox(
-              //   height: 30,
-              // ),
-              // SizedBox(
-              //     width: MediaQuery.of(context).size.width,
-              //     child: const Text(
-              //       "Welcome Back!",
-              //       textAlign: TextAlign.center,
-              //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-              //     )),
-              // const SizedBox(
-              //   height: 30,
-              // ),
-              // const Padding(
-              //   padding: EdgeInsets.symmetric(horizontal: 16),
-              //   child: Text("Password"),
-              // ),
-              // const SizedBox(
-              //   height: 10,
-              // ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 16),
-              //   child: TextFormField(
-              //     controller: passwordController,
-              //     obscureText: true,
-              //     validator: (String? string) {
-              //       if (string!.isEmpty) {
-              //         return "Password shouldn't be empty";
-              //       }
-              //       return null;
-              //     },
-              //     decoration: const InputDecoration(
-              //         hintText: "Enter password to unlock the wallet",
-              //         enabledBorder: OutlineInputBorder(
-              //             borderSide: BorderSide(color: Colors.grey)),
-              //         focusedBorder: OutlineInputBorder(
-              //             borderSide: BorderSide(color: kPrimaryColor)),
-              //         errorBorder: OutlineInputBorder(
-              //             borderSide: BorderSide(color: kPrimaryColor)),
-              //         border: OutlineInputBorder(borderSide: BorderSide())),
-              //   ),
-              // ),
-              // const SizedBox(
-              //   height: 20,
-              // ),
-              // !isLoading
-              //     ? WalletButton(
-              //         type: WalletButtonType.outline,
-              //         textContent: "Open Wallet",
-              //         onPressed: () {
-              //           if (_formKey.currentState!.validate()) {
-              //             setState(() {
-              //               isLoading = true;
-              //             });
-              //             Future.delayed(
-              //               const Duration(milliseconds: 200),
-              //               () {
-              //                 context.read<WalletCubit>().initialize(
-              //                   passwordController.text,
-              //                   onError: ((p0) {
-              //                     setState(() {
-              //                       isLoading = false;
-              //                     });
-              //                     ScaffoldMessenger.of(context).showSnackBar(
-              //                       SnackBar(
-              //                         backgroundColor: Colors.red,
-              //                         content: Row(
-              //                           children: [
-              //                             const Icon(
-              //                               Icons.error,
-              //                               color: Colors.white,
-              //                             ),
-              //                             const SizedBox(
-              //                               width: 10,
-              //                             ),
-              //                             SizedBox(
-              //                                 width: MediaQuery.of(context)
-              //                                         .size
-              //                                         .width /
-              //                                     1.30,
-              //                                 child: const Text(
-              //                                     "Password incorrect, provider valid password"))
-              //                           ],
-              //                         ),
-              //                       ),
-              //                     );
-              //                   }),
-              //                 );
-              //               },
-              //             );
-              //           }
-              //         })
-              //     : const Center(
-              //         child: CircularProgressIndicator(color: kPrimaryColor)),
+              addHeight(SpacingSize.xs),
               const Expanded(child: SizedBox()),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  "Can't login due to lost password? You can reset current wallet and restore with your saved secret 12 word phrase",
-                  textAlign: TextAlign.center,
+              const Center(
+                child: WalletText(
+                  '',
+                  localizeKey: 'appName',
+                  textVarient: TextVarient.hero,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: InkWell(
-                  onTap: () {
-                    var alert = AlertDialog(
-                        actions: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(kPrimaryColor)),
-                            child: const Text("Cancel"),
-                          ),
-                          ElevatedButton(
+              addHeight(SpacingSize.m),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  WalletText(
+                    '',
+                    localizeKey: 'welcomeBack',
+                    textVarient: TextVarient.hero,
+                  ),
+                ],
+              ),
+              addHeight(SpacingSize.m),
+              WalletTextField(
+                  textEditingController: passwordController,
+                  validator: (String? string) {
+                    if (string!.isEmpty) {
+                      return getText(context, key: 'passwordShouldntBeEmpy');
+                    }
+                    return null;
+                  },
+                  textFieldType: TextFieldType.password,
+                  labelLocalizeKey: 'password'),
+              addHeight(SpacingSize.s),
+              Consumer<WalletProvider>(
+                builder: (context, value, child) {
+                  if (value.loading) {
+                    return const Center(
+                        child: CircularProgressIndicator(color: kPrimaryColor));
+                  }
+                  return WalletButton(
+                      type: WalletButtonType.outline,
+                      localizeKey: 'Open Wallet',
+                      onPressed: openWalletHandler);
+                },
+              ),
+              const Expanded(child: SizedBox()),
+              const WalletText(
+                '',
+                center: true,
+                localizeKey: 'cantLogin',
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      var alert = AlertDialog(
+                          actions: [
+                            ElevatedButton(
                               onPressed: () {
-                                context.read<WalletCubit>().eraseWallet();
+                                Navigator.of(context).pop();
                               },
                               style: ButtonStyle(
                                   backgroundColor:
-                                      MaterialStateProperty.all(Colors.red)),
-                              child: const Text("Erase and continue")),
-                        ],
-                        title: const Text("Confirmation"),
-                        content: SizedBox(
-                          child: RichText(
-                            text: const TextSpan(
-                              children: [
-                                TextSpan(
-                                    text:
-                                        'This action will erase all previous wallets and all funds will be lost. Make sure you can restore with your saved 12 word secret phrase and private keys for each wallet before you erase!.'),
-                                TextSpan(
-                                    text: ' This action is irreversible',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.red))
-                              ],
-                              style: TextStyle(color: Colors.black),
+                                      MaterialStateProperty.all(kPrimaryColor)),
+                              child: const Text("Cancel"),
                             ),
-                          ),
-                        ));
-
-                    showDialog(context: context, builder: (context) => alert);
-                  },
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: const Text(
-                      "Reset wallet",
-                      style: TextStyle(
-                        color: kPrimaryColor,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline,
-                      ),
-                      textAlign: TextAlign.center,
+                            ElevatedButton(
+                                onPressed: () {
+                                  context.read<WalletCubit>().eraseWallet();
+                                },
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(Colors.red)),
+                                child: const Text("Erase and continue")),
+                          ],
+                          title: const Text("Confirmation"),
+                          content: SizedBox(
+                            child: RichText(
+                              text: const TextSpan(
+                                children: [
+                                  TextSpan(
+                                      text:
+                                          'This action will erase all previous wallets and all funds will be lost. Make sure you can restore with your saved 12 word secret phrase and private keys for each wallet before you erase!.'),
+                                  TextSpan(
+                                      text: ' This action is irreversible',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red))
+                                ],
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ));
+                      showDialog(context: context, builder: (context) => alert);
+                    },
+                    child: const WalletText(
+                      '',
+                      localizeKey: 'resetWallet',
+                      bold: true,
+                      underline: true,
+                      center: true,
                     ),
                   ),
-                ),
+                ],
               ),
               const SizedBox(
                 height: 30,

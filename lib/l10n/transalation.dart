@@ -95,6 +95,12 @@ var en = {
       "appName": {"type": "String"}
     }
   },
+  "welcomeBack": "Welcome Back!",
+  "resetWallet": "Reset Wallet",
+  "passwordShouldntBeEmpy": "Password shouldn't be empty",
+  "passwordIncorrect": "Password incorrect, provider valid password",
+  "cantLogin":
+      "Can't login due to lost password? You can reset current wallet and restore with your saved secret 12 word phrase",
   "thisFieldNotEmpty": "This filed shouldn't be empty",
   "writeSecretRecoveryPhrase": "Write down your Secret Recovery Phrase",
   "yourSecretRecoveryPhrase":

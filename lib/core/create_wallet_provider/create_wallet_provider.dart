@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 import 'dart:math';
@@ -35,6 +36,7 @@ class CreateWalletProvider extends ChangeNotifier {
 
   Future<void> createWalletWithPassword(
       String passphrase, String password, String privateKey) async {
+    Completer futureCompleter = Completer();
     ReceivePort receiverPort = ReceivePort();
     Isolate.spawn(
         createWalletWithPasswordIsolate,
@@ -49,12 +51,11 @@ class CreateWalletProvider extends ChangeNotifier {
           key: "wallet", value: jsonEncode([(data as Wallet).toJson()]));
       await fss.write(key: "seed_phrase", value: passphrase);
       await fss.write(key: "password", value: password);
-      // Box box = await Hive.openBox("user_preference");
-      // box.put(data.privateKey.address.hex, "Account 1");
+      Box box = await Hive.openBox("user_preference");
+      await box.put(data.privateKey.address.hex, "Account 1");
+      notifyListeners();
+      futureCompleter.complete();
     });
+    return futureCompleter.future;
   }
-
-  // persistSecrets(){
-
-  // }
 }

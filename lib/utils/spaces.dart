@@ -38,3 +38,31 @@ Widget addHeight(SpacingSize size) {
   }
   return SizedBox(height: spacing);
 }
+
+Widget addWidth(SpacingSize size) {
+  var spacing = 0.0;
+  switch (size) {
+    case SpacingSize.xs:
+      spacing = 10;
+      break;
+    case SpacingSize.s:
+      spacing = 20;
+      break;
+    case SpacingSize.m:
+      spacing = 30;
+      break;
+    case SpacingSize.l:
+      spacing = 40;
+      break;
+    case SpacingSize.xl:
+      spacing = 50;
+      break;
+    case SpacingSize.xxl:
+      spacing = 60;
+      break;
+    case SpacingSize.xxxl:
+      spacing = 70;
+      break;
+  }
+  return SizedBox(width: spacing);
+}

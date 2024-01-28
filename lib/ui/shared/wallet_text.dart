@@ -27,6 +27,7 @@ class WalletText extends StatelessWidget {
   final String? placeholderLocalizeKey;
   final double? height;
   final bool? bold;
+  final bool? underline;
 
   const WalletText(this.textContent,
       {super.key,
@@ -36,6 +37,7 @@ class WalletText extends StatelessWidget {
       this.localizeKey,
       this.align,
       this.bold = false,
+      this.underline = false,
       this.height,
       this.placeholderLocalizeKey,
       this.center = false,
@@ -105,6 +107,7 @@ class WalletText extends StatelessWidget {
         style: TextStyle(
           fontSize: textVarient != null ? getTextSize(textVarient!) : size,
           height: height,
+          decoration: underline! ? TextDecoration.underline : null,
           fontWeight:
               textVarient != null ? getTextWeight(textVarient!) : fontWeight,
           color: color ?? Colors.black,

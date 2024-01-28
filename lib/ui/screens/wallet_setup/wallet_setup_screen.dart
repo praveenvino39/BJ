@@ -24,68 +24,62 @@ class WalletSetupScreen extends StatefulWidget {
 class _WalletSetupScreenState extends State<WalletSetupScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CreateWalletCubit, CreateWalletState>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            centerTitle: true,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: kPrimaryColor),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            actions: const [Icon(Icons.arrow_back, color: Colors.transparent)],
-            shadowColor: Colors.transparent,
-            backgroundColor: Colors.transparent,
-            title: const WalletText(
-              "",
-              localizeKey: 'appName',
-              textVarient: TextVarient.hero,
-            ),
-          ),
-          body: SafeArea(
-            child: SizedBox(
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  addHeight(SpacingSize.xl),
-                  const WalletText(
-                    '',
-                    localizeKey: 'walletSetup',
-                    textVarient: TextVarient.heading,
-                  ),
-                  addHeight(SpacingSize.s),
-                  const WalletText(
-                    '',
-                    localizeKey: 'importAnExistingWalletOrCreate',
-                    textVarient: TextVarient.body2,
-                  ),
-                  const FillView(),
-                  WalletButton(
-                      localizeKey: 'importUsingSecretRecoveryPhrase',
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(ImportAccount.route);
-                      }),
-                  addHeight(SpacingSize.xs),
-                  WalletButton(
-                    localizeKey: 'createANewWallet',
-                    type: WalletButtonType.filled,
-                    onPressed: () {
-                      Navigator.of(context)
-                          .pushNamed(CreatePasswordScreen.route);
-                    },
-                  ),
-                  addHeight(SpacingSize.xxxl)
-                ],
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: kPrimaryColor),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: const [Icon(Icons.arrow_back, color: Colors.transparent)],
+        shadowColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
+        title: const WalletText(
+          "",
+          localizeKey: 'appName',
+          textVarient: TextVarient.hero,
+        ),
+      ),
+      body: SafeArea(
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              addHeight(SpacingSize.xl),
+              const WalletText(
+                '',
+                localizeKey: 'walletSetup',
+                textVarient: TextVarient.heading,
               ),
-            ),
+              addHeight(SpacingSize.s),
+              const WalletText(
+                '',
+                localizeKey: 'importAnExistingWalletOrCreate',
+                textVarient: TextVarient.body2,
+              ),
+              const FillView(),
+              WalletButton(
+                  localizeKey: 'importUsingSecretRecoveryPhrase',
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(ImportAccount.route);
+                  }),
+              addHeight(SpacingSize.xs),
+              WalletButton(
+                localizeKey: 'createANewWallet',
+                type: WalletButtonType.filled,
+                onPressed: () {
+                  Navigator.of(context).pushNamed(CreatePasswordScreen.route);
+                },
+              ),
+              addHeight(SpacingSize.xxxl)
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

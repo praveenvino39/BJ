@@ -64,7 +64,7 @@ class _CircleStepperState extends State<CircleStepper> {
                     height: 5,
                   ),
                   WalletText(
-                    AppLocalizations.of(context)!.createPassword,
+                    '',
                     localizeKey: 'createPassword',
                     textVarient: TextVarient.body5,
                     color:

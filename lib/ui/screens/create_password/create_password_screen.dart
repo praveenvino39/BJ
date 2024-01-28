@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/create_wallet_provider/create_wallet_provider.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/home/home_screen.dart';
 import 'package:wallet_cryptomask/ui/onboard/component/circle_stepper.dart';
@@ -19,6 +20,7 @@ import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
 import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
+import 'package:provider/provider.dart';
 
 class CreatePasswordScreen extends StatefulWidget {
   static const route = "create_password_screen";
@@ -76,104 +78,104 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
             )));
         return;
       }
-      Get.put(passwordEditingControl.text, tag: "password");
+      context
+          .read<CreateWalletProvider>()
+          .setPassword(passwordEditingControl.text);
       Navigator.pushNamed(context, GeneratePassPhraseScreen.route);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CreateWalletCubit, CreateWalletState>(
-      listener: (context, state) {
-        if (state is CreateWalletSuccess) {
-          Navigator.pushNamed(context, HomeScreen.route,
-              arguments: {'password': passwordEditingControl.text});
-        }
-      },
-      builder: (context, state) => Scaffold(
-        appBar: AppBar(
-          title: const WalletText(
-            "",
-            localizeKey: "appName",
-            textVarient: TextVarient.hero,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const WalletText(
+          "",
+          localizeKey: "appName",
+          textVarient: TextVarient.hero,
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  CircleStepper(currentIndex: 0),
-                  addHeight(SpacingSize.m),
-                  WalletText(
-                    AppLocalizations.of(context)!.createPassword,
-                    localizeKey: "createPassword",
-                    textVarient: TextVarient.subHeading,
-                  ),
-                  addHeight(SpacingSize.s),
-                  WalletText(
-                    AppLocalizations.of(context)!.thisPasswordWill,
-                    center: true,
-                    localizeKey: "thisPasswordWill",
-                    textVarient: TextVarient.body1,
-                  ),
-                  addHeight(SpacingSize.s),
-                  WalletTextField(
-                      textFieldType: TextFieldType.password,
-                      textEditingController: passwordEditingControl,
-                      validator: passwordvalidator,
-                      labelLocalizeKey: "password"),
-                  addHeight(SpacingSize.m),
-                  WalletTextField(
-                      textFieldType: TextFieldType.password,
-                      textEditingController: confirmPasswordEditingControl,
-                      validator: passwordvalidator,
-                      labelLocalizeKey: "confirmPassword"),
-                  addHeight(SpacingSize.xxl),
-                  Row(
-                    children: [
-                      Checkbox(
-                        activeColor: kPrimaryColor,
-                        value: isTermsAccepted,
-                        onChanged: (value) {
-                          setState(() {
-                            isTermsAccepted = value!;
-                          });
-                        },
-                      ),
-                      Expanded(
-                        child: InkWell(
-                          onTap: learnMoreHandler,
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                    text: getTextWithPlaceholder(context,
-                                        key: 'iUnserstandTheRecover',
-                                        string:
-                                            getText(context, key: 'appName'))),
-                                TextSpan(
-                                    text: getText(context, key: 'learnMore'),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: kPrimaryColor,
-                                        decoration: TextDecoration.underline))
-                              ],
-                              style: const TextStyle(color: Colors.black),
-                            ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                CircleStepper(
+                    key: const Key('circle-stepper'), currentIndex: 0),
+                addHeight(SpacingSize.m),
+                const WalletText(
+                  '',
+                  key: Key('create-password-text'),
+                  localizeKey: "createPassword",
+                  textVarient: TextVarient.subHeading,
+                ),
+                addHeight(SpacingSize.s),
+                const WalletText(
+                  '',
+                  center: true,
+                  localizeKey: "thisPasswordWill",
+                  textVarient: TextVarient.body1,
+                ),
+                addHeight(SpacingSize.s),
+                WalletTextField(
+                    textFieldType: TextFieldType.password,
+                    textEditingController: passwordEditingControl,
+                    validator: passwordvalidator,
+                    key: const Key('password-text-field'),
+                    labelLocalizeKey: "password"),
+                addHeight(SpacingSize.m),
+                WalletTextField(
+                    textFieldType: TextFieldType.password,
+                    textEditingController: confirmPasswordEditingControl,
+                    validator: passwordvalidator,
+                    key: const Key('confirm-password-text-field'),
+                    labelLocalizeKey: "confirmPassword"),
+                addHeight(SpacingSize.xxl),
+                Row(
+                  key: const Key('terms-agreement-section'),
+                  children: [
+                    Checkbox(
+                      activeColor: kPrimaryColor,
+                      value: isTermsAccepted,
+                      onChanged: (value) {
+                        setState(() {
+                          isTermsAccepted = value!;
+                        });
+                      },
+                    ),
+                    Expanded(
+                      child: InkWell(
+                        onTap: learnMoreHandler,
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                  text: getTextWithPlaceholder(context,
+                                      key: 'iUnserstandTheRecover',
+                                      string:
+                                          getText(context, key: 'appName'))),
+                              TextSpan(
+                                  text: getText(context, key: 'learnMore'),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: kPrimaryColor,
+                                      decoration: TextDecoration.underline))
+                            ],
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                  addHeight(SpacingSize.s),
-                  WalletButton(
-                      localizeKey: "createPassword",
-                      onPressed: createPasswordHandler)
-                ],
-              ),
+                      ),
+                    )
+                  ],
+                ),
+                addHeight(SpacingSize.s),
+                WalletButton(
+                    key: const Key('create-wallet-button'),
+                    localizeKey: "createPassword",
+                    onPressed: createPasswordHandler)
+              ],
             ),
           ),
         ),

@@ -1,25 +1,28 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:ethers/signers/wallet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/create_wallet_provider/create_wallet_provider.dart';
+import 'package:wallet_cryptomask/ui/home/home_screen.dart';
 import 'package:wallet_cryptomask/ui/onboard/component/circle_stepper.dart';
-import 'package:wallet_cryptomask/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
+import 'package:wallet_cryptomask/ui/screens/onboarding/onboard_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
+import 'package:provider/provider.dart';
 
 class ConfirmPassPhraseScreen extends StatefulWidget {
   static const route = "confirm_passphrase_screen";
   const ConfirmPassPhraseScreen({Key? key}) : super(key: key);
 
   @override
-  State<ConfirmPassPhraseScreen> createState() => _ConfirmPassPhraseScreen();
+  State<ConfirmPassPhraseScreen> createState() =>
+      ConfirmPassPhraseScreenState();
 }
 
-class _ConfirmPassPhraseScreen extends State<ConfirmPassPhraseScreen> {
+class ConfirmPassPhraseScreenState extends State<ConfirmPassPhraseScreen> {
   bool isLoading = false;
   bool isAllFilled = false;
   List<String> confirmPassPhrase = List.filled(12, "");
@@ -29,6 +32,7 @@ class _ConfirmPassPhraseScreen extends State<ConfirmPassPhraseScreen> {
   List<int> changeOrder = [];
   List<String> passpharse = [];
   String password = "";
+  late final CreateWalletProvider createWalletProvider;
 
   List<String> disabledWords = [];
 
@@ -49,25 +53,22 @@ class _ConfirmPassPhraseScreen extends State<ConfirmPassPhraseScreen> {
   @override
   void initState() {
     setState(() {
-      passpharse = Get.find<List<String>>(tag: "passphrase");
-      password = Get.find<String>(tag: "password");
+      createWalletProvider = context.read<CreateWalletProvider>();
+      passpharse = createWalletProvider.getPassphrase();
     });
     super.initState();
   }
 
-  createWalletHandler() {
-    setState(() {
-      isLoading = true;
-    });
-    var passPhrase = confirmPassPhrase.join(" ");
+  createWalletHandler() async {
     try {
-      var walletKey = Wallet.fromMnemonic(passPhrase);
-      context.read<CreateWalletCubit>().createWalletWithPassword(
+      final passPhrase = confirmPassPhrase.join(" ");
+      final walletKey = Wallet.fromMnemonic(passPhrase);
+      String password = createWalletProvider.getPassword();
+      await createWalletProvider.createWalletWithPassword(
           passPhrase, password, walletKey.privateKey!);
+      Navigator.pushNamedAndRemoveUntil(
+          context, HomeScreen.route, (route) => false);
     } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
       showErrorSnackBar(context, "Error", e.toString());
     }
   }
@@ -89,11 +90,12 @@ class _ConfirmPassPhraseScreen extends State<ConfirmPassPhraseScreen> {
             children: [
               CircleStepper(currentIndex: 2),
               addHeight(SpacingSize.s),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Text(
-                  AppLocalizations.of(context)!.selectEachWord,
-                  textAlign: TextAlign.center,
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: WalletText(
+                  '',
+                  localizeKey: 'selectEachWord',
+                  center: true,
                 ),
               ),
               const SizedBox(
@@ -108,6 +110,7 @@ class _ConfirmPassPhraseScreen extends State<ConfirmPassPhraseScreen> {
                           width: 1, color: Colors.grey.withAlpha(70))),
                   width: MediaQuery.of(context).size.width,
                   child: GridView.builder(
+                    key: const Key('passphrase-blank-grid-view'),
                     shrinkWrap: true,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -131,6 +134,7 @@ class _ConfirmPassPhraseScreen extends State<ConfirmPassPhraseScreen> {
                               child: Center(
                                   child: Text(
                                 confirmPassPhrase[index],
+                                key: Key('challenge-$index'),
                                 style: const TextStyle(color: Colors.black),
                               ))),
                         ],
@@ -152,6 +156,7 @@ class _ConfirmPassPhraseScreen extends State<ConfirmPassPhraseScreen> {
               ),
               GridView.builder(
                 shrinkWrap: true,
+                key: const Key('passphrase-options-grid-view'),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 50,
@@ -161,6 +166,7 @@ class _ConfirmPassPhraseScreen extends State<ConfirmPassPhraseScreen> {
                 itemBuilder: (context, index) => SizedBox(
                   width: 100,
                   child: InkWell(
+                    key: Key('option-$index'),
                     onTap: () {
                       setState(() {
                         if (!disabledWords.contains(passpharse[index])) {

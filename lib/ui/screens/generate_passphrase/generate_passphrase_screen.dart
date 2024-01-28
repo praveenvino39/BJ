@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:bip39/bip39.dart' as bip39;
+import 'package:wallet_cryptomask/core/create_wallet_provider/create_wallet_provider.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/onboard/component/circle_stepper.dart';
 import 'package:wallet_cryptomask/ui/screens/confirm_passphrase/confirm_passphrase_screen.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
+import 'package:provider/provider.dart';
 
 class GeneratePassPhraseScreen extends StatefulWidget {
   static const route = "generate_passphrase_screen";
@@ -38,10 +40,8 @@ class _GeneratePassPhraseScreen extends State<GeneratePassPhraseScreen> {
   }
 
   continueHandler() {
-    Navigator.pushNamed(context, ConfirmPassPhraseScreen.route, arguments: {
-      'password': Get.find<String>(tag: "password"),
-      'passphrase': Get.put(passpharse, tag: "passphrase")
-    });
+    context.read<CreateWalletProvider>().setPassphrase(passpharse);
+    Navigator.pushNamed(context, ConfirmPassPhraseScreen.route);
   }
 
   @override
@@ -61,15 +61,15 @@ class _GeneratePassPhraseScreen extends State<GeneratePassPhraseScreen> {
             children: [
               CircleStepper(currentIndex: 1),
               addHeight(SpacingSize.m),
-              WalletText(
-                AppLocalizations.of(context)!.writeSecretRecoveryPhrase,
+              const WalletText(
+                '',
                 localizeKey: 'writeSecretRecoveryPhrase',
                 bold: true,
                 textVarient: TextVarient.body1,
               ),
               addHeight(SpacingSize.xs),
-              WalletText(
-                AppLocalizations.of(context)!.yourSecretRecoveryPhrase,
+              const WalletText(
+                '',
                 localizeKey: 'yourSecretRecoveryPhrase',
                 center: true,
                 textVarient: TextVarient.body2,
@@ -93,8 +93,8 @@ class _GeneratePassPhraseScreen extends State<GeneratePassPhraseScreen> {
                                 color: Colors.white,
                               )),
                           addHeight(SpacingSize.xs),
-                          WalletText(
-                            AppLocalizations.of(context)!.tapToReveal,
+                          const WalletText(
+                            '',
                             localizeKey: 'tapToReveal',
                             center: true,
                             color: Colors.white,
@@ -152,6 +152,7 @@ class _GeneratePassPhraseScreen extends State<GeneratePassPhraseScreen> {
                               width: 1, color: Colors.grey.withAlpha(70))),
                       width: MediaQuery.of(context).size.width,
                       child: GridView.builder(
+                        key: const Key('passphrase-grid-view'),
                         shrinkWrap: true,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(

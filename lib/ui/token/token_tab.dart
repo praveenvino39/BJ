@@ -1,24 +1,18 @@
 import 'dart:async';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:provider/provider.dart';
+import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/ui/token/component/import_token_tile.dart';
 import 'package:wallet_cryptomask/ui/token/component/token_tile.dart';
-import 'package:web3dart/web3dart.dart';
 
 class TokenTab extends StatefulWidget {
-  final Web3Client web3client;
   final String networkKey;
   final Function(Token token) onTokenPressed;
   const TokenTab(
-      {Key? key,
-      required this.networkKey,
-      required this.onTokenPressed,
-      required this.web3client})
+      {Key? key, required this.networkKey, required this.onTokenPressed})
       : super(key: key);
 
   @override
@@ -28,98 +22,79 @@ class TokenTab extends StatefulWidget {
 class _TokenTabState extends State<TokenTab> {
   Timer? _tokenBalanceTimer;
 
-  // @override
-  // void initState() {
-  //   setupAndLoadToken();
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    setupAndLoadToken();
+  }
 
-  // setupAndLoadToken({String? updatedAddress}) {
-  //   if (_tokenBalanceTimer == null) {
-  //     getTokenCubit(context).setupWeb3Client(widget.web3client);
-  //     String address = updatedAddress ??
-  //         getWalletLoadedState(context).wallet.privateKey.address.hex;
-  //     context.read<TokenCubit>().loadToken(
-  //         address: address,
-  //         network: Core.networks.firstWhere(
-  //             (element) => element.networkName == widget.networkKey));
-  //     _tokenBalanceTimer = null;
-  //     _tokenBalanceTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
-  //       context.read<TokenCubit>().loadToken(
-  //           address: address,
-  //           network: Core.networks.firstWhere(
-  //               (element) => element.networkName == widget.networkKey));
-  //     });
-  //   }
-  // }
+  setupAndLoadToken() {
+    if (_tokenBalanceTimer == null) {
+      String address = Provider.of<WalletProvider>(context, listen: false)
+          .activeWallet
+          .wallet
+          .privateKey
+          .address
+          .hex;
+      Provider.of<TokenProvider>(context, listen: false).loadToken(
+          address: address,
+          network: Provider.of<WalletProvider>(context, listen: false)
+              .activeNetwork);
+      _tokenBalanceTimer = null;
+      _tokenBalanceTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+        Provider.of<TokenProvider>(context, listen: false).loadToken(
+            address: address,
+            network: Provider.of<WalletProvider>(context, listen: false)
+                .activeNetwork);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<WalletCubit, WalletState>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        return SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              BlocConsumer<TokenCubit, TokenState>(
-                listener: (context, state) {},
-                builder: (context, state) {
-                  if (state is TokenLoaded) {
-                    return Expanded(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: state.tokens.length + 1,
-                              itemBuilder: (context, index) => index ==
-                                      state.tokens.length
-                                  ? const ImportTokenTile()
-                                  : InkWell(
-                                      onTap: () => widget
-                                          .onTokenPressed(state.tokens[index]),
-                                      child: TokenTile(
-                                        imageUrl: state.tokens[index].imageUrl,
-                                        decimal: state.tokens[index].decimal,
-                                        tokenAddress:
-                                            state.tokens[index].tokenAddress,
-                                        balance: Decimal.parse(state
-                                            .tokens[index].balance
-                                            .toString()),
-                                        symbol: state.tokens[index].symbol,
-                                        balanceInFiat:
-                                            state.tokens[index].balanceInFiat,
-                                      ),
-                                    ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return Expanded(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            CircularProgressIndicator(
-                              color: kPrimaryColor,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text("Loading Tokens")
-                          ],
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: Provider.of<TokenProvider>(context).tokens.length + 1,
+            itemBuilder: (context, index) =>
+                index == Provider.of<TokenProvider>(context).tokens.length
+                    ? const ImportTokenTile()
+                    : InkWell(
+                        onTap: () => widget.onTokenPressed(
+                            Provider.of<TokenProvider>(context, listen: false)
+                                .tokens[index]),
+                        child: TokenTile(
+                          imageUrl:
+                              Provider.of<TokenProvider>(context, listen: false)
+                                  .tokens[index]
+                                  .imageUrl,
+                          decimal:
+                              Provider.of<TokenProvider>(context, listen: false)
+                                  .tokens[index]
+                                  .decimal,
+                          tokenAddress:
+                              Provider.of<TokenProvider>(context, listen: false)
+                                  .tokens[index]
+                                  .tokenAddress,
+                          balance: Decimal.parse(
+                              Provider.of<TokenProvider>(context, listen: false)
+                                  .tokens[index]
+                                  .balance
+                                  .toString()),
+                          symbol:
+                              Provider.of<TokenProvider>(context, listen: false)
+                                  .tokens[index]
+                                  .symbol,
+                          balanceInFiat:
+                              Provider.of<TokenProvider>(context, listen: false)
+                                  .tokens[index]
+                                  .balanceInFiat,
                         ),
                       ),
-                    );
-                  }
-                },
-              ),
-            ],
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 

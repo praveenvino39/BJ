@@ -9,8 +9,8 @@ import 'package:wallet_cryptomask/core/model/network_model.dart';
 String showEllipse(String string) {
   int length = string.length;
   if (length > 10) {
-    String prefix = string.substring(0, 4);
-    String suffix = string.substring(length - 4, length);
+    String prefix = string.substring(0, 5);
+    String suffix = string.substring(length - 5, length);
     return "$prefix...$suffix";
   }
   return "Loading...";
@@ -25,22 +25,19 @@ String getAccountName(WalletLoaded state) {
       .accountName;
 }
 
-Future<void> copyAddressToClipBoard(String address, BuildContext context,
-    {bool isPk = false}) async {
+copyAddressToClipBoard(String address, BuildContext context,
+    {bool isPk = false}) {
   log(address);
-  await Clipboard.setData(
+  Clipboard.setData(
     ClipboardData(text: address),
-  );
-  // ignore: use_build_context_synchronously
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      elevation: 10,
-      backgroundColor: Colors.green,
-      content: Text(isPk
-          ? "Privatekey copied to clipboard"
-          : "Public address copied to clipboard"),
-    ),
-  );
+  ).then((value) {
+    showPositiveSnackBar(
+        context,
+        'Copied',
+        isPk
+            ? "Privatekey copied to clipboard"
+            : "Public address copied to clipboard");
+  });
 }
 
 showSuccessSnackbar(BuildContext context, String title, String subtitle) {

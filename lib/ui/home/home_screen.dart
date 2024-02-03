@@ -1,31 +1,26 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/config.dart';
+import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/cubit_helper.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/web3wallet_service.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/atoms/custom_icon_button.dart';
-import 'package:wallet_cryptomask/ui/browser/browser_screen.dart';
-import 'package:wallet_cryptomask/ui/collectibles/collectibles_tab.dart';
 import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
-import 'package:wallet_cryptomask/ui/login-screen/login_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/swap_screen/swap_screen.dart';
-import 'package:wallet_cryptomask/ui/token-dashboard-screen/token_dashboard_screen.dart';
-import 'package:wallet_cryptomask/ui/token/token_tab.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/ui/home/component/drawer_component.dart';
 import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
+import 'package:wallet_cryptomask/ui/token-dashboard-screen/token_dashboard_screen.dart';
+import 'package:wallet_cryptomask/ui/token/token_tab.dart';
 import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
@@ -268,8 +263,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               title: Row(
                                 children: [
                                   const Expanded(
-                                    child: Text(
-                                      "Networks",
+                                    child: WalletText(
+                                      '',
+                                      localizeKey: "networks",
                                     ),
                                   ),
                                   InkWell(
@@ -319,8 +315,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  Text(Core.networks[index]
-                                                      .networkName),
+                                                  WalletText('',
+                                                      localizeKey: Core
+                                                          .networks[index]
+                                                          .networkName),
                                                 ],
                                               ),
                                             ))),
@@ -332,10 +330,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Text(appName,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w200,
-                                  color: Colors.black)),
+                          const WalletText(
+                            '',
+                            localizeKey: 'appName',
+                            fontWeight: FontWeight.w200,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -350,14 +349,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               const SizedBox(
                                 width: 5,
                               ),
-                              Text(
-                                Provider.of<WalletProvider>(context)
-                                    .activeNetwork
-                                    .networkName,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w100,
-                                    fontSize: 12,
-                                    color: Colors.black),
+                              WalletText(
+                                '',
+                                localizeKey:
+                                    Provider.of<WalletProvider>(context)
+                                        .activeNetwork
+                                        .networkName,
+                                textVarient: TextVarient.body3,
                               ),
                             ],
                           ),
@@ -400,11 +398,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             unselectedLabelColor: Colors.black,
                             tabs: [
                               Tab(
-                                text: AppLocalizations.of(context)!.tokens,
+                                text: getText(context, key: 'tokens'),
                               ),
                               Tab(
-                                text:
-                                    AppLocalizations.of(context)!.collectibles,
+                                text: getText(context, key: 'collectibles'),
                               )
                             ]),
                         Container(
@@ -412,29 +409,37 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           height: 1,
                           color: Colors.grey.withAlpha(60),
                         ),
-                        // Expanded(
-                        //   child:
-                        //       TabBarView(controller: _tabController, children: [
-                        //     SizedBox(),
-                        //     SizedBox(),
-                        //     // TokenTab(
-                        //     //     web3client:
-                        //     //         getWalletLoadedState(context).web3client,
-                        //     //     onTokenPressed: (token) {
-                        //     //       Navigator.of(context).pushNamed(
-                        //     //           TokenDashboardScreen.route,
-                        //     //           arguments: {"token": token.tokenAddress});
-                        //     //     },
-                        //     //     networkKey:
-                        //     //         walletProvider.activeNetwork.networkName),
-                        //     // CollectiblesTab(
-                        //     //     networkName: getWalletLoadedState(context)
-                        //     //         .currentNetwork
-                        //     //         .networkName,
-                        //     //     web3client:
-                        //     //         getWalletLoadedState(context).web3client),
-                        //   ]),
-                        // ),
+                        Expanded(
+                          child:
+                              TabBarView(controller: _tabController, children: [
+                            TokenTab(
+                                onTokenPressed: (token) {
+                                  Navigator.of(context).pushNamed(
+                                      TokenDashboardScreen.route,
+                                      arguments: {"token": token.tokenAddress});
+                                },
+                                networkKey:
+                                    walletProvider.activeNetwork.networkName),
+                            // SizedBox(),
+                            SizedBox(),
+                            // TokenTab(
+                            //     web3client:
+                            //         getWalletLoadedState(context).web3client,
+                            //     onTokenPressed: (token) {
+                            //       Navigator.of(context).pushNamed(
+                            //           TokenDashboardScreen.route,
+                            //           arguments: {"token": token.tokenAddress});
+                            //     },
+                            //     networkKey:
+                            //         walletProvider.activeNetwork.networkName),
+                            // CollectiblesTab(
+                            //     networkName: getWalletLoadedState(context)
+                            //         .currentNetwork
+                            //         .networkName,
+                            //     web3client:
+                            //         getWalletLoadedState(context).web3client),
+                          ]),
+                        ),
                       ],
                     ),
                   ),

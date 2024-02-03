@@ -10,11 +10,13 @@ class WalletTextField extends StatefulWidget {
   final String labelLocalizeKey;
   final String? Function(String?)? validator;
   final TextEditingController? textEditingController;
+  final int? maxLength;
   const WalletTextField(
       {super.key,
       required this.textFieldType,
       required this.labelLocalizeKey,
       this.validator,
+      this.maxLength,
       this.textEditingController});
 
   @override
@@ -63,6 +65,7 @@ class _WalletTextFieldState extends State<WalletTextField> {
         ),
         addHeight(SpacingSize.xs),
         TextFormField(
+          maxLength: widget.maxLength,
           controller: widget.textEditingController,
           validator: widget.validator,
           cursorColor: kPrimaryColor,

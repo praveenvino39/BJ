@@ -2,12 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 
-class ReceiveSheet extends StatelessWidget {
+class ReceiveSheet extends StatefulWidget {
   final String address;
   const ReceiveSheet({Key? key, required this.address}) : super(key: key);
+
+  @override
+  State<ReceiveSheet> createState() => _ReceiveSheetState();
+}
+
+class _ReceiveSheetState extends State<ReceiveSheet> {
+  onCopyHandler() {
+    copyAddressToClipBoard(widget.address, context);
+  }
+
+  onShareHandler() {
+    shareSendUrl(widget.address);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +38,7 @@ class ReceiveSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 10,
-              ),
+              addHeight(SpacingSize.xs),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -34,28 +47,19 @@ class ReceiveSheet extends StatelessWidget {
                 width: 50,
                 height: 4,
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(AppLocalizations.of(context)!.receive),
+              addHeight(SpacingSize.s),
+              const WalletText('', localizeKey: 'receive'),
               QrImageView(
-                data: address,
+                data: widget.address,
                 version: QrVersions.auto,
                 size: 200.0,
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(AppLocalizations.of(context)!.scanAddressto),
-              const SizedBox(
-                height: 20,
-              ),
+              addHeight(SpacingSize.xs),
+              const WalletText('', localizeKey: 'scanAddressto'),
+              addHeight(SpacingSize.s),
+              const Expanded(child: SizedBox()),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 50),
-                // width: MediaQuery.of(context).size.width / 1.8,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
                     color: kPrimaryColor.withAlpha(30),
@@ -63,24 +67,23 @@ class ReceiveSheet extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(showEllipse(address)),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    addWidth(SpacingSize.s),
+                    Expanded(
+                        flex: 1,
+                        child: WalletText('',
+                            localizeKey: showEllipse(widget.address))),
+                    addHeight(SpacingSize.xs),
                     Expanded(
                       child: WalletButton(
                         buttonSize: WalletButtonSize.small,
-                        textContent: AppLocalizations.of(context)!.copy,
-                        onPressed: () =>
-                            copyAddressToClipBoard(address, context),
+                        localizeKey: 'copy',
+                        onPressed: onCopyHandler,
                         textSize: 12,
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    addHeight(SpacingSize.xs),
                     InkWell(
-                      onTap: () => shareSendUrl(address),
+                      onTap: onShareHandler,
                       child: const Icon(
                         Icons.share_outlined,
                         color: kPrimaryColor,
@@ -89,9 +92,7 @@ class ReceiveSheet extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              addHeight(SpacingSize.m),
             ],
           ),
         ),

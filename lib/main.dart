@@ -15,6 +15,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:wallet_cryptomask/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/preference-bloc/cubit/preference_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/create_wallet_provider/create_wallet_provider.dart';
@@ -141,6 +142,9 @@ class _MyAppState extends State<MyApp> {
                   create: (ctx) => CreateWalletProvider(fss)),
               ChangeNotifierProvider(
                   create: (ctx) =>
+                      TokenProvider(userPreference: widget.userPreferenceBox)),
+              ChangeNotifierProvider(
+                  create: (ctx) =>
                       WalletProvider(fss, widget.userPreferenceBox)),
             ],
             child: GetMaterialApp(
@@ -159,7 +163,6 @@ class _MyAppState extends State<MyApp> {
                       GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
                   unselectedWidgetColor: kPrimaryColor),
               home: widget.initialWidget,
-              initialRoute: OnboardScreen.route,
               onGenerateRoute: (setting) {
                 if (setting.name == WalletSetupScreen.route) {
                   return MaterialPageRoute(

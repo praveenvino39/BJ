@@ -67,7 +67,7 @@ class TokenCubit extends Cubit<TokenState> {
       }
     }
     debug_print.log(jsonEncode(token));
-    userPreferenceBox.put(tokenStoragekey, tokens);
+    await userPreferenceBox.put(tokenStoragekey, tokens);
     emit(TokenAdded(tokens: tokens.cast<Token>()));
   }
 

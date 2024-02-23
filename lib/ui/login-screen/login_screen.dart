@@ -152,7 +152,10 @@ class _LoginScreenState extends State<LoginScreen> {
           .openWallet(password: passwordController.text)
           .then((value) {
         walletProvider.hideLoading();
-        Navigator.of(context).pushNamed(HomeScreen.route);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          HomeScreen.route,
+          (route) => false,
+        );
       }).catchError((e) {
         walletProvider.hideLoading();
         showErrorSnackBar(

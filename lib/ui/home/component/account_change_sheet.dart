@@ -8,7 +8,7 @@ import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/import-account/import_account_screen.dart';
 
 class AccountChangeSheet extends StatefulWidget {
-  final Function(String address)? onChange;
+  final Function(String address, int? index)? onChange;
   const AccountChangeSheet({Key? key, this.onChange}) : super(key: key);
 
   @override

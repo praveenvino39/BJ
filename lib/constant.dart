@@ -5,6 +5,7 @@ import 'package:wallet_cryptomask/l10n/transalation.dart';
 
 const Color kPrimaryColor = Color(0xff7b15ef);
 
+const String walletConnectSingleTon = "WalletConnectSingleTon";
 onBoardScreenContent(BuildContext context) {
   return [
     PageViewModel(

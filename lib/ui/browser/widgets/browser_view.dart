@@ -42,7 +42,8 @@ class _BrowserViewState extends State<BrowserView> {
   bool dissableProgressAnimation = false;
   bool isAttached = false;
   PullToRefreshController refreshController = PullToRefreshController();
-  WC2Service web3service = GetIt.I<WC2Service>();
+  WC2Service web3service =
+      GetIt.I<WC2Service>(instanceName: walletConnectSingleTon);
 
   @override
   void initState() {

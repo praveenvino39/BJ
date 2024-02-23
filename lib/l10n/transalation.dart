@@ -96,8 +96,10 @@ var en = {
     }
   },
   "welcomeBack": "Welcome Back!",
+  "confirmAndApprove": "Confirm and Approve",
   "resetWallet": "Reset Wallet",
   "passwordShouldntBeEmpy": "Password shouldn't be empty",
+  "next": "Next",
   "passwordIncorrect": "Password incorrect, provider valid password",
   "cantLogin":
       "Can't login due to lost password? You can reset current wallet and restore with your saved secret 12 word phrase",

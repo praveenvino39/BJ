@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/erc20_transaction_log.dart';
 import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
@@ -228,7 +230,8 @@ class _TokenTransferTileState extends State<TokenTransferTile> {
                           border: Border.all(width: 1, color: kPrimaryColor)),
                       child: Icon(
                         widget.data.from.toLowerCase() ==
-                                (state as WalletLoaded)
+                                Provider.of<WalletProvider>(context)
+                                    .activeWallet
                                     .wallet
                                     .privateKey
                                     .address
@@ -247,7 +250,8 @@ class _TokenTransferTileState extends State<TokenTransferTile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           widget.data.from.toLowerCase() ==
-                                  (state)
+                                  Provider.of<WalletProvider>(context)
+                                      .activeWallet
                                       .wallet
                                       .privateKey
                                       .address

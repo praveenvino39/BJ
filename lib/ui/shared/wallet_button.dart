@@ -1,8 +1,8 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'dart:io' show Platform;
-
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 
 enum WalletButtonType { outline, filled }

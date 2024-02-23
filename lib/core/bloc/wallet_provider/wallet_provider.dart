@@ -3,17 +3,17 @@ import 'dart:convert';
 import 'dart:isolate';
 import 'dart:math';
 
+import 'package:ethers/signers/wallet.dart' as ethers;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
-import 'package:ethers/signers/wallet.dart' as ethers;
+import 'package:http/http.dart';
 import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/core/model/wallet_model.dart';
 import 'package:wallet_cryptomask/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
 import 'package:web3dart/web3dart.dart';
-import 'package:http/http.dart';
 
 class WalletProvider extends ChangeNotifier {
   bool loading = false;
@@ -47,6 +47,11 @@ class WalletProvider extends ChangeNotifier {
     } catch (e) {
       return Core.networks[0];
     }
+  }
+
+  changeNativeBalance(double balance) {
+    nativeBalance = balance;
+    notifyListeners();
   }
 
   initWeb3Client(Network network) {
@@ -110,8 +115,9 @@ class WalletProvider extends ChangeNotifier {
     return futureCompleter.future;
   }
 
-  changeNetwork(int index) {
+  changeNetwork(int index) async {
     final network = Core.networks[index];
+    await userPreference.put("NETWORK", network.networkName);
     initWeb3Client(network);
   }
 
@@ -256,6 +262,48 @@ class WalletProvider extends ChangeNotifier {
     //           availabeWallet: curentState.availabeWallet),
     //     );
     //   }
+  }
+
+  Future<String?> sendTransaction(String to, double value,
+      double selectedPriority, double selectedMaxFee, int gasLimit) async {
+    try {
+      showLoading();
+      int nonce = await web3client.getTransactionCount(
+          EthereumAddress.fromHex(activeWallet.wallet.privateKey.address.hex));
+      BigInt chainID = await web3client.getChainId();
+      Transaction transaction = Transaction(
+        to: EthereumAddress.fromHex(to),
+        value: EtherAmount.fromUnitAndValue(
+            EtherUnit.wei, BigInt.from(value * pow(10, 18))),
+        nonce: nonce,
+        maxPriorityFeePerGas: activeNetwork.supportsEip1559
+            ? EtherAmount.fromUnitAndValue(
+                EtherUnit.wei, (selectedPriority * pow(10, 9)).toInt())
+            : null,
+        maxFeePerGas: activeNetwork.supportsEip1559
+            ? EtherAmount.fromUnitAndValue(
+                EtherUnit.wei, (selectedMaxFee * pow(10, 9)).toInt())
+            : null,
+        maxGas: gasLimit,
+      );
+      String transactionHash = await web3client.sendTransaction(
+          activeWallet.wallet.privateKey, transaction,
+          chainId: chainID.toInt());
+      // addPendingTransaction(transactionHash);
+      final box = await Hive.openBox("user_preference");
+
+      List<dynamic> recentAddresses =
+          box.get("RECENT-TRANSACTION-ADDRESS", defaultValue: []);
+      if (recentAddresses.contains(to)) {
+        recentAddresses.remove(to);
+      }
+      recentAddresses.add(to);
+      box.put("RECENT-TRANSACTION-ADDRESS", recentAddresses);
+      hideLoading();
+      return transactionHash;
+    } catch (e) {
+      return null;
+    }
   }
 }
 

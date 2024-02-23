@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,9 @@ class _TokenTabState extends State<TokenTab> {
   @override
   void initState() {
     super.initState();
-    setupAndLoadToken();
+    Future.delayed(const Duration(milliseconds: 100), () {
+      setupAndLoadToken();
+    });
   }
 
   setupAndLoadToken() {

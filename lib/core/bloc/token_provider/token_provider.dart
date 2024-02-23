@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:math';
 
 import 'package:decimal/decimal.dart';
@@ -93,5 +95,56 @@ class TokenProvider extends ChangeNotifier {
     tokensDy.remove(token);
     await userPreference.put(tokenStorageKey, tokensDy);
     loadToken(address: address, network: network);
+  }
+
+  Future<String?> sendTokenTransaction(
+      String to,
+      double value,
+      int gasLimit,
+      double selectedPriority,
+      double selectedMaxFee,
+      Token selectedToken,
+      DeployedContract deployedContract,
+      Wallet wallet,
+      Network network) async {
+    try {
+      final web3client = Web3Client(network.url, Client());
+      String tokenStorageKey = getTokenStorageKey(
+          address: wallet.privateKey.address.hex, network: network);
+
+      var sendResult = await web3client.sendTransaction(
+          wallet.privateKey,
+          Transaction(
+            maxGas: gasLimit,
+            gasPrice: network.chainId == 144
+                ? EtherAmount.inWei(BigInt.parse("2"))
+                : null,
+            maxPriorityFeePerGas: network.supportsEip1559
+                ? EtherAmount.fromUnitAndValue(
+                    EtherUnit.wei, (selectedPriority * pow(10, 9)).toInt())
+                : null,
+            maxFeePerGas: network.supportsEip1559
+                ? EtherAmount.fromUnitAndValue(
+                    EtherUnit.wei, (selectedMaxFee * pow(10, 9)).toInt())
+                : null,
+            to: EthereumAddress.fromHex(selectedToken.tokenAddress),
+            data: deployedContract.function("transfer").encodeCall([
+              EthereumAddress.fromHex(to),
+              BigInt.from((value * pow(10, selectedToken.decimal))),
+            ]),
+          ),
+          chainId: network.chainId);
+      List<dynamic> tokensDy = userPreference.get(tokenStorageKey);
+      List<dynamic> recentAddresses =
+          userPreference.get("RECENT-TRANSACTION-ADDRESS", defaultValue: []);
+      if (recentAddresses.contains(to)) {
+        recentAddresses.remove(to);
+      }
+      recentAddresses.add(to);
+      userPreference.put("RECENT-TRANSACTION-ADDRESS", recentAddresses);
+      return sendResult;
+    } catch (e) {
+      throw Exception(e.toString());
+    }
   }
 }

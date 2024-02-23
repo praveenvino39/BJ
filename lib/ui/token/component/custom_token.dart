@@ -2,17 +2,13 @@ import 'dart:developer';
 
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/core/cubit_helper.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
 import 'package:wallet_cryptomask/utils.dart';
@@ -73,8 +69,8 @@ class _CustomTokenState extends State<CustomToken> {
           balance: Decimal.fromInt(0).toDouble()),
     )
         .then((value) {
-      Navigator.of(context).pop();
       showPositiveSnackBar(context, 'Imported', 'Token imported successfully');
+      Navigator.of(context).pop();
     });
   }
 

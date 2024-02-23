@@ -1,31 +1,32 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet_cryptomask/config.dart';
-import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
+import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/core.dart';
-import 'package:wallet_cryptomask/core/cubit_helper.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/web3wallet_service.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/atoms/custom_icon_button.dart';
+import 'package:wallet_cryptomask/ui/collectibles/collectibles_tab.dart';
 import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
-import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/ui/swap_screen/swap_screen.dart';
-import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/ui/home/component/drawer_component.dart';
 import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/ui/swap_screen/swap_screen.dart';
 import 'package:wallet_cryptomask/ui/token-dashboard-screen/token_dashboard_screen.dart';
 import 'package:wallet_cryptomask/ui/token/token_tab.dart';
 import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
+import 'package:web3dart/web3dart.dart';
+
 import 'component/avatar_component.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   static String route = "home_screen";
@@ -58,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     walletProvider = context.read<WalletProvider>();
     _tabController = TabController(length: 2, vsync: this);
     setupWalletConnect();
+    updateBalanceTimer();
     // const FlutterSecureStorage().read(key: 'password').then((password) {
     //   if (context.read<WalletCubit>().state is! WalletLoaded) {
     //     context.read<WalletCubit>().initialize(
@@ -87,6 +89,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   setupWalletConnect() async {
+    if (GetIt.I.isRegistered<WC2Service>(instance: walletConnectSingleTon)) {
+      await GetIt.I
+          .unregister<WC2Service>(instanceName: walletConnectSingleTon);
+    }
     WC2Service web3service = WC2Service(
         address: walletProvider.activeWallet.wallet.privateKey.address.hex,
         chainId: walletProvider.activeNetwork.chainId.toString(),
@@ -94,7 +100,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         preference: walletProvider.userPreference,
         privateKey: walletProvider.activeWallet.wallet.privateKey,
         networks: Core.networks);
-    GetIt.I.registerSingleton<WC2Service>(web3service);
+    GetIt.I.registerSingleton<WC2Service>(web3service,
+        instanceName: walletConnectSingleTon);
     web3service.create();
     await web3service.init();
   }
@@ -122,7 +129,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       "balance": balaneInNative.toString(),
       "token": Token(
           tokenAddress: "",
-          symbol: getWalletLoadedState(context).currentNetwork.symbol,
+          symbol: Provider.of<WalletProvider>(context, listen: false)
+              .activeNetwork
+              .symbol,
           decimal: 18,
           balance: 0,
           balanceInFiat: 0)
@@ -138,22 +147,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         context: context, builder: (context) => const AccountChangeSheet());
   }
 
-  // updateBalance(WalletLoaded state, bool updateFiat) async {
-  //   try {
-  //     EtherAmount balance =
-  //         await state.web3client.getBalance(state.wallet.privateKey.address);
-  //     state.balanceInNative = balance.getValueInUnit(EtherUnit.ether);
-  //     if (updateFiat) {
-  //       updateFiatBalance(state.balanceInNative);
-  //     }
-  //     setState(() {
-  //       balaneInNative = state.balanceInNative;
-  //     });
-  //     log(state.balanceInNative.toString());
-  //   } catch (e) {
-  //     log(e.toString());
-  //   }
-  // }
+  updateBalance() {
+    try {
+      Provider.of<WalletProvider>(context, listen: false)
+          .web3client
+          .getBalance(Provider.of<WalletProvider>(context, listen: false)
+              .activeWallet
+              .wallet
+              .privateKey
+              .address)
+          .then((balance) {
+        Provider.of<WalletProvider>(context, listen: false)
+            .changeNativeBalance(balance.getValueInUnit(EtherUnit.ether));
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        log(e.toString());
+      }
+    }
+  }
 
   // updateFiatBalance(double? balance) async {
   //   dynamic priceModel =
@@ -169,40 +181,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   // showTransactionAlert() {}
 
-  // updateBalanceTimer() {
-  //   context
-  //       .read<TokenCubit>()
-  //       .setupWeb3Client(getWalletLoadedState(context).web3client);
-  //   context
-  //       .read<CollectibleCubit>()
-  //       .setupWeb3Client(getWalletLoadedState(context).web3client);
-  //   context.read<TokenCubit>().loadToken(
-  //       address: getWalletLoadedState(context).wallet.privateKey.address.hex,
-  //       network: getWalletLoadedState(context).currentNetwork);
-  //   context.read<CollectibleCubit>().loadCollectible(
-  //       address: getWalletLoadedState(context).wallet.privateKey.address.hex,
-  //       network: getWalletLoadedState(context).currentNetwork);
-  //   updateBalance(getWalletLoadedState(context), true);
-  //   if (timer != null) {
-  //     timer?.cancel();
-  //   }
-  //   timer = Timer.periodic(const Duration(seconds: 3), (timer) async {
-  //     updateBalance(getWalletLoadedState(context), false);
-  //     context
-  //         .read<TokenCubit>()
-  //         .setupWeb3Client(getWalletLoadedState(context).web3client);
-  //     context
-  //         .read<CollectibleCubit>()
-  //         .setupWeb3Client(getWalletLoadedState(context).web3client);
-  //     context.read<TokenCubit>().loadToken(
-  //         address: getWalletLoadedState(context).wallet.privateKey.address.hex,
-  //         network: getWalletLoadedState(context).currentNetwork);
-  //     context.read<CollectibleCubit>().loadCollectible(
-  //         address: getWalletLoadedState(context).wallet.privateKey.address.hex,
-  //         network: getWalletLoadedState(context).currentNetwork);
-  //   });
-  //   log("TIMER STARTED");
-  // }
+  updateBalanceTimer() {
+    updateBalance();
+    if (timer != null) {
+      timer?.cancel();
+    }
+    timer = Timer.periodic(const Duration(seconds: 3), (timer) async {
+      updateBalance();
+    });
+  }
 
   // updateFiatBalanceTimer() {
   //   updateFiatBalance(null);
@@ -420,24 +407,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 },
                                 networkKey:
                                     walletProvider.activeNetwork.networkName),
-                            // SizedBox(),
-                            SizedBox(),
-                            // TokenTab(
-                            //     web3client:
-                            //         getWalletLoadedState(context).web3client,
-                            //     onTokenPressed: (token) {
-                            //       Navigator.of(context).pushNamed(
-                            //           TokenDashboardScreen.route,
-                            //           arguments: {"token": token.tokenAddress});
-                            //     },
-                            //     networkKey:
-                            //         walletProvider.activeNetwork.networkName),
-                            // CollectiblesTab(
-                            //     networkName: getWalletLoadedState(context)
-                            //         .currentNetwork
-                            //         .networkName,
-                            //     web3client:
-                            //         getWalletLoadedState(context).web3client),
+                            const CollectiblesTab(),
                           ]),
                         ),
                       ],
@@ -475,6 +445,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         .privateKey
                                         .address
                                         .hex)),
+                                addHeight(SpacingSize.xs),
+                                WalletText(
+                                  '',
+                                  localizeKey: walletProvider
+                                      .getNativeBalanceFormatted(),
+                                  textVarient: TextVarient.heading,
+                                ),
                                 addHeight(SpacingSize.xs),
                                 WalletText(
                                   '',

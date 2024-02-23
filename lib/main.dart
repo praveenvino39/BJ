@@ -4,15 +4,17 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
-import 'package:hive/hive.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/collectible_provider/collectible_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/preference-bloc/cubit/preference_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
@@ -35,7 +37,6 @@ import 'package:wallet_cryptomask/ui/screens/create_wallet_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/generate_passphrase/generate_passphrase_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/onboarding/onboard_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/wallet_setup/wallet_setup_screen.dart';
-import 'package:wallet_cryptomask/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
 import 'package:wallet_cryptomask/ui/setttings/general_settings_screen/general_settings_screen.dart';
 import 'package:wallet_cryptomask/ui/setttings/security_settings_screen/security_settings_screen.dart';
 import 'package:wallet_cryptomask/ui/setttings/settings_screen.dart';
@@ -47,7 +48,6 @@ import 'package:wallet_cryptomask/ui/transaction-confirmation/transaction_confir
 import 'package:wallet_cryptomask/ui/transaction-history/transaction_history_screen.dart';
 import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
 import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
-import 'package:provider/provider.dart';
 
 import 'constant.dart';
 
@@ -143,6 +143,9 @@ class _MyAppState extends State<MyApp> {
               ChangeNotifierProvider(
                   create: (ctx) =>
                       TokenProvider(userPreference: widget.userPreferenceBox)),
+              ChangeNotifierProvider(
+                  create: (ctx) => CollectibleProvider(
+                      userPreference: widget.userPreferenceBox)),
               ChangeNotifierProvider(
                   create: (ctx) =>
                       WalletProvider(fss, widget.userPreferenceBox)),

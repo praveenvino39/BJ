@@ -6,15 +6,14 @@ import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/ui/token-dashboard-screen/token_dashboard_screen.dart';
 import 'package:wallet_cryptomask/ui/token/component/import_token_tile.dart';
 import 'package:wallet_cryptomask/ui/token/component/token_tile.dart';
 
 class TokenTab extends StatefulWidget {
-  final String networkKey;
-  final Function(Token token) onTokenPressed;
-  const TokenTab(
-      {Key? key, required this.networkKey, required this.onTokenPressed})
-      : super(key: key);
+  const TokenTab({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<TokenTab> createState() => _TokenTabState();
@@ -53,6 +52,11 @@ class _TokenTabState extends State<TokenTab> {
     }
   }
 
+  onTokenPressHandler(Token token) {
+    Navigator.of(context).pushNamed(TokenDashboardScreen.route,
+        arguments: {"token": token.tokenAddress});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -64,7 +68,7 @@ class _TokenTabState extends State<TokenTab> {
                 index == Provider.of<TokenProvider>(context).tokens.length
                     ? const ImportTokenTile()
                     : InkWell(
-                        onTap: () => widget.onTokenPressed(
+                        onTap: () => onTokenPressHandler(
                             Provider.of<TokenProvider>(context, listen: false)
                                 .tokens[index]),
                         child: TokenTile(

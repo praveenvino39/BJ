@@ -173,6 +173,37 @@ class WalletProvider extends ChangeNotifier {
     return futureCompleter.future;
   }
 
+  Future<void> importFromPassphrase(
+      {required String seedPhrase, required String password}) async {
+    Completer futureCompleter = Completer();
+    ReceivePort receiverPort = ReceivePort();
+    Isolate.spawn(
+        createAdditionalWalletWithPasswordIsolate,
+        CreateAddtionWalletWithPasswordIsolateType(
+            passpharse: seedPhrase,
+            index: wallets.length + 1,
+            password: password,
+            sendPort: receiverPort.sendPort));
+    receiverPort.listen((wallet) async {
+      final walletString = await fss.read(key: "wallet");
+      if (walletString == null) {
+        throw Exception("Something went wrong");
+      }
+      List<dynamic> walletJson = jsonDecode(walletString);
+      walletJson.add(wallet.toJson());
+      await fss.write(key: "wallet", value: jsonEncode(walletJson));
+      userPreference.put(wallet.privateKey.address.hex.toLowerCase(),
+          "Account ${walletJson.length}");
+      wallets.add(WalletModel(
+          balance: 0,
+          wallet: wallet,
+          accountName: userPreference.get(wallet.privateKey.address.hex)));
+      notifyListeners();
+      futureCompleter.complete();
+    });
+    return futureCompleter.future;
+  }
+
   Future<void> logout() async {
     wallets = [];
     notifyListeners();
@@ -207,7 +238,7 @@ class WalletProvider extends ChangeNotifier {
         notifyListeners();
         futureCompleter.complete();
       } catch (e) {
-        dynamic walletString = await fss.read(key: "wallet");
+        dynamic walletString = (await fss.read(key: "wallet")) ?? "[]";
         List<dynamic> walletJson = jsonDecode(walletString);
         walletJson.add(wallet.toJson());
         await fss.write(key: "wallet", value: jsonEncode(walletJson));
@@ -224,44 +255,50 @@ class WalletProvider extends ChangeNotifier {
       }
     });
     return futureCompleter.future;
-    // Wallet wallet = Wallet.createNew(
-    //     EthPrivateKey.fromHex(privateKey), password!, Random());
-    // WalletLoaded curentState = (state as WalletLoaded);
-    // try {
-    //   curentState.availabeWallet.firstWhere((element) =>
-    //       element.wallet.privateKey.address.hex.toLowerCase() ==
-    //       wallet.privateKey.address.hex);
-    //   alreadyExist();
-    //   return;
-    // } catch (e) {
-    //   dynamic walletExist = await fss.read(key: "wallet");
-    //   if (walletExist != null) {
-    //     List<dynamic> walletJson = jsonDecode(walletExist);
-    //     walletJson.add(wallet.toJson());
-    //     await fss.write(key: "wallet", value: jsonEncode(walletJson));
-    //     Box box = await Hive.openBox("user_preference");
-    //     box.put(wallet.privateKey.address.hex, "Account ${walletJson.length}");
-    //     curentState.availabeWallet.add(WalletModel(
-    //         balance: 0,
-    //         wallet: wallet,
-    //         accountName: box.get(wallet.privateKey.address.hex)));
-    //     box.put("ACCOUNT", curentState.availabeWallet.length - 1);
-    //     box.put(wallet.privateKey.address.hex, "Account ${walletJson.length}");
-    //     onsuccess();
-    //     emit(
-    //       WalletLoaded(
-    //           currency: curentState.currency,
-    //           collectibles: curentState.collectibles,
-    //           tokens: curentState.tokens,
-    //           password: curentState.password,
-    //           wallet: curentState.wallet,
-    //           pendingTransaction: curentState.pendingTransaction,
-    //           balanceInUSD: curentState.balanceInUSD,
-    //           web3client: curentState.web3client,
-    //           currentNetwork: curentState.currentNetwork,
-    //           availabeWallet: curentState.availabeWallet),
-    //     );
-    //   }
+  }
+
+  Future<void> importAccountFromPrivateKeyOnboarding(
+      {required String privateKey, required String password}) async {
+    final futureCompleter = Completer();
+    await fss.write(key: "password", value: password);
+    if (privateKey.contains("0x")) {
+      privateKey = privateKey.substring(2);
+    }
+    ReceivePort receiverPort = ReceivePort();
+    Isolate.spawn(
+        createWalletWithPasswordIsolate,
+        CreatePasswordIsolateType(
+            privateKey: privateKey,
+            password: password,
+            sendPort: receiverPort.sendPort));
+    receiverPort.listen((wallet) async {
+      if (wallet is Exception) {
+        futureCompleter.completeError(wallet);
+      }
+      try {
+        wallets.firstWhere((element) =>
+            element.wallet.privateKey.address.hex.toLowerCase() ==
+            wallet.privateKey.address.hex);
+        notifyListeners();
+        futureCompleter.complete();
+      } catch (e) {
+        dynamic walletString = (await fss.read(key: "wallet")) ?? "[]";
+        List<dynamic> walletJson = jsonDecode(walletString);
+        walletJson.add(wallet.toJson());
+        await fss.write(key: "wallet", value: jsonEncode(walletJson));
+        userPreference.put(
+            wallet.privateKey.address.hex.toString().toLowerCase(),
+            "Account ${walletJson.length}");
+        wallets.add(WalletModel(
+            balance: 0,
+            wallet: wallet,
+            accountName: userPreference.get(wallet.privateKey.address.hex)));
+        userPreference.put("ACCOUNT", wallets.length - 1);
+        notifyListeners();
+        futureCompleter.complete();
+      }
+    });
+    return futureCompleter.future;
   }
 
   Future<String?> sendTransaction(String to, double value,

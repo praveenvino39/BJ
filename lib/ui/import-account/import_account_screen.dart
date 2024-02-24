@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/ui/home/home_screen.dart';
-import 'package:wallet_cryptomask/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/utils.dart';
 
@@ -18,14 +14,23 @@ class ImportAccount extends StatefulWidget {
 }
 
 class _ImportAccountState extends State<ImportAccount> {
-  final TextEditingController _passphrase = TextEditingController();
   final TextEditingController _password = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey();
   final GlobalKey<FormState> _privateKeyFormKey = GlobalKey();
   final TextEditingController _privateKey = TextEditingController();
 
   onImportAccountHandler() {
     if (_privateKeyFormKey.currentState!.validate()) {
+      if (Provider.of<WalletProvider>(context, listen: false).wallets.isEmpty) {
+        Provider.of<WalletProvider>(context, listen: false)
+            .importAccountFromPrivateKeyOnboarding(
+                privateKey: _privateKey.text, password: _password.text)
+            .then((value) {
+          Navigator.of(context).pop();
+        }).catchError((e) {
+          showErrorSnackBar(context, 'Error', e);
+        });
+        return;
+      }
       Provider.of<WalletProvider>(context, listen: false)
           .importAccountFromPrivateKey(privateKey: _privateKey.text)
           .then((value) {
@@ -33,15 +38,6 @@ class _ImportAccountState extends State<ImportAccount> {
       }).catchError((e) {
         showErrorSnackBar(context, 'Error', e);
       });
-      // context.read<WalletCubit>().importAccountFromPrivateKey(_privateKey.text,
-      //     onsuccess: () {
-      //   Navigator.of(context).pop();
-      // }, alreadyExist: () {
-      //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      //     content: Text("You're trying to import account that already exist"),
-      //     backgroundColor: Colors.red,
-      //   ));
-      // });
     }
   }
 
@@ -115,6 +111,43 @@ class _ImportAccountState extends State<ImportAccount> {
             const SizedBox(
               height: 20,
             ),
+            Provider.of<WalletProvider>(context).wallets.isEmpty
+                ? const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text("Password"),
+                  )
+                : const SizedBox(),
+            Provider.of<WalletProvider>(context).wallets.isEmpty
+                ? const SizedBox(
+                    height: 10,
+                  )
+                : const SizedBox(),
+            Provider.of<WalletProvider>(context).wallets.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: TextFormField(
+                      controller: _password,
+                      validator: (String? string) {
+                        if (string!.isEmpty) {
+                          return "Password shouldn't be empty";
+                        }
+                        if (string.length < 8) {
+                          return "Password atleast contain 8 character";
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                          hintText: "Enter new password",
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: kPrimaryColor)),
+                          errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: kPrimaryColor)),
+                          border: OutlineInputBorder(borderSide: BorderSide())),
+                    ),
+                  )
+                : const SizedBox(),
             const SizedBox(
               height: 20,
             ),

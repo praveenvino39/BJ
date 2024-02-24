@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1054462390932",
+    "firebase_url": "https://web2app-51b36-default-rtdb.firebaseio.com",
+    "project_id": "web2app-51b36",
+    "storage_bucket": "web2app-51b36.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1054462390932:android:9d0e7c9469f1ed7d703a81",
+        "android_client_info": {
+          "package_name": "com.phimask.network"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD06p06mWk8Qgr21s8Lwe5c3oan4nMWgg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

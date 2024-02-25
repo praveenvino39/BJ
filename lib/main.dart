@@ -29,6 +29,7 @@ import 'package:wallet_cryptomask/core/locale_provider/cubit/locale_cubit.dart';
 import 'package:wallet_cryptomask/core/model/coin_gecko_token_model.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/promotion.dart';
 import 'package:wallet_cryptomask/firebase_options.dart';
 import 'package:wallet_cryptomask/ui/amount/amount_screen.dart';
 import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
@@ -36,6 +37,7 @@ import 'package:wallet_cryptomask/ui/collectibles/import_collectible_screen.dart
 import 'package:wallet_cryptomask/ui/home/home_screen.dart';
 import 'package:wallet_cryptomask/ui/import-account/import_account_screen.dart';
 import 'package:wallet_cryptomask/ui/login-screen/login_screen.dart';
+import 'package:wallet_cryptomask/ui/promotion_detail_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/confirm_passphrase/confirm_passphrase_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/create_password/create_password_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/create_wallet_screen.dart';
@@ -252,6 +254,14 @@ class _MyAppState extends State<MyApp> {
                 if (setting.name == SettingsScreen.route) {
                   return MaterialPageRoute(
                       builder: (context) => const SettingsScreen());
+                }
+                if (setting.name == PromotionDetailScreen.route) {
+                  final promotion =
+                      (setting.arguments as dynamic)['promotion'] as Promotion;
+                  return MaterialPageRoute(
+                      builder: (context) => PromotionDetailScreen(
+                            promotion: promotion,
+                          ));
                 }
                 if (setting.name == SwapScreen.route) {
                   return MaterialPageRoute(

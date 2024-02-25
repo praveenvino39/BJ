@@ -2,16 +2,24 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:dio/dio.dart';
-import 'dart:math' as math;
 import 'package:hive/hive.dart';
+import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/model/coin_gecko_token_model.dart';
 import 'package:wallet_cryptomask/core/model/gas_tracker_api.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/erc20_transaction_log.dart';
-import 'package:wallet_cryptomask/core/remote/response-model/price_response.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/promotion.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/transaction_log_result.dart';
+
+const baseUrl = "${baseApiUrl}api/user";
+
+Future<Promotions> getUpdates() async {
+  final response = await Dio().get("$baseUrl/promotions");
+  return Promotions.fromJson(response.data);
+}
 
 Future<dynamic> getPrice(String priceId) async {
   if (priceId == "phi-network") {

@@ -6,6 +6,10 @@ import 'package:wallet_cryptomask/l10n/transalation.dart';
 const Color kPrimaryColor = Color(0xff7b15ef);
 
 const String walletConnectSingleTon = "WalletConnectSingleTon";
+
+// const baseStaticUrl = "http://localhost:3001/";
+const baseApiUrl =
+    "https://5835-2405-201-e02a-802e-8496-ee79-33c9-ba0e.ngrok-free.app/";
 onBoardScreenContent(BuildContext context) {
   return [
     PageViewModel(

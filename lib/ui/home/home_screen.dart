@@ -21,6 +21,7 @@ import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/swap_screen/swap_screen.dart';
 import 'package:wallet_cryptomask/ui/token/token_tab.dart';
 import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
+import 'package:wallet_cryptomask/ui/updates_tab.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 import 'package:web3dart/web3dart.dart';
@@ -377,7 +378,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           child: TabBarView(
                               controller: _tabController,
                               children: const [
-                                TokenTab(),
+                                UpdatesTab(),
                                 TokenTab(),
                                 CollectiblesTab(),
                               ]),

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 // ignore: library_prefixes
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/promotion.dart';
 import 'package:wallet_cryptomask/ui/promotion_card.dart';
@@ -22,9 +22,9 @@ class _UpdatesTabState extends State<UpdatesTab> {
     super.initState();
     // loadPromotion();
     IO.Socket socket = IO.io(
-        'http://localhost:3001',
-        IO.OptionBuilder().setTransports(['websocket']).setExtraHeaders(
-            {'foo': 'bar'}).build());
+        baseApiUrl,
+        IO.OptionBuilder()
+            .setTransports(['websocket']).setExtraHeaders({}).build());
     socket.onConnect((_) {
       log('connect');
       loadPromotion();

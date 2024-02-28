@@ -9,8 +9,7 @@ const String walletConnectSingleTon = "WalletConnectSingleTon";
 
 // const baseStaticUrl = "http://localhost:3001/";
 // const baseApiUrl = "http://localhost:3001/";
-const baseApiUrl =
-    "https://978c-2405-201-e02a-802e-29f6-ed78-4909-a478.ngrok-free.app/";
+
 onBoardScreenContent(BuildContext context) {
   return [
     PageViewModel(

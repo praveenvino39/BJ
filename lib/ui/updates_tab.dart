@@ -7,6 +7,7 @@ import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/promotion.dart';
 import 'package:wallet_cryptomask/ui/promotion_card.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 
 class UpdatesTab extends StatefulWidget {
   const UpdatesTab({super.key});
@@ -17,10 +18,10 @@ class UpdatesTab extends StatefulWidget {
 
 class _UpdatesTabState extends State<UpdatesTab> {
   Promotions? promotions;
+  Exception? exception;
   @override
   void initState() {
     super.initState();
-    // loadPromotion();
     IO.Socket socket = IO.io(
         baseApiUrl,
         IO.OptionBuilder()
@@ -35,7 +36,9 @@ class _UpdatesTabState extends State<UpdatesTab> {
     });
 
     socket.onError((data) {
-      log(data.toString());
+      setState(() {
+        exception = data;
+      });
     });
   }
 
@@ -57,8 +60,15 @@ class _UpdatesTabState extends State<UpdatesTab> {
                   imageUrl: baseApiUrl + promotions!.data[index].image,
                   openInDappBrowser: promotions!.data[index].openInDappBrowser,
                 ))
-        : const Center(
-            child: CircularProgressIndicator(),
-          );
+        : exception != null
+            ? const Center(
+                child: WalletText(
+                  "",
+                  localizeKey: "Something went wrong",
+                ),
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              );
   }
 }

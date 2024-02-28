@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+// ignore: library_prefixes
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/promotion.dart';
@@ -12,31 +16,49 @@ class UpdatesTab extends StatefulWidget {
 }
 
 class _UpdatesTabState extends State<UpdatesTab> {
+  Promotions? promotions;
+  @override
+  void initState() {
+    super.initState();
+    // loadPromotion();
+    IO.Socket socket = IO.io(
+        'http://localhost:3001',
+        IO.OptionBuilder().setTransports(['websocket']).setExtraHeaders(
+            {'foo': 'bar'}).build());
+    socket.onConnect((_) {
+      log('connect');
+      loadPromotion();
+      socket.emit('joinRoom', 'PROMOTION');
+      socket.on('message', (data) {
+        loadPromotion();
+      });
+    });
+
+    socket.onError((data) {
+      log(data.toString());
+    });
+  }
+
+  loadPromotion() async {
+    promotions = await getUpdates();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Promotions?>(
-      future: getUpdates(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ListView.builder(
-              itemCount: snapshot.data?.data.length ?? 0,
-              itemBuilder: (context, index) => PromotionCard(
-                    body: snapshot.data!.data[index].body,
-                    title: snapshot.data!.data[index].title,
-                    ctaText: snapshot.data!.data[index].ctaText,
-                    ctaUrl: snapshot.data!.data[index].ctaUrl,
-                    imageUrl: baseApiUrl + snapshot.data!.data[index].image,
-                    openInDappBrowser:
-                        snapshot.data!.data[index].openInDappBrowser,
-                  ));
-        }
-        if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
+    return promotions != null
+        ? ListView.builder(
+            itemCount: promotions!.data.length ?? 0,
+            itemBuilder: (context, index) => PromotionCard(
+                  body: promotions!.data[index].body,
+                  title: promotions!.data[index].title,
+                  ctaText: promotions!.data[index].ctaText,
+                  ctaUrl: promotions!.data[index].ctaUrl,
+                  imageUrl: baseApiUrl + promotions!.data[index].image,
+                  openInDappBrowser: promotions!.data[index].openInDappBrowser,
+                ))
+        : const Center(
+            child: CircularProgressIndicator(),
+          );
   }
 }

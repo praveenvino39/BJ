@@ -8,8 +8,9 @@ const Color kPrimaryColor = Color(0xff7b15ef);
 const String walletConnectSingleTon = "WalletConnectSingleTon";
 
 // const baseStaticUrl = "http://localhost:3001/";
+// const baseApiUrl = "http://localhost:3001/";
 const baseApiUrl =
-    "https://5835-2405-201-e02a-802e-8496-ee79-33c9-ba0e.ngrok-free.app/";
+    "https://978c-2405-201-e02a-802e-29f6-ed78-4909-a478.ngrok-free.app/";
 onBoardScreenContent(BuildContext context) {
   return [
     PageViewModel(

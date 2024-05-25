@@ -5,8 +5,9 @@ import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/core.dart';
-import 'package:wallet_cryptomask/core/cubit_helper.dart';
 import 'package:wallet_cryptomask/ui/browser/model/request.dart';
 import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
 import 'package:wallet_cryptomask/ui/dapp_widgets/connect_sheet.dart';
@@ -50,10 +51,16 @@ class DappResolver {
         Completer completer = Completer();
         List connectedSites = box.get("connected-sites", defaultValue: []);
         if (connectedSites.contains(webViewModel!.url!.origin)) {
-          // Future.delayed(const Duration(milliseconds: 200), (() {
-          completer.complete(
-              [getWalletLoadedState(context).wallet.privateKey.address.hex]);
-          // }));
+          Future.delayed(const Duration(milliseconds: 200), (() {
+            completer.complete([
+              Provider.of<WalletProvider>(context, listen: false)
+                  .activeWallet
+                  .wallet
+                  .privateKey
+                  .address
+                  .hex
+            ]);
+          }));
           return completer.future;
         }
         Navigator.of(context).push(
@@ -78,8 +85,14 @@ class DappResolver {
         Completer completer = Completer();
         List connectedSites = box.get("connected-sites", defaultValue: []);
         if (connectedSites.contains(webViewModel!.url!.origin)) {
-          completer.complete(
-              [getWalletLoadedState(context).wallet.privateKey.address.hex]);
+          completer.complete([
+            Provider.of<WalletProvider>(context, listen: false)
+                .activeWallet
+                .wallet
+                .privateKey
+                .address
+                .hex
+          ]);
           return completer.future;
         }
         Navigator.of(context).push(

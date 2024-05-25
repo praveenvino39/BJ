@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/ui/token/component/token_tile.dart';
 
@@ -17,55 +18,54 @@ class TokenSelectionSheet extends StatefulWidget {
 class _TokenSelectionSheetState extends State<TokenSelectionSheet> {
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<TokenCubit, TokenState>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        return Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10), color: Colors.white),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey.withAlpha(60),
-                ),
-                width: 50,
-                height: 4,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                width: double.infinity,
-                height: 1,
-                color: Colors.grey.withAlpha(60),
-              ),
-              Expanded(
-                  child: ListView.builder(
-                itemCount: state.tokens.length,
-                itemBuilder: (context, index) => InkWell(
-                  onTap: () {
-                    widget.onTokenSelect(state.tokens[index]);
-                  },
-                  child: TokenTile(
-                      decimal: state.tokens[index].decimal,
-                      imageUrl: state.tokens[index].imageUrl,
-                      symbol: state.tokens[index].symbol,
-                      balance: Decimal.zero,
-                      balanceInFiat: 0.0,
-                      tokenAddress: state.tokens[index].tokenAddress),
-                ),
-              ))
-            ],
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10), color: Colors.white),
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 10,
           ),
-        );
-      },
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.grey.withAlpha(60),
+            ),
+            width: 50,
+            height: 4,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            width: double.infinity,
+            height: 1,
+            color: Colors.grey.withAlpha(60),
+          ),
+          Expanded(
+              child: ListView.builder(
+            itemCount: getTokenProvider(context).tokens.length,
+            itemBuilder: (context, index) => InkWell(
+              onTap: () {
+                widget.onTokenSelect(getTokenProvider(context).tokens[index]);
+              },
+              child: TokenTile(
+                  decimal: getTokenProvider(context).tokens[index].decimal,
+                  imageUrl: getTokenProvider(context).tokens[index].imageUrl,
+                  symbol: getTokenProvider(context).tokens[index].symbol,
+                  balance: Decimal.parse(getTokenProvider(context)
+                      .tokens[index]
+                      .balance
+                      .toString()),
+                  balanceInFiat: 0.0,
+                  tokenAddress:
+                      getTokenProvider(context).tokens[index].tokenAddress),
+            ),
+          ))
+        ],
+      ),
     );
   }
 }

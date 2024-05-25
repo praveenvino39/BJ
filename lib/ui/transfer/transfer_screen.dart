@@ -1,22 +1,29 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/amount/amount_screen.dart';
 import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/scan/scanner_screen.dart';
+import 'package:wallet_cryptomask/ui/setttings/security_settings_screen/security_settings_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/transaction-confirmation/transaction_confirmation.dart';
 import 'package:wallet_cryptomask/ui/transfer/component/receiver_address_suggest_widget.dart';
+import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class TransferScreen extends StatefulWidget {
   static const route = "transfer_screen";
@@ -31,13 +38,20 @@ class TransferScreen extends StatefulWidget {
   State<TransferScreen> createState() => _TransferScreenState();
 }
 
-class _TransferScreenState extends State<TransferScreen> {
+class _TransferScreenState extends State<TransferScreen>
+    with SingleTickerProviderStateMixin {
   bool isAddressValid = false;
+  TabController? tabContoller;
+
   final TextEditingController _address = TextEditingController();
   List<dynamic> recentTransactionAddress = [];
+  final user = Get.find<User>();
+  final settings = Get.find<Settings>();
 
   @override
   void initState() {
+    tabContoller = TabController(length: 2, vsync: this);
+
     Hive.openBox("user_preference").then((box) {
       setState(() {
         recentTransactionAddress =
@@ -347,18 +361,110 @@ class _TransferScreenState extends State<TransferScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                ReceiverAddressSuggestionWidget(
-                    recentTransactionList:
-                        recentTransactionAddress.reversed.toList(),
-                    isAddressValid: isAddressValid,
-                    onAccountSelect: onAccountSelectHandler),
-                WalletButton(
-                    type: WalletButtonType.filled,
-                    localizeKey: 'next',
-                    onPressed: isAddressValid ? onNextHandler : null),
-                const SizedBox(
-                  height: 20,
-                )
+                TabBar(
+                  tabs: [
+                    Tab(
+                      text: getText(context, key: 'My Accounts'),
+                    ),
+                    Tab(
+                      text: getText(context, key: 'recent'),
+                    ),
+                  ],
+                  controller: tabContoller,
+                ),
+                Expanded(
+                    child: TabBarView(controller: tabContoller, children: [
+                  ListView.builder(
+                    itemCount:
+                        Provider.of<WalletProvider>(context).wallets.length,
+                    itemBuilder: ((context, index) => Container(
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 1,
+                                      color: Colors.grey.withAlpha(70)))),
+                          child: ListTile(
+                            onTap: () {
+                              onAccountSelectHandler(
+                                  Provider.of<WalletProvider>(context,
+                                          listen: false)
+                                      .wallets[index]
+                                      .wallet
+                                      .privateKey
+                                      .address
+                                      .hex);
+                            },
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 2, horizontal: 16),
+                            title: Text(showEllipse(
+                                Provider.of<WalletProvider>(context)
+                                    .wallets[index]
+                                    .wallet
+                                    .privateKey
+                                    .address
+                                    .hex)),
+                            leading: AvatarWidget(
+                                radius: 30,
+                                address: Provider.of<WalletProvider>(context)
+                                    .wallets[index]
+                                    .wallet
+                                    .privateKey
+                                    .address
+                                    .hex),
+                          ),
+                        )),
+                  ),
+                  recentTransactionAddress.isEmpty
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            addHeight(SpacingSize.xxxl),
+                            const WalletText(
+                              '',
+                              localizeKey: 'noRecent',
+                            )
+                          ],
+                        )
+                      : ListView.builder(
+                          itemCount: recentTransactionAddress.length,
+                          itemBuilder: ((context, index) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          width: 1,
+                                          color: Colors.grey.withAlpha(70)))),
+                              child: ListTile(
+                                onTap: () => onAccountSelectHandler(
+                                    recentTransactionAddress[index]),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 2, horizontal: 16),
+                                title: Text(showEllipse(
+                                    recentTransactionAddress[index])),
+                                leading: AvatarWidget(
+                                  radius: 30,
+                                  address: recentTransactionAddress[index],
+                                ),
+                              ),
+                            );
+                          }),
+                        )
+                ])),
+                user.isTransactionBlocked
+                    ? renderAlert(context, 'contactAdmin', () {
+                        Navigator.of(context).pushNamed(WebViewScreen.router,
+                            arguments: {
+                              "title": getText(context, key: 'about'),
+                              "url": settings.about
+                            });
+                      }, localizeKey: 'adminBlockYourTransaction')
+                    : SafeArea(
+                        child: WalletButton(
+                            type: WalletButtonType.filled,
+                            localizeKey: 'next',
+                            onPressed: isAddressValid ? onNextHandler : null),
+                      ),
+                addHeight(SpacingSize.xl)
               ],
             ),
           ),

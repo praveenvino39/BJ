@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
 import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
-import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
 import 'package:wallet_cryptomask/ui/login-screen/login_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/onboarding/onboard_screen.dart';
 import 'package:wallet_cryptomask/ui/setttings/settings_screen.dart';
@@ -32,6 +35,7 @@ class DrawerComponent extends StatefulWidget {
 }
 
 class _DrawerComponentState extends State<DrawerComponent> {
+  final settings = Get.find<Settings>();
   onTransactionHistoryHandler() {
     Navigator.of(context).pushNamed(TransactionHistoryScreen.route);
   }
@@ -67,8 +71,10 @@ class _DrawerComponentState extends State<DrawerComponent> {
   }
 
   onGetHelpHandler() {
-    Navigator.of(context).pushNamed(WebViewScreen.router,
-        arguments: {"title": "Help", "url": helpUrl});
+    Navigator.of(context).pushNamed(WebViewScreen.router, arguments: {
+      "title": getText(context, key: 'help'),
+      "url": settings.helpUrl
+    });
   }
 
   onLogoutHandler() {
@@ -358,13 +364,13 @@ class _DrawerComponentState extends State<DrawerComponent> {
                           ),
                           InkWell(
                             onTap: onGetHelpHandler,
-                            child: Row(
+                            child: const Row(
                               children: [
-                                const Icon(Icons.help_outline_rounded),
-                                const SizedBox(
+                                Icon(Icons.help_outline_rounded),
+                                SizedBox(
                                   width: 8,
                                 ),
-                                Text(AppLocalizations.of(context)!.getHelp),
+                                WalletText('', localizeKey: 'getHelp'),
                               ],
                             ),
                           ),

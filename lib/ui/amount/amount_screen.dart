@@ -38,11 +38,13 @@ class _AmountScreenState extends State<AmountScreen> {
   Token? selectedTokenObj;
 
   onTokenSelection(selectedTokenFromSheet) {
-    widget.balance = selectedTokenFromSheet.balance.toDouble();
     selectedToken = selectedTokenFromSheet.symbol;
+    widget.token.tokenAddress = selectedTokenFromSheet.tokenAddress;
     setState(() {
+      widget.balance = selectedTokenFromSheet.balance.toDouble();
       selectedTokenObj = selectedTokenFromSheet;
     });
+    checkIsValidAmount();
     Navigator.of(context).pop();
   }
 
@@ -92,7 +94,7 @@ class _AmountScreenState extends State<AmountScreen> {
           });
         }
       } else {
-        if (widget.token.balance >= amount) {
+        if (selectedTokenObj!.balance >= amount) {
           setState(() {
             isValidAmount = true;
           });
@@ -235,14 +237,18 @@ class _AmountScreenState extends State<AmountScreen> {
           ),
           const Expanded(child: SizedBox()),
           isValidAmount
-              ? WalletButton(
-                  localizeKey: 'next',
-                  onPressed: onNextHandler,
-                  type: WalletButtonType.filled,
+              ? SafeArea(
+                  child: WalletButton(
+                    localizeKey: 'next',
+                    onPressed: onNextHandler,
+                    type: WalletButtonType.filled,
+                  ),
                 )
-              : const Text(
-                  "Insufficient fund",
-                  style: TextStyle(color: Colors.red),
+              : const SafeArea(
+                  child: Text(
+                    "Insufficient fund",
+                    style: TextStyle(color: Colors.red),
+                  ),
                 ),
           const SizedBox(
             height: 20,

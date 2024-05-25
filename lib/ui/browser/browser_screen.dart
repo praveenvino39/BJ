@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/ui/browser/helpers/utils.dart';
 import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
 import 'package:wallet_cryptomask/ui/browser/widgets/browser_app_bar.dart';
 import 'package:wallet_cryptomask/ui/browser/widgets/browser_tab_view.dart';
 import 'package:wallet_cryptomask/ui/browser/widgets/browser_view.dart';
-import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart' as native;
 
 class BrowserScreen extends StatefulWidget {
@@ -160,6 +160,13 @@ class _BrowserScreenState extends State<BrowserScreen> {
                         tabs[0].webViewModel.webViewController?.reload();
                       },
                       icon: const Icon(Icons.restart_alt)),
+                  IconButton(
+                      onPressed: () {
+                        setState(() {
+                          showBrowser = false;
+                        });
+                      },
+                      icon: const Icon(Icons.tab)),
                 ],
               )),
           appBar: PreferredSize(
@@ -186,6 +193,7 @@ class _BrowserScreenState extends State<BrowserScreen> {
                       ),
                       !showBrowser
                           ? BrowserTabView(
+                              createNewTab: createNewTab,
                               selectTab: (tab, index) {
                                 setState(() {
                                   selectedIndex = index;

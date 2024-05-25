@@ -22,10 +22,10 @@ class _NetworkSwitchSheetState extends State<NetworkSwitchSheet> {
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
               )),
-          child: Center(
+          child: const Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [],
+              children: [],
             ),
           ),
         ),

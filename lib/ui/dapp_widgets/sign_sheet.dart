@@ -6,8 +6,9 @@ import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:ethers/crypto/formatting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/shared/chain_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
@@ -124,7 +125,8 @@ class _SignSheetState extends State<SignSheet> {
                 children: [
                   AvatarWidget(
                     radius: 40,
-                    address: getWalletLoadedState(context)
+                    address: Provider.of<WalletProvider>(context, listen: false)
+                        .activeWallet
                         .wallet
                         .privateKey
                         .address
@@ -140,7 +142,7 @@ class _SignSheetState extends State<SignSheet> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${getAccountName(getWalletLoadedState(context))} (${showEllipse(getWalletLoadedState(context).wallet.privateKey.address.hex)})",
+                          "${Provider.of<WalletProvider>(context).getAccountName()} (${showEllipse(Provider.of<WalletProvider>(context).activeWallet.wallet.privateKey.address.hex)})",
                           style: const TextStyle(fontSize: 16),
                         ),
                       ],
@@ -159,15 +161,15 @@ class _SignSheetState extends State<SignSheet> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     NetworkDot(
-                        color: getWalletLoadedState(context)
-                            .currentNetwork
+                        color: Provider.of<WalletProvider>(context)
+                            .activeNetwork
                             .dotColor),
                     const SizedBox(
                       width: 5,
                     ),
                     Text(
-                      getWalletLoadedState(context)
-                          .currentNetwork
+                      Provider.of<WalletProvider>(context)
+                          .activeNetwork
                           .networkName
                           .replaceAll("_", " "),
                       style: const TextStyle(fontSize: 14),
@@ -227,6 +229,7 @@ class _SignSheetState extends State<SignSheet> {
                     Expanded(
                       child: WalletButton(
                           textContent: "Reject",
+                          localizeKey: "Reject",
                           onPressed: () async {
                             widget.onReject();
                             Navigator.of(context).pop();
@@ -235,6 +238,7 @@ class _SignSheetState extends State<SignSheet> {
                     Expanded(
                       child: WalletButton(
                           textContent: "Approve",
+                          localizeKey: "Approve",
                           type: WalletButtonType.filled,
                           onPressed: () async {
                             String signature = EthSigUtil.signPersonalMessage(
@@ -243,7 +247,9 @@ class _SignSheetState extends State<SignSheet> {
                                     : Uint8List.fromList(
                                         utf8.encode(widget.messageToBeSigned)),
                                 privateKey: bytesToHex(
-                                    getWalletLoadedState(context)
+                                    Provider.of<WalletProvider>(context,
+                                            listen: false)
+                                        .activeWallet
                                         .wallet
                                         .privateKey
                                         .privateKey,

@@ -9,10 +9,11 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/route_manager.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/web3wallet_service.dart';
 import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
@@ -61,7 +62,7 @@ class _BrowserViewState extends State<BrowserView> {
       listener: (context, state) async {
         if (state is WalletNetworkChanged) {
           web3service.initHandlers(
-              getWalletLoadedState(context).currentNetwork.nameSpace,
+              Provider.of<WalletProvider>(context).activeNetwork.nameSpace,
               state.currentNetwork.chainId.toString());
           webViewController?.postWebMessage(
               message: WebMessage(
@@ -171,11 +172,11 @@ class _BrowserViewState extends State<BrowserView> {
     log("DAPP REQUEST ====> $isAttached");
     await widget.webViewModel.webViewController?.evaluateJavascript(
         source:
-            'window.rpc = "${getWalletLoadedState(context).currentNetwork.url}"',
+            'window.rpc = "${Provider.of<WalletProvider>(context, listen: false).activeNetwork.url}"',
         contentWorld: ContentWorld.PAGE);
     await widget.webViewModel.webViewController?.evaluateJavascript(
         source:
-            'window.chainId = ${getWalletLoadedState(context).currentNetwork.chainId}',
+            'window.chainId = ${Provider.of<WalletProvider>(context, listen: false).activeNetwork.chainId}',
         contentWorld: ContentWorld.PAGE);
 
     webViewController?.injectJavascriptFileFromAsset(
@@ -217,7 +218,10 @@ class _BrowserViewState extends State<BrowserView> {
             }
           } else {
             var repsonse = await callBlockChain(
-                request, getWalletLoadedState(context).currentNetwork.url);
+                request,
+                Provider.of<WalletProvider>(context, listen: false)
+                    .activeNetwork
+                    .url);
             return jsonEncode(repsonse["result"]);
           }
         });

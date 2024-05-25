@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/moralis_transaction_response.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/transaction_log_result.dart';
 import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
@@ -79,23 +82,23 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
       ),
       body: RefreshIndicator(
         color: kPrimaryColor,
-        onRefresh: () async => getTransactionLog(
-            Provider.of<WalletProvider>(context)
+        onRefresh: () async => getTokenProvider(context).getTransactions(
+            address: Provider.of<WalletProvider>(context)
                 .activeWallet
                 .wallet
                 .privateKey
                 .address
                 .hex,
-            Provider.of<WalletProvider>(context).activeNetwork),
-        child: FutureBuilder<List<TransactionResult>?>(
-          future: getTransactionLog(
-              Provider.of<WalletProvider>(context)
+            network: Provider.of<WalletProvider>(context).activeNetwork),
+        child: FutureBuilder<List<MoralisTransaction>>(
+          future: getTokenProvider(context).getTransactions(
+              address: Provider.of<WalletProvider>(context)
                   .activeWallet
                   .wallet
                   .privateKey
                   .address
                   .hex,
-              Provider.of<WalletProvider>(context).activeNetwork),
+              network: Provider.of<WalletProvider>(context).activeNetwork),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return snapshot.data!.isNotEmpty
@@ -107,10 +110,17 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                             child: ListView.builder(
                                 itemCount: snapshot.data?.length,
                                 itemBuilder: (context, index) {
-                                  var date = DateTime
-                                      .fromMicrosecondsSinceEpoch(int.parse(
-                                              snapshot.data![index].timeStamp) *
-                                          1000000);
+                                  // Define the format of the input date string
+                                  DateFormat dateFormat = DateFormat(
+                                      "EEE MMM dd yyyy HH:mm:ss 'GMT'Z");
+
+                                  // Parse the date string to DateTime
+                                  DateTime date = dateFormat.parse(
+                                      snapshot.data![index].blockTimestamp
+                                          .replaceAll(
+                                              RegExp(r' \([^)]*\)'), ''),
+                                      true);
+
                                   return TransactionTile(
                                       date: date, data: snapshot.data![index]);
                                 }),
@@ -119,17 +129,26 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                // Navigator.of(context)
-                                //     .pushNamed(BlockWebView.router, arguments: {
-                                //   "title": state.currentNetwork.networkName,
-                                //   "url": viewAddressOnEtherScan(
-                                //       state.currentNetwork,
-                                //       state.wallet.privateKey.address.hex)
-                                // });
+                                Navigator.of(context)
+                                    .pushNamed(BlockWebView.router, arguments: {
+                                  "title": getWalletProvider(context)
+                                      .activeNetwork
+                                      .networkName,
+                                  "url": viewAddressOnEtherScan(
+                                      getWalletProvider(context).activeNetwork,
+                                      getWalletProvider(context)
+                                          .activeWallet
+                                          .wallet
+                                          .privateKey
+                                          .address
+                                          .hex)
+                                });
                               },
-                              child: const Text(
-                                "View full history on Explorer",
-                                style: TextStyle(color: kPrimaryColor),
+                              child: const SafeArea(
+                                child: Text(
+                                  "View full history on Explorer",
+                                  style: TextStyle(color: kPrimaryColor),
+                                ),
                               ),
                             ),
                           )

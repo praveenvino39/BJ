@@ -1,26 +1,21 @@
-import 'dart:developer';
+// ignore_for_file: use_build_context_synchronously
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
-import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/create_wallet_provider/create_wallet_provider.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/home/home_screen.dart';
-import 'package:wallet_cryptomask/ui/onboard/component/circle_stepper.dart';
-import 'package:wallet_cryptomask/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
-import 'package:wallet_cryptomask/ui/screens/generate_passphrase/generate_passphrase_screen.dart';
-import 'package:wallet_cryptomask/ui/setttings/general_settings_screen/general_settings_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
 import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
-import 'package:provider/provider.dart';
 
 class CreatePasswordScreen extends StatefulWidget {
   static const route = "create_password_screen";
@@ -32,10 +27,14 @@ class CreatePasswordScreen extends StatefulWidget {
 
 class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final passwordEditingControl = TextEditingController();
-  final confirmPasswordEditingControl = TextEditingController();
+  final passwordEditingControl =
+      TextEditingController(text: kDebugMode ? "11111111" : null);
+  final confirmPasswordEditingControl =
+      TextEditingController(text: kDebugMode ? "11111111" : null);
   bool isTermsAccepted = false;
   bool isCondition = false;
+  bool isLoading = false;
+  final settings = Get.find<Settings>();
 
   bool showPassword = false;
 
@@ -50,38 +49,62 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
   }
 
   learnMoreHandler() {
-    Navigator.of(context).pushNamed(WebViewScreen.router,
-        arguments: {"title": "Learn more", "url": "https://ngydp.io/"});
+    Navigator.of(context).pushNamed(WebViewScreen.router, arguments: {
+      "title": getText(context, key: 'learnMore'),
+      "url": settings.ppUrl
+    });
   }
 
-  createPasswordHandler() {
+  createPasswordHandler() async {
+    setState(() {
+      isLoading = true;
+    });
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     if (_formKey.currentState?.validate() == true) {
       if (!isTermsAccepted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            backgroundColor: Colors.red,
-            content: WalletText(
-              "",
-              color: Colors.white,
-              localizeKey: 'accepTermsWarning',
-              placeholderLocalizeKey: 'appName',
-            )));
+        showErrorSnackBar(
+            context, 'Invalid', getText(context, key: 'accepTermsWarning'));
+        setState(() {
+          isLoading = false;
+        });
         return;
       }
       if (passwordEditingControl.text != confirmPasswordEditingControl.text) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            backgroundColor: Colors.red,
-            content: WalletText(
-              '',
-              color: Colors.white,
-              localizeKey: 'passwordConfirmPasswordNotMatch',
-            )));
+        showErrorSnackBar(
+            context,
+            'Invalid',
+            getText(
+              context,
+              key: 'passwordConfirmPasswordNotMatch',
+            ));
+        setState(() {
+          isLoading = false;
+        });
         return;
       }
-      context
-          .read<CreateWalletProvider>()
-          .setPassword(passwordEditingControl.text);
-      Navigator.pushNamed(context, GeneratePassPhraseScreen.route);
+      try {
+        final createWalletProvider = getCreateWalletProvider(context);
+        final walletProvider = getWalletProvider(context);
+        await createWalletProvider.setPassword(passwordEditingControl.text);
+        await createWalletProvider.createWallet();
+        await walletProvider.openWallet(password: passwordEditingControl.text);
+        setState(() {
+          isLoading = false;
+        });
+        showPositiveSnackBar(
+            context,
+            'Success',
+            getText(
+              context,
+              key: 'createWalletGreet',
+            ));
+        await Navigator.pushNamed(context, HomeScreen.route);
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+        showErrorSnackBar(context, "Error", e.toString());
+      }
     }
   }
 
@@ -102,8 +125,6 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
             key: _formKey,
             child: Column(
               children: [
-                CircleStepper(
-                    key: const Key('circle-stepper'), currentIndex: 0),
                 addHeight(SpacingSize.m),
                 const WalletText(
                   '',
@@ -171,10 +192,14 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
                   ],
                 ),
                 addHeight(SpacingSize.s),
-                WalletButton(
-                    key: const Key('create-wallet-button'),
-                    localizeKey: "createPassword",
-                    onPressed: createPasswordHandler)
+                isLoading
+                    ? const CircularProgressIndicator(
+                        color: kPrimaryColor,
+                      )
+                    : WalletButton(
+                        key: const Key('create-wallet-button'),
+                        localizeKey: "createPassword",
+                        onPressed: createPasswordHandler)
               ],
             ),
           ),

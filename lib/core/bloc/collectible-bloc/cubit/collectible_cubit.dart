@@ -12,6 +12,7 @@ import 'package:wallet_cryptomask/core/abi.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
+import 'package:wallet_cryptomask/utils.dart';
 import 'package:web3dart/web3dart.dart';
 
 part 'collectible_state.dart';
@@ -55,14 +56,12 @@ class CollectibleCubit extends Cubit<CollectibleState> {
     if ((ownerResult as dynamic)[0].toString().toLowerCase() ==
         address.toLowerCase()) {
       try {
-        var uriResult = await web3client
-            .call(contract: contract, function: uriTokenFunction, params: [
-          BigInt.parse(collectible.tokenId),
-        ]);
-        log(uriResult.toString());
-        var response = await Dio().get(
-            "https://ipfs.io/ipfs/${(uriResult as dynamic)[0]}".toString());
-        collectible.imageUrl = response.data["image"];
+        final uri = await getMetadataURL(
+            web3client: web3client,
+            contract: contract,
+            tokenId: collectible.tokenId);
+        var response = await Dio().get(uri);
+        collectible.imageUrl = getSource(response.data['image']).url;
         collectible.description = response.data["description"];
       } catch (e) {
         log(e.toString());

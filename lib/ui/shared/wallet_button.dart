@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
@@ -14,6 +15,7 @@ class WalletButton extends StatefulWidget {
   final Function()? onPressed;
   final WalletButtonType type;
   final String? localizeKey;
+  final bool fullWidth;
   final double textSize;
   final WalletButtonSize buttonSize;
   const WalletButton(
@@ -22,6 +24,7 @@ class WalletButton extends StatefulWidget {
       required this.onPressed,
       this.textSize = 14,
       this.buttonSize = WalletButtonSize.medium,
+      this.fullWidth = true,
       this.localizeKey,
       this.type = WalletButtonType.outline})
       : super(key: key);
@@ -36,9 +39,14 @@ class _WalletButtonState extends State<WalletButton> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: SizedBox(
-        width: double.infinity,
+        width: widget.fullWidth ? double.infinity : null,
         child: OutlinedButton(
           style: OutlinedButton.styleFrom(
+            foregroundColor: widget.type == WalletButtonType.filled
+                ? widget.onPressed != null
+                    ? Colors.white
+                    : Colors.grey
+                : kPrimaryColor,
             padding: kIsWeb || Platform.isMacOS
                 ? widget.buttonSize == WalletButtonSize.small
                     ? const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10)
@@ -47,11 +55,6 @@ class _WalletButtonState extends State<WalletButton> {
                     ? const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10)
                     : const EdgeInsets.symmetric(
                         horizontal: 17.0, vertical: 10),
-            primary: widget.type == WalletButtonType.filled
-                ? widget.onPressed != null
-                    ? Colors.white
-                    : Colors.grey
-                : kPrimaryColor,
             backgroundColor: widget.type == WalletButtonType.filled
                 ? widget.onPressed != null
                     ? kPrimaryColor

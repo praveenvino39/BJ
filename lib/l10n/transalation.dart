@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:wallet_cryptomask/config.dart';
 
 class Translations {
-  Map<String, dynamic> _localizedValues;
+  final Map<String, dynamic> _localizedValues;
 
   Translations(this._localizedValues);
 
@@ -48,6 +49,7 @@ class Translations {
 var en = {
   "appName": "Phimask",
   'createWallet': "Create Wallet",
+  'noRecent': "No recent transaction",
   "accepTermsWarning":
       "You must to accept the terms and condition to use {appName}",
   "passwordConfirmPasswordNotMatch": "Password and confirm password not mached",
@@ -75,10 +77,19 @@ var en = {
   "insufficientFund": "Insufficient fund",
   "passPhraseNotEmpty": "Passpharse shouldn't be empty",
   "passwordNotEmpty": "Passwored shouldn't be empty",
+  "youDontHaveToken": "You don't have any token for this chain",
   "enterYourSecretRecoveryPharse": "Enter your Secret Recovery Phrase",
   "enterNewPassword": "Enter new password",
   "secureWallet": "Secure wallet",
   "createPassword": "Create password",
+  "yourAccountDeactivated":
+      "Your account was deactivated, Please contact admin for more details",
+  "createWalletGreet": "Great!, Wallet created successfully",
+  "contactAdmin": "Contact admin",
+  "backUp": "Backup now",
+  "adminBlockYourTransaction":
+      "You're restricted to make transactions please contact admin for more info",
+  "youHaventBackedup": "You haven't backup the Secret Recovery Phrase",
   "confirmSeed": "Confirm seed",
   "thisPasswordWill":
       "This password will unlock your wallet only on this device.",
@@ -87,6 +98,9 @@ var en = {
   "confirmPassword": "Confirm password",
   "mustBeAtleast": "Must be atleast 8 character",
   "passwordMustContain": "Password must contain atleast 8 characters",
+  "viewOnExplorer": "View on Explorer",
+  "failedToEstimated":
+      "Failed to estimate gas fee. Estimated manually, Transaction may fail.",
   "iUnserstandTheRecover":
       "I understand the {appName} cannot recover this password for me.",
   "@iUnserstandTheRecover": {
@@ -392,7 +406,7 @@ var es = {
 };
 
 String getText(BuildContext context, {required String key}) {
-  return Translations.of(context).get(key);
+  return Translations.of(context).get(key).replaceAll('{appName}', appName);
 }
 
 getTextWithPlaceholder(BuildContext context,

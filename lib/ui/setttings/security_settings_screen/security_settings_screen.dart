@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:web3dart/crypto.dart';
 
@@ -70,7 +71,8 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                     setState(() {
                       showPrivateKey = true;
                       copyAddressToClipBoard(
-                          bytesToHex(getWalletLoadedState(context)
+                          bytesToHex(Provider.of<WalletProvider>(context)
+                              .activeWallet
                               .wallet
                               .privateKey
                               .privateKey),
@@ -85,7 +87,8 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                   },
                   child: Text(!showPrivateKey
                       ? AppLocalizations.of(context)!.tapHereToReveal
-                      : bytesToHex(getWalletLoadedState(context)
+                      : bytesToHex(Provider.of<WalletProvider>(context)
+                          .activeWallet
                           .wallet
                           .privateKey
                           .privateKey)),

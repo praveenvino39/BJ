@@ -4,13 +4,20 @@ import 'dart:math';
 
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:wallet_cryptomask/core/ERC20.dart';
 import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/remote/http.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/moralis_token_transfer.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/moralis_transaction_response.dart';
 import 'package:web3dart/web3dart.dart';
+
+TokenProvider getTokenProvider(BuildContext context) =>
+    context.read<TokenProvider>();
 
 class TokenProvider extends ChangeNotifier {
   List<Token> tokens = [];
@@ -19,17 +26,27 @@ class TokenProvider extends ChangeNotifier {
   TokenProvider({required this.userPreference});
 
   loadToken({
+    required double nativeBalance,
     required String address,
     required Network network,
   }) async {
-    String tokenStorageKey =
-        getTokenStorageKey(address: address, network: network);
-    List<dynamic> tokens = userPreference.get(tokenStorageKey) ?? [];
-    for (var token in tokens) {
-      (token as Token).balance =
-          (await getTokenBalance(token, address, network)).toDouble();
+    try {
+      final moralisTokenResponse = await RemoteServer.getTokens(
+          address: address, chainId: network.chainId.toString());
+      List<Token> tokens = [];
+      for (var token in moralisTokenResponse.data) {
+        tokens.add(Token(
+            tokenAddress: token.token.contractAddress,
+            symbol: token.token.symbol,
+            decimal: token.token.decimals,
+            balance: double.parse(token.value),
+            balanceInFiat: 0));
+      }
+      this.tokens = tokens;
+    } catch (e) {
+      tokens = [];
     }
-    this.tokens = tokens.cast<Token>();
+
     notifyListeners();
   }
 
@@ -49,8 +66,36 @@ class TokenProvider extends ChangeNotifier {
         .toDecimal();
   }
 
+  Future<List<TokenTransfer>> getTokenTransfer(
+      {required String tokenAddress,
+      required String address,
+      required Network network}) async {
+    try {
+      final moralisTokenTransactionResponse =
+          await RemoteServer.getTransactionForToken(
+              tokenAddress: tokenAddress,
+              address: address,
+              chainId: network.chainId.toString());
+      return moralisTokenTransactionResponse.data;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<List<MoralisTransaction>> getTransactions(
+      {required String address, required Network network}) async {
+    try {
+      final moralisTransactionResponse = await RemoteServer.getTransactions(
+          address: address, chainId: network.chainId.toString());
+      return moralisTransactionResponse.data;
+    } catch (e) {
+      return [];
+    }
+  }
+
   Future<void> addToken(
-      {required String address,
+      {required double nativeBalance,
+      required String address,
       required Network network,
       required Token token}) async {
     String tokenStoragekey =
@@ -70,7 +115,7 @@ class TokenProvider extends ChangeNotifier {
       }
     }
     await userPreference.put(tokenStoragekey, tokens);
-    loadToken(address: address, network: network);
+    loadToken(nativeBalance: nativeBalance, address: address, network: network);
   }
 
   Future<List<String>> getTokenInfo(
@@ -86,7 +131,8 @@ class TokenProvider extends ChangeNotifier {
   }
 
   Future<void> deleteToken(
-      {required Token token,
+      {required double nativeBalance,
+      required Token token,
       required String address,
       required Network network}) async {
     String tokenStorageKey =
@@ -94,7 +140,7 @@ class TokenProvider extends ChangeNotifier {
     List<dynamic> tokensDy = userPreference.get(tokenStorageKey) ?? [];
     tokensDy.remove(token);
     await userPreference.put(tokenStorageKey, tokensDy);
-    loadToken(address: address, network: network);
+    loadToken(nativeBalance: nativeBalance, address: address, network: network);
   }
 
   Future<String?> sendTokenTransaction(
@@ -109,9 +155,6 @@ class TokenProvider extends ChangeNotifier {
       Network network) async {
     try {
       final web3client = Web3Client(network.url, Client());
-      String tokenStorageKey = getTokenStorageKey(
-          address: wallet.privateKey.address.hex, network: network);
-
       var sendResult = await web3client.sendTransaction(
           wallet.privateKey,
           Transaction(
@@ -134,7 +177,6 @@ class TokenProvider extends ChangeNotifier {
             ]),
           ),
           chainId: network.chainId);
-      List<dynamic> tokensDy = userPreference.get(tokenStorageKey);
       List<dynamic> recentAddresses =
           userPreference.get("RECENT-TRANSACTION-ADDRESS", defaultValue: []);
       if (recentAddresses.contains(to)) {

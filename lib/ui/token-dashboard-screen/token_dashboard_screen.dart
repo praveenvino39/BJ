@@ -8,17 +8,12 @@ import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
-import 'package:wallet_cryptomask/core/remote/http.dart';
-import 'package:wallet_cryptomask/core/remote/response-model/erc20_transaction_log.dart';
-import 'package:wallet_cryptomask/core/remote/response-model/transaction_log_result.dart';
-import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/moralis_token_transfer.dart';
 import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
 import 'package:wallet_cryptomask/ui/transaction-history/widget/token_transaction_tile.dart';
-import 'package:wallet_cryptomask/ui/transaction-history/widget/transaction_tile.dart';
 import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
-import 'package:wallet_cryptomask/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class TokenDashboardScreen extends StatefulWidget {
@@ -78,52 +73,6 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {
-                if (widget.isCollectibles) {
-                  Provider.of<CollectibleProvider>(context, listen: false)
-                      .deleteCollectibles(
-                          collectible: collectible!,
-                          address: Provider.of<WalletProvider>(context,
-                                  listen: false)
-                              .activeWallet
-                              .wallet
-                              .privateKey
-                              .address
-                              .hex,
-                          network: Provider.of<WalletProvider>(context,
-                                  listen: false)
-                              .activeNetwork);
-                  showPositiveSnackBar(context, "Collectible removed",
-                      "${collectible?.name} has been removed from the portfolio.");
-                  Navigator.of(context).pop();
-                } else {
-                  Provider.of<TokenProvider>(context, listen: false)
-                      .deleteToken(
-                          token: token!,
-                          address: Provider.of<WalletProvider>(context,
-                                  listen: false)
-                              .activeWallet
-                              .wallet
-                              .privateKey
-                              .address
-                              .hex,
-                          network: Provider.of<WalletProvider>(context,
-                                  listen: false)
-                              .activeNetwork)
-                      .then((value) {
-                    showPositiveSnackBar(context, "Token removed",
-                        "${token?.symbol} has been removed from portfolio");
-                    Navigator.of(context).pop();
-                  });
-                }
-              },
-              icon: const Icon(
-                Icons.delete,
-                color: kPrimaryColor,
-              ))
-        ],
         shadowColor: Colors.white,
         elevation: 0,
         backgroundColor: Colors.white,
@@ -161,181 +110,82 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
             width: MediaQuery.of(context).size.width,
             child: Column(
               children: [
-                widget.tokenAddress != ""
-                    ? Expanded(
-                        child: FutureBuilder<List<ERC20Transfer>?>(
-                          future: getERC20TransferLog(
-                              Provider.of<WalletProvider>(context)
-                                  .activeWallet
-                                  .wallet
-                                  .privateKey
-                                  .address
-                                  .hex,
-                              Provider.of<WalletProvider>(context)
-                                  .activeNetwork,
-                              widget.tokenAddress),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return snapshot.data!.isNotEmpty
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(top: 10),
-                                      child: Column(
-                                        children: [
-                                          Expanded(
-                                            child: ListView.builder(
-                                                itemCount:
-                                                    snapshot.data?.length,
-                                                itemBuilder: (context, index) {
-                                                  var date = DateTime
-                                                      .fromMicrosecondsSinceEpoch(
-                                                          int.parse(snapshot
-                                                                  .data![index]
-                                                                  .timeStamp) *
-                                                              1000000);
-                                                  return TokenTransferTile(
-                                                      date: date,
-                                                      data: snapshot
-                                                          .data![index]);
-                                                }),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: InkWell(
-                                              onTap: () {
-                                                Navigator.of(context).pushNamed(
-                                                    BlockWebView.router,
-                                                    arguments: {
-                                                      "title": Provider.of<
-                                                                  WalletProvider>(
-                                                              context)
-                                                          .activeNetwork
-                                                          .networkName,
-                                                      "url":
-                                                          viewAddressOnEtherScan(
-                                                        Provider.of<WalletProvider>(
-                                                                context)
-                                                            .activeNetwork,
-                                                        Provider.of<WalletProvider>(
-                                                                context)
-                                                            .activeWallet
-                                                            .wallet
-                                                            .privateKey
-                                                            .address
-                                                            .hex,
-                                                      )
-                                                    });
-                                              },
-                                              child: const Text(
-                                                "View full history on Explorer",
-                                                style: TextStyle(
-                                                    color: kPrimaryColor),
-                                              ),
-                                            ),
-                                          )
-                                        ],
+                Expanded(
+                  child: FutureBuilder<List<TokenTransfer>?>(
+                    future: getTokenProvider(context).getTokenTransfer(
+                        address: getWalletProvider(context)
+                            .activeWallet
+                            .wallet
+                            .privateKey
+                            .address
+                            .hex,
+                        network: getWalletProvider(context).activeNetwork,
+                        tokenAddress: token!.tokenAddress),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return snapshot.data!.isNotEmpty
+                            ? Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: ListView.builder(
+                                          itemCount: snapshot.data?.length,
+                                          itemBuilder: (context, index) {
+                                            return TokenTransactionTile(
+                                                date: snapshot.data![index]
+                                                    .blockTimestamp,
+                                                data: snapshot.data![index]);
+                                          }),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: InkWell(
+                                        onTap: () {
+                                          // Navigator.of(context)
+                                          //     .pushNamed(
+                                          //         BlockWebView.router,
+                                          //         arguments: {
+                                          //       "title": state
+                                          //           .currentNetwork
+                                          //           .networkName,
+                                          //       "url": viewAddressOnEtherScan(
+                                          //           state
+                                          //               .currentNetwork,
+                                          //           state
+                                          //               .wallet
+                                          //               .privateKey
+                                          //               .address
+                                          //               .hex)
+                                          //     });
+                                        },
+                                        child: const Text(
+                                          "View full history on Explorer",
+                                          style:
+                                              TextStyle(color: kPrimaryColor),
+                                        ),
                                       ),
                                     )
-                                  : Center(
-                                      child: Text(
-                                        AppLocalizations.of(context)!
-                                            .youHaveNoTransaction,
-                                        style: const TextStyle(
-                                            fontSize: 18, color: Colors.grey),
-                                      ),
-                                    );
-                            } else {
-                              return const Center(
-                                child: CircularProgressIndicator(
-                                  color: kPrimaryColor,
+                                  ],
+                                ),
+                              )
+                            : const Center(
+                                child: Text(
+                                  "You have no transactions!",
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.grey),
                                 ),
                               );
-                            }
-                          },
-                        ),
-                      )
-                    : Expanded(
-                        child: FutureBuilder<List<TransactionResult>?>(
-                          future: getTransactionLog(
-                            Provider.of<WalletProvider>(context)
-                                .activeWallet
-                                .wallet
-                                .privateKey
-                                .address
-                                .hex,
-                            Provider.of<WalletProvider>(context).activeNetwork,
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: kPrimaryColor,
                           ),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return snapshot.data!.isNotEmpty
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(top: 10),
-                                      child: Column(
-                                        children: [
-                                          Expanded(
-                                            child: ListView.builder(
-                                                itemCount:
-                                                    snapshot.data?.length,
-                                                itemBuilder: (context, index) {
-                                                  var date = DateTime
-                                                      .fromMicrosecondsSinceEpoch(
-                                                          int.parse(snapshot
-                                                                  .data![index]
-                                                                  .timeStamp) *
-                                                              1000000);
-                                                  return TransactionTile(
-                                                      date: date,
-                                                      data: snapshot
-                                                          .data![index]);
-                                                }),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: InkWell(
-                                              onTap: () {
-                                                // Navigator.of(context)
-                                                //     .pushNamed(
-                                                //         BlockWebView.router,
-                                                //         arguments: {
-                                                //       "title": state
-                                                //           .currentNetwork
-                                                //           .networkName,
-                                                //       "url": viewAddressOnEtherScan(
-                                                //           state
-                                                //               .currentNetwork,
-                                                //           state
-                                                //               .wallet
-                                                //               .privateKey
-                                                //               .address
-                                                //               .hex)
-                                                //     });
-                                              },
-                                              child: const Text(
-                                                "View full history on Explorer",
-                                                style: TextStyle(
-                                                    color: kPrimaryColor),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  : const Center(
-                                      child: Text(
-                                        "You have no transactions!",
-                                        style: TextStyle(
-                                            fontSize: 18, color: Colors.grey),
-                                      ),
-                                    );
-                            } else {
-                              return const Center(
-                                child: CircularProgressIndicator(
-                                  color: kPrimaryColor,
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ),
+                        );
+                      }
+                    },
+                  ),
+                ),
               ],
             ),
           ),

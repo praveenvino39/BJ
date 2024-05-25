@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/route_manager.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/setttings/general_settings_screen/general_settings_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/ui/setttings/security_settings_screen/security_settings_screen.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -15,6 +20,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  final settings = Get.find<Settings>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,11 +101,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
               InkWell(
                   onTap: () {
                     Navigator.of(context).pushNamed(WebViewScreen.router,
-                        arguments: {"title": "About", "url": aboutUrl});
+                        arguments: {
+                          "title": getText(context, key: 'about'),
+                          "url": settings.about
+                        });
                   },
-                  child: ListTile(
-                      title: Text(AppLocalizations.of(context)!
-                          .about(AppLocalizations.of(context)!.appName)))),
+                  child: const ListTile(
+                      title: WalletText(
+                    '',
+                    localizeKey: 'about',
+                  ))),
             ],
           ),
         ),

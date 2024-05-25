@@ -2,21 +2,19 @@
 
 import 'dart:developer';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet_cryptomask/SwapScreen.dart';
 import 'package:wallet_cryptomask/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/collectible_provider/collectible_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/preference-bloc/cubit/preference_cubit.dart';
@@ -24,16 +22,18 @@ import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
+import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/create_wallet_provider/create_wallet_provider.dart';
 import 'package:wallet_cryptomask/core/locale_provider/cubit/locale_cubit.dart';
 import 'package:wallet_cryptomask/core/model/coin_gecko_token_model.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/promotion.dart';
-import 'package:wallet_cryptomask/firebase_options.dart';
 import 'package:wallet_cryptomask/ui/amount/amount_screen.dart';
 import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
 import 'package:wallet_cryptomask/ui/collectibles/import_collectible_screen.dart';
+import 'package:wallet_cryptomask/ui/deactivated-screen/deactivated_screen.dart';
 import 'package:wallet_cryptomask/ui/home/home_screen.dart';
 import 'package:wallet_cryptomask/ui/import-account/import_account_screen.dart';
 import 'package:wallet_cryptomask/ui/login-screen/login_screen.dart';
@@ -61,9 +61,16 @@ import 'constant.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
-  OneSignal.initialize("a4677861-0b4b-4eb6-87f2-55f387a1269a");
+  if (kDebugMode) {
+    Core.networks.removeWhere((element) => element.chainId == 11155111);
+  }
+
+  try {
+    final settingsResponse = await RemoteServer.settings();
+    Get.put(settingsResponse.data);
+  } catch (e) {
+    log(e.toString());
+  }
 
   if (kIsWeb) {
     Hive
@@ -122,26 +129,9 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initFirebase();
     setState(() {
       locale = widget.locale;
     });
-  }
-
-  initFirebase() async {
-    try {
-      await FirebaseMessaging.instance.requestPermission(
-          provisional: true,
-          alert: true,
-          sound: true,
-          carPlay: true,
-          announcement: true,
-          criticalAlert: true,
-          badge: true);
-      FirebaseInAppMessaging.instance.triggerEvent("app_launch");
-    } catch (e) {
-      log(e.toString());
-    }
   }
 
   @override
@@ -203,6 +193,10 @@ class _MyAppState extends State<MyApp> {
                 if (setting.name == OnboardScreen.route) {
                   return MaterialPageRoute(
                       builder: (context) => const OnboardScreen());
+                }
+                if (setting.name == DeactivatedScreen.route) {
+                  return MaterialPageRoute(
+                      builder: (context) => const DeactivatedScreen());
                 }
                 if (setting.name == LoginScreen.route) {
                   return MaterialPageRoute(

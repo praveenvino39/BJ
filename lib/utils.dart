@@ -1,19 +1,29 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
+import 'package:web3dart/web3dart.dart';
 
 String showEllipse(String string) {
   int length = string.length;
-  if (length > 10) {
+  if (length > 6) {
     String prefix = string.substring(0, 5);
     String suffix = string.substring(length - 5, length);
     return "$prefix...$suffix";
   }
-  return "Loading...";
+  return string;
 }
 
 String getAccountName(WalletLoaded state) {
@@ -124,6 +134,53 @@ showErrorSnackBar(BuildContext context, String errorTitle, String error) {
   ));
 }
 
+renderAlert(BuildContext context, String? buttonKey, Function()? onPress,
+    {required String localizeKey}) {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+    decoration: BoxDecoration(
+        color: kPrimaryColor.withAlpha(50),
+        border: Border.all(width: 1, color: kPrimaryColor),
+        borderRadius: BorderRadius.circular(7)),
+    child: Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(
+              Icons.error,
+              color: kPrimaryColor,
+            ),
+            addWidth(SpacingSize.xs),
+            Expanded(
+              child: RichText(
+                  text: TextSpan(children: [
+                TextSpan(
+                  style: GoogleFonts.poppins(color: Colors.black),
+                  text: getText(context, key: localizeKey),
+                ),
+                TextSpan(
+                  style: GoogleFonts.poppins(color: Colors.black),
+                  text: getText(context, key: buttonKey != null ? ', ' : ''),
+                ),
+                TextSpan(
+                  recognizer: TapGestureRecognizer()..onTap = onPress,
+                  style: GoogleFonts.poppins(
+                      color: kPrimaryColor,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline),
+                  text: getText(context, key: buttonKey ?? ''),
+                )
+              ])),
+            )
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
 showPositiveSnackBar(BuildContext context, String errorTitle, String error) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.green,
@@ -188,4 +245,51 @@ String viewAddressOnEtherScan(Network network, String address) {
 
 bool isValidAddress(String address) {
   return true;
+}
+
+Future<String> getMetadataURL(
+    {required Web3Client web3client,
+    required DeployedContract contract,
+    required String tokenId}) async {
+  var uriTokenFunction = contract.function('tokenURI');
+  var uriResult = await web3client
+      .call(contract: contract, function: uriTokenFunction, params: [
+    BigInt.parse(tokenId),
+  ]);
+  String jsonURI = uriResult[0];
+  final uriData = getSource(jsonURI);
+  return uriData.url;
+}
+
+class UriData {
+  final String url;
+  final MetadataSource metadataSource;
+
+  UriData({required this.url, required this.metadataSource});
+}
+
+enum MetadataSource {
+  ipfs,
+  http,
+}
+
+UriData getSource(String uri) {
+  RegExp ipfsRegex = RegExp(r'(?<=ipfs:\/\/).*$', multiLine: true);
+  Match? ipfsMatch = ipfsRegex.firstMatch(uri);
+  if (ipfsMatch != null) {
+    String content = ipfsMatch.group(0)!;
+    return UriData(
+        url: "https://ipfs.io/ipfs/$content",
+        metadataSource: MetadataSource.ipfs);
+  }
+
+  RegExp httpRegex = RegExp(r'(?:https?://).*$', multiLine: true);
+  Match? httpMatch = httpRegex.firstMatch(uri);
+  if (httpMatch != null) {
+    String content = httpMatch.group(0)!;
+    return UriData(url: content, metadataSource: MetadataSource.http);
+  }
+
+  return UriData(
+      url: "https://ipfs.io/ipfs/$uri", metadataSource: MetadataSource.ipfs);
 }

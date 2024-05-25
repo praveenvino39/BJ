@@ -56,6 +56,7 @@ class _AccountChangeSheetState extends State<AccountChangeSheet> {
                 itemCount: Provider.of<WalletProvider>(context).wallets.length,
                 itemBuilder: (context, index) => ListTile(
                   onTap: () {
+                    getWalletProvider(context).startNetworkSwitch();
                     Provider.of<WalletProvider>(context, listen: false)
                         .changeAccount(index);
                     Navigator.of(context).pop();
@@ -92,14 +93,10 @@ class _AccountChangeSheetState extends State<AccountChangeSheet> {
             ),
             InkWell(
               onTap: () {
-                Provider.of<WalletProvider>(context, listen: false)
-                    .showLoading();
-
-                Provider.of<WalletProvider>(context, listen: false)
-                    .createNewAccount()
-                    .then((value) {
-                  Provider.of<WalletProvider>(context, listen: false)
-                      .hideLoading();
+                final walletProvider = getWalletProvider(context);
+                walletProvider.showLoading();
+                walletProvider.createNewAccount().then((value) {
+                  walletProvider.hideLoading();
                 });
               },
               child: Provider.of<WalletProvider>(context).loading

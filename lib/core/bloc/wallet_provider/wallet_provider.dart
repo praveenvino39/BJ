@@ -1,25 +1,40 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 import 'dart:math';
 
+import 'package:eth_sig_util/eth_sig_util.dart';
+import 'package:ethers/crypto/formatting.dart';
 import 'package:ethers/signers/wallet.dart' as ethers;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/core/model/wallet_model.dart';
+import 'package:wallet_cryptomask/core/remote/http.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
 import 'package:web3dart/web3dart.dart';
 
+WalletProvider getWalletProvider(BuildContext context) =>
+    context.read<WalletProvider>();
+
 class WalletProvider extends ChangeNotifier {
   bool loading = false;
+  bool switchingChain = false;
   FlutterSecureStorage fss;
   Box userPreference;
   late Web3Client web3client;
+  Timer? timer;
   late int activeAccountIndex;
   late String defaultCurrency;
   late WalletModel activeWallet;
@@ -37,6 +52,16 @@ class WalletProvider extends ChangeNotifier {
 
   hideLoading() {
     loading = false;
+    notifyListeners();
+  }
+
+  startNetworkSwitch() {
+    switchingChain = true;
+    notifyListeners();
+  }
+
+  networkSwitched() {
+    switchingChain = false;
     notifyListeners();
   }
 
@@ -63,7 +88,7 @@ class WalletProvider extends ChangeNotifier {
 
   String getAccountName() {
     return userPreference
-        .get(activeWallet?.wallet.privateKey.address.hex.toLowerCase());
+        .get(activeWallet.wallet.privateKey.address.hex.toLowerCase());
   }
 
   String getAccountNameFor(String address) {
@@ -72,7 +97,7 @@ class WalletProvider extends ChangeNotifier {
 
   Future<void> copyPublicAddress() async {
     await Clipboard.setData(
-      ClipboardData(text: activeWallet?.wallet.privateKey.address.hex ?? ""),
+      ClipboardData(text: activeWallet.wallet.privateKey.address.hex ?? ""),
     );
   }
 
@@ -115,10 +140,37 @@ class WalletProvider extends ChangeNotifier {
     return futureCompleter.future;
   }
 
-  changeNetwork(int index) async {
+  Future<void> changeNetwork(int index) async {
     final network = Core.networks[index];
     await userPreference.put("NETWORK", network.networkName);
     initWeb3Client(network);
+  }
+
+  updateBalance() {
+    try {
+      web3client
+          .getBalance(
+        activeWallet.wallet.privateKey.address,
+      )
+          .then((balance) {
+        changeNativeBalance(balance.getValueInUnit(EtherUnit.ether));
+        networkSwitched();
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
+  updateBalanceTimer() {
+    updateBalance();
+    if (timer != null) {
+      timer?.cancel();
+    }
+    timer = Timer.periodic(const Duration(seconds: 3), (timer) async {
+      updateBalance();
+    });
   }
 
   changeAccount(int index) {
@@ -138,6 +190,8 @@ class WalletProvider extends ChangeNotifier {
     defaultCurrency = userPreference.get("CURRENCY", defaultValue: "usd");
     final walletJson = jsonDecode(walletString);
     await loadWallets(walletJson, password);
+    await login();
+    updateBalanceTimer();
     notifyListeners();
   }
 
@@ -153,7 +207,10 @@ class WalletProvider extends ChangeNotifier {
             index: wallets.length + 1,
             password: password,
             sendPort: receiverPort.sendPort));
-    receiverPort.listen((wallet) async {
+    receiverPort.listen((walletDy) async {
+      final wallet = walletDy as Wallet;
+      await addAccount(
+          wallet.privateKey.address.hex, wallet.privateKey.privateKey);
       final walletString = await fss.read(key: "wallet");
       if (walletString == null) {
         throw Exception("Something went wrong");
@@ -212,6 +269,32 @@ class WalletProvider extends ChangeNotifier {
   Future<void> eraseWallet() async {
     await userPreference.clear();
     await fss.deleteAll();
+  }
+
+  login() async {
+    final message = DateTime.now().toString();
+    //ALWAYS USING FIRST WALLET SINCE IT IS THE MAINACCOUNT
+    final hash = EthSigUtil.signPersonalMessage(
+        message: utf8.encode(message),
+        privateKey: bytesToHex(wallets[0].wallet.privateKey.privateKey));
+    final userLoginResponse = await RemoteServer.loginUser(
+        message: message,
+        hash: hash,
+        address: activeWallet.wallet.privateKey.address.hex);
+    Get.put(userLoginResponse.data);
+  }
+
+  addAccount(String address, Uint8List pk) async {
+    final message = DateTime.now().toString();
+    //ALWAYS USING FIRST WALLET SINCE IT IS THE MAINACCOUNT
+    final hash = EthSigUtil.signPersonalMessage(
+        message: utf8.encode(message), privateKey: bytesToHex(pk));
+    final addLoginResponse = await RemoteServer.addAccount(
+        message: message, hash: hash, address: address);
+    final user = Get.find<User>();
+    addLoginResponse.data.token = user.token;
+    await Get.delete<User>();
+    Get.put<User>(addLoginResponse.data);
   }
 
   Future<void> importAccountFromPrivateKey({required String privateKey}) async {

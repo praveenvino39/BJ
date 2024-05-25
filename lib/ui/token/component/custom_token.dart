@@ -53,6 +53,7 @@ class _CustomTokenState extends State<CustomToken> {
   addTokenHandler() {
     Provider.of<TokenProvider>(context, listen: false)
         .addToken(
+      nativeBalance: getWalletProvider(context).nativeBalance,
       address: Provider.of<WalletProvider>(context, listen: false)
           .activeWallet
           .wallet

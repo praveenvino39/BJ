@@ -2,16 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/ui/browser/widgets/browser_view.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 
 class BrowserTabView extends StatefulWidget {
   final List<BrowserView> tabs;
   final Function(BrowserView) onClose;
   final Function(BrowserView, int index) selectTab;
+  final Function() createNewTab;
 
   const BrowserTabView(
       {super.key,
       required this.tabs,
       required this.onClose,
+      required this.createNewTab,
       required this.selectTab});
 
   @override
@@ -49,6 +52,12 @@ class _BrowserTabViewState extends State<BrowserTabView> {
               },
             ),
           ),
+          WalletButton(
+            onPressed: () {
+              widget.createNewTab();
+            },
+            localizeKey: "Create new Tab",
+          )
         ],
       ),
     );

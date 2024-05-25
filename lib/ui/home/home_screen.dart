@@ -1,15 +1,18 @@
-import 'dart:async';
-import 'dart:developer';
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/core/web3wallet_service.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/atoms/custom_icon_button.dart';
@@ -17,14 +20,12 @@ import 'package:wallet_cryptomask/ui/collectibles/collectibles_tab.dart';
 import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/home/component/drawer_component.dart';
 import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
+import 'package:wallet_cryptomask/ui/setttings/security_settings_screen/security_settings_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/ui/swap_screen/swap_screen.dart';
 import 'package:wallet_cryptomask/ui/token/token_tab.dart';
 import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
-import 'package:wallet_cryptomask/ui/updates_tab.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
-import 'package:web3dart/web3dart.dart';
 
 import 'component/avatar_component.dart';
 
@@ -39,10 +40,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  InAppWebViewController? webViewController;
   final TextEditingController nameEditingController = TextEditingController();
+  final user = Get.find<User>();
   String address = "null";
-  String balanceInUSD = "0";
-  double balaneInNative = 0.0;
   bool switchEditName = false;
   String accountName = "";
   String currency = "";
@@ -50,16 +51,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scafoldKey = GlobalKey();
   final GlobalKey<ScaffoldState> _fakeScafoldKey = GlobalKey();
   int index = 0;
-  Timer? timer;
-  Timer? fiatTimer;
   late WalletProvider walletProvider;
 
   @override
   void initState() {
     walletProvider = context.read<WalletProvider>();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     setupWalletConnect();
-    updateBalanceTimer();
     super.initState();
   }
 
@@ -101,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   onSendHandler() {
     Navigator.of(context).pushNamed(TransferScreen.route, arguments: {
-      "balance": balaneInNative.toString(),
+      "balance": getWalletProvider(context).nativeBalance.toString(),
       "token": Token(
           tokenAddress: "",
           symbol: Provider.of<WalletProvider>(context, listen: false)
@@ -113,69 +111,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
-  onSwapHandler() {
-    Navigator.of(context).pushNamed(SwapScreen.route);
-  }
-
   onAccountChangeHandler() {
     showModalBottomSheet(
         context: context, builder: (context) => const AccountChangeSheet());
   }
-
-  updateBalance() {
-    try {
-      Provider.of<WalletProvider>(context, listen: false)
-          .web3client
-          .getBalance(Provider.of<WalletProvider>(context, listen: false)
-              .activeWallet
-              .wallet
-              .privateKey
-              .address)
-          .then((balance) {
-        Provider.of<WalletProvider>(context, listen: false)
-            .changeNativeBalance(balance.getValueInUnit(EtherUnit.ether));
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        log(e.toString());
-      }
-    }
-  }
-
-  // updateFiatBalance(double? balance) async {
-  //   dynamic priceModel =
-  //       await getPrice(getWalletLoadedState(context).currentNetwork.priceId);
-  //   if (priceModel != null) {
-  //     setState(() {
-  //       balanceInUSD = (priceModel["currentPrice"] *
-  //               (balance ?? getWalletLoadedState(context).balanceInNative))
-  //           .toString();
-  //     });
-  //   }
-  // }
-
-  // showTransactionAlert() {}
-
-  updateBalanceTimer() {
-    updateBalance();
-    if (timer != null) {
-      timer?.cancel();
-    }
-    timer = Timer.periodic(const Duration(seconds: 3), (timer) async {
-      updateBalance();
-    });
-  }
-
-  // updateFiatBalanceTimer() {
-  //   updateFiatBalance(null);
-  //   if (fiatTimer != null) {
-  //     fiatTimer?.cancel();
-  //   }
-  //   fiatTimer = Timer.periodic(const Duration(seconds: 20), (timer) async {
-  //     updateFiatBalance(null);
-  //   });
-  //   log("TIMER STARTED");
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -253,12 +192,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                               tileColor: Colors.transparent,
                                               onTap: () async {
                                                 walletProvider
+                                                    .startNetworkSwitch();
+                                                await walletProvider
                                                     .changeNetwork(index);
-                                                // await context
-                                                //     .read<WalletCubit>()
-                                                //     .changeNetwork(
-                                                //         Core.networks[index]);
-                                                // ignore: use_build_context_synchronously
+                                                getTokenProvider(context)
+                                                    .loadToken(
+                                                        nativeBalance:
+                                                            getWalletProvider(
+                                                                    context)
+                                                                .nativeBalance,
+                                                        address: address,
+                                                        network: Core
+                                                            .networks[index]);
                                                 Navigator.of(context).pop();
                                               },
                                               title: Row(
@@ -333,144 +278,123 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         Icons.menu,
                         color: Colors.black,
                       )),
-                  actions: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.add,
-                          color: Colors.white,
-                        ),
+                  actions: const [
+                      Icon(
+                        Icons.add,
+                        color: Colors.transparent,
                       ),
                     ])
               : null,
-          body: IndexedStack(
-            index: index,
-            children: [
-              NestedScrollView(
-                  body: SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      children: [
-                        TabBar(
-                            controller: _tabController,
-                            labelColor: kPrimaryColor,
-                            indicatorColor: kPrimaryColor,
-                            labelStyle: GoogleFonts.poppins(),
-                            unselectedLabelColor: Colors.black,
-                            tabs: [
-                              Tab(
-                                text: getText(context, key: 'Updates'),
-                              ),
-                              Tab(
-                                text: getText(context, key: 'tokens'),
-                              ),
-                              Tab(
-                                text: getText(context, key: 'collectibles'),
-                              )
-                            ]),
-                        Container(
+          body: Provider.of<WalletProvider>(context).switchingChain
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : IndexedStack(
+                  index: index,
+                  children: [
+                    NestedScrollView(
+                        body: SizedBox(
+                          height: MediaQuery.of(context).size.height,
                           width: MediaQuery.of(context).size.width,
-                          height: 1,
-                          color: Colors.grey.withAlpha(60),
-                        ),
-                        Expanded(
-                          child: TabBarView(
-                              controller: _tabController,
-                              children: const [
-                                UpdatesTab(),
-                                TokenTab(),
-                                CollectiblesTab(),
-                              ]),
-                        ),
-                      ],
-                    ),
-                  ),
-                  headerSliverBuilder: (context, _) => [
-                        SliverToBoxAdapter(
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            child: Column(
-                              children: [
-                                addHeight(SpacingSize.s),
-                                InkWell(
-                                  onTap: onAccountChangeHandler,
-                                  child: AvatarWidget(
-                                    radius: 50,
-                                    address: walletProvider.activeWallet.wallet
-                                        .privateKey.address.hex,
-                                  ),
-                                ),
-                                addHeight(SpacingSize.xs),
-                                WalletText(
-                                  '',
-                                  localizeKey: walletProvider.getAccountName(),
-                                  textVarient: TextVarient.body1,
-                                  bold: true,
-                                ),
-                                addHeight(SpacingSize.xs),
-                                WalletText('',
-                                    onTap: onAddressTapHandler,
-                                    textVarient: TextVarient.body1,
-                                    localizeKey: showEllipse(walletProvider
-                                        .activeWallet
-                                        .wallet
-                                        .privateKey
-                                        .address
-                                        .hex)),
-                                addHeight(SpacingSize.xs),
-                                WalletText(
-                                  '',
-                                  localizeKey: walletProvider
-                                      .getNativeBalanceFormatted(),
-                                  textVarient: TextVarient.heading,
-                                ),
-                                addHeight(SpacingSize.xs),
-                                WalletText(
-                                  '',
-                                  localizeKey: walletProvider
-                                      .getPreferedBalanceFormatted(),
-                                  textVarient: TextVarient.heading,
-                                ),
-                                addHeight(SpacingSize.xs),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    CustomIconButton(
-                                      onPressed: onReceiveHandler,
-                                      localizeKey: 'receive',
-                                      iconData: Icons.call_received,
-                                    ),
-                                    addWidth(SpacingSize.s),
-                                    CustomIconButton(
-                                      onPressed: onSendHandler,
-                                      localizeKey: 'send',
-                                      iconData: Icons.send,
-                                    ),
-                                    addWidth(SpacingSize.s),
-                                    CustomIconButton(
-                                        iconData: Icons.call_made,
-                                        onPressed: onSwapHandler,
-                                        localizeKey: 'swap')
-                                  ],
-                                ),
-                                addHeight(SpacingSize.s),
-                              ],
-                            ),
+                          child: Column(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 1,
+                                color: Colors.grey.withAlpha(60),
+                              ),
+                              const Expanded(
+                                child: TokenTab(),
+                              ),
+                            ],
                           ),
                         ),
-                      ]),
-              // BrowserScreen(index: index)
-              const SizedBox()
-            ],
-          ),
+                        headerSliverBuilder: (context, _) => [
+                              SliverToBoxAdapter(
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Column(
+                                    children: [
+                                      !user.seedPhraseBackedUp
+                                          ? renderAlert(
+                                              context,
+                                              'backUp',
+                                              () {
+                                                Navigator.of(context).pushNamed(
+                                                    SecuritySettingsScreen
+                                                        .route);
+                                              },
+                                              localizeKey: 'youHaventBackedup',
+                                            )
+                                          : addHeight(SpacingSize.s),
+                                      InkWell(
+                                        onTap: onAccountChangeHandler,
+                                        child: AvatarWidget(
+                                          radius: 50,
+                                          address: walletProvider.activeWallet
+                                              .wallet.privateKey.address.hex,
+                                        ),
+                                      ),
+                                      addHeight(SpacingSize.xs),
+                                      WalletText(
+                                        '',
+                                        localizeKey:
+                                            walletProvider.getAccountName(),
+                                        textVarient: TextVarient.body1,
+                                        bold: true,
+                                      ),
+                                      addHeight(SpacingSize.xs),
+                                      WalletText('',
+                                          onTap: onAddressTapHandler,
+                                          textVarient: TextVarient.body1,
+                                          localizeKey: showEllipse(
+                                              walletProvider.activeWallet.wallet
+                                                  .privateKey.address.hex)),
+                                      addHeight(SpacingSize.xs),
+                                      WalletText(
+                                        '',
+                                        localizeKey: walletProvider
+                                            .getNativeBalanceFormatted(),
+                                        textVarient: TextVarient.heading,
+                                      ),
+                                      addHeight(SpacingSize.xs),
+                                      WalletText(
+                                        '',
+                                        localizeKey: walletProvider
+                                            .getPreferedBalanceFormatted(),
+                                        textVarient: TextVarient.heading,
+                                      ),
+                                      addHeight(SpacingSize.xs),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          CustomIconButton(
+                                            onPressed: onReceiveHandler,
+                                            localizeKey: 'receive',
+                                            iconData: Icons.call_received,
+                                          ),
+                                          addWidth(SpacingSize.s),
+                                          CustomIconButton(
+                                            onPressed: onSendHandler,
+                                            localizeKey: 'send',
+                                            iconData: Icons.send,
+                                          ),
+                                          addWidth(SpacingSize.s),
+                                        ],
+                                      ),
+                                      addHeight(SpacingSize.s),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ]),
+                    // BrowserScreen(index: index)
+                    // BrowserScreen(
+                    //   index: index,
+                    // )
+                  ],
+                ),
         ));
-  }
-
-  @override
-  void dispose() {
-    timer?.cancel();
-    fiatTimer?.cancel();
-    super.dispose();
   }
 }

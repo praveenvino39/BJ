@@ -36,6 +36,7 @@ class _TopTokensState extends State<TopTokens> {
     Provider.of<WalletProvider>(context, listen: false).showLoading();
     Provider.of<TokenProvider>(context, listen: false)
         .addToken(
+            nativeBalance: getWalletProvider(context).nativeBalance,
             address: Provider.of<WalletProvider>(context, listen: false)
                 .activeWallet
                 .wallet

@@ -5,32 +5,100 @@ import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:dio/dio.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/core/model/coin_gecko_token_model.dart';
 import 'package:wallet_cryptomask/core/model/gas_tracker_api.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/erc20_transaction_log.dart';
-import 'package:wallet_cryptomask/core/remote/response-model/promotion.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/moralis_token_response.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/moralis_token_transfer.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/moralis_transaction_response.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/transaction_log_result.dart';
 
-Future<Promotions> getUpdates() async {
-  final response = await Dio().get("$baseUrl/promotions");
-  return Promotions.fromJson(response.data);
+final dio = Dio();
+
+// const baseUrl = "http://127.0.0.1:3001";
+const baseUrl = "http://192.168.29.226:3001";
+
+class RemoteServer {
+  static Future<ResigterUserResponse> registerUser(
+      {required String message,
+      required String hash,
+      required String address}) async {
+    final response = await dio.post('$baseUrl/api/user/register',
+        options:
+            Options(headers: {Headers.contentTypeHeader: 'application/json'}),
+        data: {"message": message, "hash": hash, "address": address});
+    return ResigterUserResponse.fromJson(response.data);
+  }
+
+  static Future<SettingsResponse> settings() async {
+    final response = await dio.get('$baseUrl/api/user/settings');
+    return SettingsResponse.fromJson(response.data);
+  }
+
+  static Future<ResigterUserResponse> addAccount(
+      {required String message,
+      required String hash,
+      required String address}) async {
+    final user = Get.find<User>();
+    final response = await dio.post('$baseUrl/api/user/addAccount',
+        options: Options(headers: {
+          Headers.contentTypeHeader: 'application/json',
+          "Authorization": "Bearer ${user.token}"
+        }),
+        data: {"message": message, "hash": hash, "address": address});
+    return ResigterUserResponse.fromJson(response.data);
+  }
+
+  static Future<MoralisTokensResponse> getTokens(
+      {required String chainId, required String address}) async {
+    final user = Get.find<User>();
+    final response = await dio.get(
+      '$baseUrl/api/user/tokens/$address/$chainId',
+      options: Options(headers: {"Authorization": "Bearer ${user.token}"}),
+    );
+    return MoralisTokensResponse.fromJson(response.data);
+  }
+
+  static Future<MoralisTokenTransfers> getTransactionForToken(
+      {required String chainId,
+      required String address,
+      required String tokenAddress}) async {
+    final user = Get.find<User>();
+    final response = await dio.get(
+      '$baseUrl/api/user/tokens/transfers/$address/$tokenAddress/$chainId',
+      options: Options(headers: {"Authorization": "Bearer ${user.token}"}),
+    );
+    return MoralisTokenTransfers.fromJson(response.data);
+  }
+
+  static Future<MoralisTransactionResponse> getTransactions(
+      {required String chainId, required String address}) async {
+    final user = Get.find<User>();
+    final response = await dio.get(
+      '$baseUrl/api/user/wallet/transactions/$address/$chainId',
+      options: Options(headers: {"Authorization": "Bearer ${user.token}"}),
+    );
+    return MoralisTransactionResponse.fromJson(response.data);
+  }
+
+  static Future<ResigterUserResponse> loginUser(
+      {required String message,
+      required String hash,
+      required String address}) async {
+    final response = await dio.post('$baseUrl/api/user/login',
+        options:
+            Options(headers: {Headers.contentTypeHeader: 'application/json'}),
+        data: {"message": message, "hash": hash, "address": address});
+    return ResigterUserResponse.fromJson(response.data);
+  }
 }
 
 Future<dynamic> getPrice(String priceId) async {
-  if (priceId == "phi-network") {
-    try {
-      Box box = await Hive.openBox("user_preference");
-      String currency = box.get("CURRENCY") ?? "usd";
-      var response = await Dio().get('https://phi.financial/api/token/phi');
-      return {"currentPrice": response.data['price_usd']};
-    } catch (e) {
-      log(e.toString());
-    }
-  }
-
   try {
     Box box = await Hive.openBox("user_preference");
     String currency = box.get("CURRENCY") ?? "usd";
@@ -116,7 +184,7 @@ Future<List<TransactionResult>?> getTransactionLog(
 
 Future<dynamic> callBlockChain(dynamic request, String networkRpcUrl) async {
   try {
-    Response response = await Dio().post(
+    final response = await Dio().post(
       networkRpcUrl,
       data: {
         "id": math.Random().nextInt(9999999).toString(),
@@ -295,7 +363,7 @@ Future<String> getAbiFromContract(
 
 Future<List<CoinGeckoToken>?> getAllToken() async {
   try {
-    Response response = await Dio().get('https://tokens.uniswap.org');
+    final response = await Dio().get('https://tokens.uniswap.org');
     log(jsonEncode(response.data));
     AllTokenResponse parsedResponse =
         allTokenResponseFromJson(jsonEncode(response.data));
@@ -308,7 +376,7 @@ Future<List<CoinGeckoToken>?> getAllToken() async {
 
 Future<GasTrackerResponse?> getGasTrackerPrice() async {
   try {
-    Response response = await Dio()
+    final response = await Dio()
         .get('https://api.etherscan.io/api?module=gastracker&action=gasoracle');
     log(jsonEncode(response.data));
     GasTrackerResponse parsedResponse =

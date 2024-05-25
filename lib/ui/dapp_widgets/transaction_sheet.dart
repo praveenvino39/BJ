@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:developer';
 
@@ -5,15 +7,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet_cryptomask/constant.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
-import 'package:wallet_cryptomask/core/cubit_helper.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
-import 'package:provider/provider.dart';
 
 class TransactionSheet extends StatefulWidget {
   final Function(String) onApprove;
@@ -48,66 +50,34 @@ class _TransactionSheetState extends State<TransactionSheet> {
   }
 
   prepareTransaction() async {
-    var currentState = getWalletLoadedState(context);
-    if (getWalletLoadedState(context).currentNetwork.chainId == 144) {
-      var networkGasPrice = await currentState.web3client.getGasPrice();
-      var gasPrice = EtherAmount.fromUnitAndValue(
-          EtherUnit.wei, networkGasPrice.getValueInUnit(EtherUnit.wei).toInt());
-      setState(() {
-        this.gasPrice = gasPrice;
-      });
+    var currentState = Provider.of<WalletProvider>(context, listen: false);
+    var gasPrice = await currentState.web3client.getGasPrice();
+    setState(() {
+      this.gasPrice = gasPrice;
+    });
 
-      transaction = Transaction(
-        gasPrice: gasPrice,
-        data: widget.transaction["data"] != null
-            ? Uint8List.fromList(hexToBytes(widget.transaction["data"]))
-            : null,
-        from: widget.transaction["from"] != null
-            ? EthereumAddress.fromHex(widget.transaction["from"])
-            : null,
-        to: widget.transaction["to"] != null
-            ? EthereumAddress.fromHex(widget.transaction["to"])
-            : null,
-        value: widget.transaction["value"] != null
-            ? EtherAmount.fromUnitAndValue(
-                EtherUnit.wei,
-                widget.transaction["value"],
-              )
-            : null,
-        maxGas: widget.transaction["gas"] != null
-            ? hexToDartInt(widget.transaction["gas"])
-            : null,
-      );
-      setState(() {});
-    } else {
-      var gasPrice = await currentState.web3client.getGasPrice();
-      setState(() {
-        this.gasPrice = gasPrice;
-      });
-
-      transaction = Transaction(
-        gasPrice: gasPrice,
-        data: widget.transaction["data"] != null
-            ? Uint8List.fromList(hexToBytes(widget.transaction["data"]))
-            : null,
-        from: widget.transaction["from"] != null
-            ? EthereumAddress.fromHex(widget.transaction["from"])
-            : null,
-        to: widget.transaction["to"] != null
-            ? EthereumAddress.fromHex(widget.transaction["to"])
-            : null,
-        value: widget.transaction["value"] != null
-            ? EtherAmount.fromUnitAndValue(
-                EtherUnit.wei,
-                widget.transaction["value"],
-              )
-            : null,
-        maxGas: widget.transaction["gas"] != null
-            ? hexToDartInt(widget.transaction["gas"])
-            : null,
-      );
-      setState(() {});
-    }
+    transaction = Transaction(
+      gasPrice: gasPrice,
+      data: widget.transaction["data"] != null
+          ? Uint8List.fromList(hexToBytes(widget.transaction["data"]))
+          : null,
+      from: widget.transaction["from"] != null
+          ? EthereumAddress.fromHex(widget.transaction["from"])
+          : null,
+      to: widget.transaction["to"] != null
+          ? EthereumAddress.fromHex(widget.transaction["to"])
+          : null,
+      value: widget.transaction["value"] != null
+          ? EtherAmount.fromUnitAndValue(
+              EtherUnit.wei,
+              widget.transaction["value"],
+            )
+          : null,
+      maxGas: widget.transaction["gas"] != null
+          ? hexToDartInt(widget.transaction["gas"])
+          : null,
+    );
+    setState(() {});
   }
 
   @override
@@ -274,7 +244,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      "${widget.transaction["gas"] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0] : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${widget.transaction['gas'] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4) : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]} ${getWalletLoadedState(context).currentNetwork.symbol}",
+                                      "${widget.transaction["gas"] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0] : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${widget.transaction['gas'] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4) : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -318,12 +288,12 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      "${(EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether) + EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether)).toStringAsFixed(18).split(".")[0]}.${(EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether) + EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether)).toStringAsFixed(18).split(".")[1].substring(0, 4)} ${getWalletLoadedState(context).currentNetwork.symbol}",
+                                      "${(EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether) + EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether)).toStringAsFixed(18).split(".")[0]}.${(EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether) + EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether)).toStringAsFixed(18).split(".")[1].substring(0, 4)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     Text(
-                                      "Max fee: ${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} + ${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} ${getWalletLoadedState(context).currentNetwork.symbol}",
+                                      "Max fee: ${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} + ${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                   ],
@@ -365,19 +335,23 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                                               .filled,
                                                           onPressed: () async {
                                                             var currentState =
-                                                                getWalletLoadedState(
-                                                                    context);
+                                                                Provider.of<
+                                                                        WalletProvider>(
+                                                                    context,
+                                                                    listen:
+                                                                        false);
                                                             // widget.transaction.gasPrice =
 
                                                             var txhash = await currentState
                                                                 .web3client
                                                                 .sendTransaction(
                                                                     currentState
+                                                                        .activeWallet
                                                                         .wallet
                                                                         .privateKey,
                                                                     transaction!,
                                                                     chainId: currentState
-                                                                        .currentNetwork
+                                                                        .activeNetwork
                                                                         .chainId);
                                                             log("DAPP REQUST =====> $txhash");
                                                             widget.onApprove(
@@ -564,7 +538,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
-                                    "${widget.transaction["gas"] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0] : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${widget.transaction['gas'] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4) : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]} ${getWalletLoadedState(context).currentNetwork.symbol}",
+                                    "${widget.transaction["gas"] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0] : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${widget.transaction['gas'] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4) : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -608,12 +582,12 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
-                                    "${(EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether) + EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether)).toStringAsFixed(18).split(".")[0]}.${(EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether) + EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether)).toStringAsFixed(18).split(".")[1].substring(0, 4)} ${getWalletLoadedState(context).currentNetwork.symbol}",
+                                    "${(EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether) + EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether)).toStringAsFixed(18).split(".")[0]}.${(EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether) + EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether)).toStringAsFixed(18).split(".")[1].substring(0, 4)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    "Max fee: ${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} + ${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} ${getWalletLoadedState(context).currentNetwork.symbol}",
+                                    "Max fee: ${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} + ${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
                                     style: const TextStyle(fontSize: 12),
                                   ),
                                 ],
@@ -624,78 +598,60 @@ class _TransactionSheetState extends State<TransactionSheet> {
                         const SizedBox(
                           height: 30,
                         ),
-                        BlocConsumer<WalletCubit, WalletState>(
-                          listener: (context, state) {},
-                          builder: (context, state) {
-                            return state is WalletLoaded
-                                ? state.balanceInNative > 0
-                                    ? Column(
+                        Provider.of<WalletProvider>(context).nativeBalance > 0
+                            ? Column(
+                                children: [
+                                  // Text("Warning: ${state.wallet.privateKey.address.hex.toLowerCase() != transaction?.from.toString() ? "You're sending transaction from different account" : ""}"),
+                                  SizedBox(
+                                      height: 50,
+                                      width: double.infinity,
+                                      child: Row(
                                         children: [
-                                          // Text("Warning: ${state.wallet.privateKey.address.hex.toLowerCase() != transaction?.from.toString() ? "You're sending transaction from different account" : ""}"),
-                                          SizedBox(
-                                              height: 50,
-                                              width: double.infinity,
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: WalletButton(
-                                                        textContent: "Reject",
-                                                        onPressed: () async {
-                                                          widget.onReject();
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        }),
-                                                  ),
-                                                  Expanded(
-                                                    child: WalletButton(
-                                                        textContent: "Approve",
-                                                        type: WalletButtonType
-                                                            .filled,
-                                                        onPressed: () async {
-                                                          var currentState =
-                                                              getWalletLoadedState(
-                                                                  context);
-                                                          // widget.transaction.gasPrice =
+                                          Expanded(
+                                            child: WalletButton(
+                                                textContent: "Reject",
+                                                localizeKey: "Reject",
+                                                onPressed: () async {
+                                                  widget.onReject();
+                                                  Navigator.of(context).pop();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: WalletButton(
+                                                textContent: "Approve",
+                                                localizeKey: "Approve",
+                                                type: WalletButtonType.filled,
+                                                onPressed: () async {
+                                                  var currentState = Provider
+                                                      .of<WalletProvider>(
+                                                          context,
+                                                          listen: false);
+                                                  // widget.transaction.gasPrice =
 
-                                                          var txhash = await currentState
-                                                              .web3client
-                                                              .sendTransaction(
-                                                                  currentState
-                                                                      .wallet
-                                                                      .privateKey,
-                                                                  transaction!,
-                                                                  chainId: currentState
-                                                                      .currentNetwork
-                                                                      .chainId);
-                                                          log("DAPP REQUST =====> $txhash");
-                                                          widget.onApprove(
-                                                              txhash);
-                                                          // widget.onApprove("signature");
-                                                          // String.fromCharCodes(
-                                                          //     hexToBytes(widget.messageToBeSigned));
-                                                          // widget.onApprove([
-                                                          //   getWalletLoadedState(context)(context)
-                                                          //       .wallet
-                                                          //       .privateKey
-                                                          //       .address
-                                                          //       .hex
-                                                          // ]);
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        }),
-                                                  ),
-                                                ],
-                                              )),
+                                                  var txhash = await currentState
+                                                      .web3client
+                                                      .sendTransaction(
+                                                          currentState
+                                                              .activeWallet
+                                                              .wallet
+                                                              .privateKey,
+                                                          transaction!,
+                                                          chainId: currentState
+                                                              .activeNetwork
+                                                              .chainId);
+                                                  log("DAPP REQUST =====> $txhash");
+                                                  widget.onApprove(txhash);
+
+                                                  Navigator.of(context).pop();
+                                                }),
+                                          ),
                                         ],
-                                      )
-                                    : Text(
-                                        AppLocalizations.of(context)!
-                                            .insufficientFund,
-                                        style:
-                                            const TextStyle(color: Colors.red))
-                                : const SizedBox();
-                          },
-                        ),
+                                      )),
+                                ],
+                              )
+                            : Text(
+                                AppLocalizations.of(context)!.insufficientFund,
+                                style: const TextStyle(color: Colors.red)),
                         const SizedBox(
                           height: 30,
                         )

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -12,9 +13,10 @@ import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
+import 'package:wallet_cryptomask/ui/deactivated-screen/deactivated_screen.dart';
 import 'package:wallet_cryptomask/ui/home/home_screen.dart';
-import 'package:wallet_cryptomask/ui/screens/create_wallet_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
@@ -30,7 +32,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordController =
+      TextEditingController(text: kDebugMode ? "11111111" : null);
   final GlobalKey<FormState> _formKey = GlobalKey();
   bool isLoading = false;
   late WalletProvider walletProvider;
@@ -152,6 +155,10 @@ class _LoginScreenState extends State<LoginScreen> {
           .openWallet(password: passwordController.text)
           .then((value) {
         walletProvider.hideLoading();
+        final user = Get.find<User>();
+        if (user.isDeactivated) {
+          return Navigator.of(context).pushNamed(DeactivatedScreen.route);
+        }
         Navigator.of(context).pushNamedAndRemoveUntil(
           HomeScreen.route,
           (route) => false,
@@ -160,6 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
         walletProvider.hideLoading();
         showErrorSnackBar(
             context, 'Error', getText(context, key: 'passwordIncorrect'));
+        return e;
       });
     }
   }

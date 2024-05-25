@@ -1,27 +1,11 @@
 import 'package:decimal/decimal.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 
 class Core {
   static List<Network> networks = [
-    // Network(
-    //     networkName: "PHI Network",
-    //     url: "https://connect.phi.network",
-    //     symbol: "Φ",
-    //     nameSpace: "",
-    //     currency: "Φ",
-    //     chainId: 144,
-    //     supportsEip1559: false,
-    //     logo: "assets/images/logo.png",
-    //     apiKey: "",
-    //     wrappedTokenAddress: "",
-    //     isMainnet: true,
-    //     priceId: "phi-network",
-    //     addressViewUrl: "https://phiscan.com/address/",
-    //     transactionViewUrl: "https://phiscan.com/tx/",
-    //     dotColor: Color.fromARGB(255, 115, 50, 235),
-    //     etherscanApiBaseUrl: "https://phiscan.com/api/"),
     Network(
         nameSpace: "eip155",
         networkName: "Ethereum mainnet",

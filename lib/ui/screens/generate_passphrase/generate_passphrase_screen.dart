@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:wallet_cryptomask/core/create_wallet_provider/create_wallet_provider.dart';
-import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/onboard/component/circle_stepper.dart';
 import 'package:wallet_cryptomask/ui/screens/confirm_passphrase/confirm_passphrase_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 import 'package:provider/provider.dart';
 

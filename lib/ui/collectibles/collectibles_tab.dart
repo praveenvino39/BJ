@@ -142,68 +142,6 @@ class _CollectiblesTabState extends State<CollectiblesTab> {
           ),
         ],
       ),
-      // child: Column(
-      //   children: [
-      //     MultiBlocListener(
-      //       listeners: [
-      //         BlocListener<WalletCubit, WalletState>(
-      //             listener: (context, state) {
-      //           if (state is WalletCollectibleAdded) {
-      //             context.read<CollectibleCubit>().loadCollectible(
-      //                 address: getWalletLoadedState(context)
-      //                     .wallet
-      //                     .privateKey
-      //                     .address
-      //                     .hex,
-      //                 network: getWalletLoadedState(context).currentNetwork);
-      //           }
-      //           if (state is WalletNetworkChanged ||
-      //               state is WalletAccountChanged) {
-      //             context.read<CollectibleCubit>().loadCollectible(
-      //                 address: getWalletLoadedState(context)
-      //                     .wallet
-      //                     .privateKey
-      //                     .address
-      //                     .hex,
-      //                 network: getWalletLoadedState(context).currentNetwork);
-      //           }
-      //         }),
-      //         BlocListener<CollectibleCubit, CollectibleState>(
-      //           listener: (context, state) {
-      //             if (state is CollectibleInitial) {
-      //               getCollectibleCubit(context)
-      //                   .setupWeb3Client(widget.web3client);
-      //             }
-      //           },
-      //         )
-      //       ],
-      //       child: BlocBuilder<CollectibleCubit, CollectibleState>(
-      //         builder: (context, state) {
-      //           if (state is CollectibleLoaded) {
-
-      //           } else {
-      //             return Expanded(
-      //               child: Center(
-      //                 child: Column(
-      //                   mainAxisAlignment: MainAxisAlignment.center,
-      //                   children: const [
-      //                     CircularProgressIndicator(
-      //                       color: kPrimaryColor,
-      //                     ),
-      //                     SizedBox(
-      //                       height: 10,
-      //                     ),
-      //                     Text("Loading NFTs")
-      //                   ],
-      //                 ),
-      //               ),
-      //             );
-      //           }
-      //         },
-      //       ),
-      //     )
-      //   ],
-      // ),
     );
   }
 

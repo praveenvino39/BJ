@@ -61,67 +61,9 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
       backgroundColor: Colors.white,
       centerTitle: true,
       automaticallyImplyLeading: false,
-      titleSpacing: 0,
-      leading: Padding(
-        padding: const EdgeInsets.all(10),
-        child: GestureDetector(
-          onTap: (() {
-            showModalBottomSheet(
-              context: context,
-              builder: (context) => const AccountChangeSheet(
-                  // from: "BROWSER",
-                  ),
-            );
-          }),
-          child: AvatarWidget(
-              radius: 30,
-              address: Provider.of<WalletProvider>(context)
-                  .activeWallet
-                  .wallet
-                  .privateKey
-                  .address
-                  .hex),
-        ),
-      ),
-      actions: [
-        const SizedBox(
-          width: 10,
-        ),
-        GestureDetector(
-          onTap: (() {
-            showDialog(
-              context: context,
-              builder: (context) => const ChainChangeSheet(
-                  // from: "BROWSER",
-                  ),
-            );
-          }),
-          child: Image.asset(
-            Provider.of<WalletProvider>(context).activeNetwork.logo,
-            width: 28,
-            height: 28,
-          ),
-        ),
-        const SizedBox(
-          width: 10,
-        )
-      ],
       title: _buildSearchTextField(),
     );
   }
-
-  // Widget? _buildAppBarHomePageWidget() {
-  //   return InkWell(
-  //     onTap: () {
-  //       showDialog(
-  //           context: context, builder: (context) => const ChainChangeSheet());
-  //     },
-  //     child: const Center(
-  //       child: AvatarWidget(
-  //           radius: 30, address: "", imageUrl: "assets/images/coin.png"),
-  //     ),
-  //   );
-  // }
 
   Widget _buildSearchTextField() {
     return SizedBox(
@@ -180,18 +122,14 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 NetworkDot(
-                  color: Provider.of<WalletProvider>(context)
-                      .activeNetwork
-                      .dotColor,
+                  color: getWalletProvider(context).activeNetwork.dotColor,
                   radius: 10,
                 ),
                 const SizedBox(
                   width: 5,
                 ),
                 Text(
-                  Provider.of<WalletProvider>(context)
-                      .activeNetwork
-                      .networkName,
+                  getWalletProvider(context).activeNetwork.networkName,
                   style: const TextStyle(fontSize: 12, color: Colors.black),
                   textAlign: TextAlign.center,
                 ),

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,9 +43,8 @@ class ChainChangeSheet extends StatelessWidget {
                   itemBuilder: (context, index) => ListTile(
                         tileColor: Colors.transparent,
                         onTap: () async {
-                          await context
-                              .read<WalletCubit>()
-                              .changeNetwork(Core.networks[index]);
+                          getWalletProvider(context)
+                              .changeNetwork(Core.networks[index].chainId);
                           Navigator.of(context).pop();
                         },
                         title: Row(

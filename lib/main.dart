@@ -14,6 +14,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:routerino/routerino_home.dart';
 import 'package:wallet_cryptomask/SwapScreen.dart';
 import 'package:wallet_cryptomask/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/collectible_provider/collectible_provider.dart';
@@ -30,6 +31,8 @@ import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/promotion.dart';
+import 'package:wallet_cryptomask/core/socket/message_engine.dart';
+import 'package:wallet_cryptomask/core/socket/socket_service.dart';
 import 'package:wallet_cryptomask/ui/amount/amount_screen.dart';
 import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
 import 'package:wallet_cryptomask/ui/collectibles/import_collectible_screen.dart';
@@ -62,7 +65,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (kDebugMode) {
-    Core.networks.removeWhere((element) => element.chainId == 11155111);
+    // Core.networks.removeWhere((element) => element.chainId == 11155111);
   }
 
   try {
@@ -138,6 +141,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (context) => MessageEngine(messages: []),
+        ),
         BlocProvider(
           create: (context) => WalletCubit(),
         ),
@@ -184,7 +190,7 @@ class _MyAppState extends State<MyApp> {
                   textTheme:
                       GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
                   unselectedWidgetColor: kPrimaryColor),
-              home: widget.initialWidget,
+              home: RouterinoHome(builder: () => widget.initialWidget),
               onGenerateRoute: (setting) {
                 if (setting.name == WalletSetupScreen.route) {
                   return MaterialPageRoute(

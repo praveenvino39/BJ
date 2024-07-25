@@ -230,13 +230,20 @@ var en = {
   "createNewAccount": "Create New Account",
   "security": "Security",
   "securityDescription": "Manage privatekey and export wallet",
-  "showPrivateKey": "Show private key",
+  "showPrivateKey": "Show private key (Tap to copy)",
   "tapHereToReveal": "Tap and hold to reveal and copy private key",
   "exportWallet": "Export wallet",
   "tapHereToExportWallet":
       "Tap and hold to export wallet (Your current password is used for import)",
   "browser": "Browser",
-  "learnMore": "Learn more"
+  "learnMore": "Learn more",
+  "securityNotePK":
+      "You will be asked to enter password to view your Privatekey",
+  "showSeedphrase": "Show Secret recovery phrase (Tap to copy)",
+  "securityNoteSD":
+      "You will be asked to enter password to view your Secret recovery phrase",
+  "privateKeyCopiedToClipboard": "Private key copied to clipboard",
+  "SRPCoipied": "Secret recovery phrase copied to clipboard"
 };
 
 var es = {
@@ -402,7 +409,11 @@ var es = {
   "tapHereToReveal": "Tap and hold to reveal and copy private key",
   "exportWallet": "Export wallet",
   "tapHereToExportWallet":
-      "Tap and hold to export wallet (Your current password is used for import)"
+      "Tap and hold to export wallet (Your current password is used for import)",
+  "securityNotePK":
+      "You will be asked to enter password to view your Privatekey",
+  "securityNoteSD":
+      "You will be asked to enter password to view your Privatekey",
 };
 
 String getText(BuildContext context, {required String key}) {

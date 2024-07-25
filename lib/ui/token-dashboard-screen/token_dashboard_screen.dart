@@ -6,14 +6,17 @@ import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/collectible_provider/collectible_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
+import 'package:wallet_cryptomask/core/cubit_helper.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/moralis_token_transfer.dart';
+import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
 import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
 import 'package:wallet_cryptomask/ui/transaction-history/widget/token_transaction_tile.dart';
 import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
+import 'package:wallet_cryptomask/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class TokenDashboardScreen extends StatefulWidget {
@@ -140,29 +143,27 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: InkWell(
-                                        onTap: () {
-                                          // Navigator.of(context)
-                                          //     .pushNamed(
-                                          //         BlockWebView.router,
-                                          //         arguments: {
-                                          //       "title": state
-                                          //           .currentNetwork
-                                          //           .networkName,
-                                          //       "url": viewAddressOnEtherScan(
-                                          //           state
-                                          //               .currentNetwork,
-                                          //           state
-                                          //               .wallet
-                                          //               .privateKey
-                                          //               .address
-                                          //               .hex)
-                                          //     });
-                                        },
-                                        child: const Text(
-                                          "View full history on Explorer",
-                                          style:
-                                              TextStyle(color: kPrimaryColor),
+                                      child: SafeArea(
+                                        child: InkWell(
+                                          onTap: () {
+                                            final state =
+                                                getWalletLoadedState(context);
+                                            Navigator.of(context).pushNamed(
+                                                BlockWebView.router,
+                                                arguments: {
+                                                  "title": state.currentNetwork
+                                                      .networkName,
+                                                  "url": viewAddressOnEtherScan(
+                                                      state.currentNetwork,
+                                                      state.wallet.privateKey
+                                                          .address.hex)
+                                                });
+                                          },
+                                          child: const Text(
+                                            "View full history on Explorer",
+                                            style:
+                                                TextStyle(color: kPrimaryColor),
+                                          ),
                                         ),
                                       ),
                                     )

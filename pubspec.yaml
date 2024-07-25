@@ -72,6 +72,9 @@ dependencies:
   web3dart: 2.7.2
   provider: ^6.1.1
   http: ^1.2.0
+  dash_chat_2: ^0.0.20
+  routerino: ^0.8.0
+  socket_io_client: ^2.0.3+1
 
 dev_dependencies:
   hive_generator: ^2.0.1

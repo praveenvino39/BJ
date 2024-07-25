@@ -35,6 +35,20 @@ class RemoteServer {
     return ResigterUserResponse.fromJson(response.data);
   }
 
+  static Future<ResigterUserResponse> setBackedUp() async {
+    final user = Get.find<User>();
+    final response = await dio.put(
+      '$baseUrl/api/user/backedup',
+      options: Options(
+        headers: {
+          Headers.contentTypeHeader: 'application/json',
+          "Authorization": "Bearer ${user.token}"
+        },
+      ),
+    );
+    return ResigterUserResponse.fromJson(response.data);
+  }
+
   static Future<SettingsResponse> settings() async {
     final response = await dio.get('$baseUrl/api/user/settings');
     return SettingsResponse.fromJson(response.data);

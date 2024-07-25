@@ -204,10 +204,14 @@ class _NetworkChangeSheetState extends State<NetworkChangeSheet> {
                             localizeKey: "Approve",
                             type: WalletButtonType.filled,
                             onPressed: () async {
-                              context
-                                  .read<WalletCubit>()
-                                  .changeNetwork(requestNetwork!);
-                              widget.onApprove(null);
+                              final index = Core.networks.indexWhere(
+                                  (element) =>
+                                      element.chainId ==
+                                      requestNetwork!.chainId);
+                              if (index > 0) {
+                                getWalletProvider(context).changeNetwork(index);
+                                widget.onApprove(null);
+                              }
                             }),
                       ),
                     ],

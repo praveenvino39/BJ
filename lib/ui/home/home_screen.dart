@@ -7,21 +7,27 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
+import 'package:wallet_cryptomask/core/socket/message_engine.dart';
+import 'package:wallet_cryptomask/core/socket/socket_service.dart';
 import 'package:wallet_cryptomask/core/web3wallet_service.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/atoms/custom_icon_button.dart';
+import 'package:wallet_cryptomask/ui/browser/browser_screen.dart';
 import 'package:wallet_cryptomask/ui/collectibles/collectibles_tab.dart';
 import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/home/component/drawer_component.dart';
 import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
 import 'package:wallet_cryptomask/ui/setttings/security_settings_screen/security_settings_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/ui/support/chat_screen.dart';
 import 'package:wallet_cryptomask/ui/token/token_tab.dart';
 import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
 import 'package:wallet_cryptomask/utils.dart';
@@ -51,36 +57,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scafoldKey = GlobalKey();
   final GlobalKey<ScaffoldState> _fakeScafoldKey = GlobalKey();
   int index = 0;
-  late WalletProvider walletProvider;
 
   @override
   void initState() {
-    walletProvider = context.read<WalletProvider>();
     _tabController = TabController(length: 2, vsync: this);
-    setupWalletConnect();
+    final messageEngine = MessageEngine.getMessageEngine(context);
+    if (user.token != null) {
+      messageEngine.socketService.forId = user.id;
+      messageEngine.setToken(user.token!);
+    }
+    messageEngine.connect();
     super.initState();
   }
 
-  setupWalletConnect() async {
-    if (GetIt.I.isRegistered<WC2Service>(instance: walletConnectSingleTon)) {
-      await GetIt.I
-          .unregister<WC2Service>(instanceName: walletConnectSingleTon);
-    }
-    WC2Service web3service = WC2Service(
-        address: walletProvider.activeWallet.wallet.privateKey.address.hex,
-        chainId: walletProvider.activeNetwork.chainId.toString(),
-        nameSpace: walletProvider.activeNetwork.nameSpace,
-        preference: walletProvider.userPreference,
-        privateKey: walletProvider.activeWallet.wallet.privateKey,
-        networks: Core.networks);
-    GetIt.I.registerSingleton<WC2Service>(web3service,
-        instanceName: walletConnectSingleTon);
-    web3service.create();
-    await web3service.init();
-  }
-
   onAddressTapHandler() {
-    walletProvider.copyPublicAddress().then((value) {
+    getWalletProvider(context).copyPublicAddress().then((value) {
       showPositiveSnackBar(
           context, 'Success', 'Public address copied to clipboard');
     });
@@ -92,7 +83,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         context: context,
         builder: (context) {
           return ReceiveSheet(
-            address: walletProvider.activeWallet.wallet.privateKey.address.hex,
+            address: getWalletProvider(context)
+                .activeWallet
+                .wallet
+                .privateKey
+                .address
+                .hex,
           );
         });
   }
@@ -118,283 +114,331 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: _fakeScafoldKey,
-        body: Scaffold(
-          key: _scafoldKey,
-          drawer: DrawerComponent(
-            onReceiveHandler: onReceiveHandler,
-            onSendHandler: onSendHandler,
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: index,
-            onTap: (value) async {
-              setState(() {
-                index = value;
-              });
-            },
-            selectedItemColor: kPrimaryColor,
-            unselectedItemColor: Colors.grey,
-            selectedFontSize: 12,
-            unselectedFontSize: 12,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.wallet),
-                label: "Wallet",
+    return Stack(
+      children: [
+        Scaffold(
+            key: _fakeScafoldKey,
+            body: Scaffold(
+              key: _scafoldKey,
+              drawer: DrawerComponent(
+                onReceiveHandler: onReceiveHandler,
+                onSendHandler: onSendHandler,
               ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.public), label: "Dapp Browser"),
-            ],
-          ),
-          backgroundColor: Colors.white,
-          appBar: index == 0
-              ? AppBar(
-                  shadowColor: Colors.white,
-                  elevation: 0,
-                  backgroundColor: Colors.white,
-                  title: SizedBox(
-                    width: double.infinity,
-                    child: InkWell(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => SizedBox(
-                            height: 10,
-                            child: AlertDialog(
-                              title: Row(
-                                children: [
-                                  const Expanded(
-                                    child: WalletText(
-                                      '',
-                                      localizeKey: "networks",
-                                    ),
+              bottomNavigationBar: BottomNavigationBar(
+                currentIndex: index,
+                onTap: (value) async {
+                  setState(() {
+                    index = value;
+                  });
+                },
+                selectedItemColor: kPrimaryColor,
+                unselectedItemColor: Colors.grey,
+                selectedFontSize: 12,
+                unselectedFontSize: 12,
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.wallet),
+                    label: "Wallet",
+                  ),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.public), label: "Dapp Browser"),
+                ],
+              ),
+              backgroundColor: Colors.white,
+              appBar: index == 0
+                  ? AppBar(
+                      shadowColor: Colors.white,
+                      elevation: 0,
+                      backgroundColor: Colors.white,
+                      title: SizedBox(
+                        width: double.infinity,
+                        child: InkWell(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => SizedBox(
+                                height: 10,
+                                child: AlertDialog(
+                                  title: Row(
+                                    children: [
+                                      const Expanded(
+                                        child: WalletText(
+                                          '',
+                                          localizeKey: "networks",
+                                        ),
+                                      ),
+                                      InkWell(
+                                          onTap: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Icon(Icons.close))
+                                    ],
                                   ),
-                                  InkWell(
-                                      onTap: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Icon(Icons.close))
-                                ],
-                              ),
-                              titlePadding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 7),
-                              contentPadding: const EdgeInsets.all(0),
-                              content: Container(
-                                width: MediaQuery.of(context).size.width,
-                                color: Colors.black45.withAlpha(20),
-                                child: SizedBox(
-                                    child: ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        shrinkWrap: true,
-                                        itemCount: Core.networks.length,
-                                        itemBuilder: (context, index) =>
-                                            ListTile(
-                                              tileColor: Colors.transparent,
-                                              onTap: () async {
-                                                walletProvider
-                                                    .startNetworkSwitch();
-                                                await walletProvider
-                                                    .changeNetwork(index);
-                                                getTokenProvider(context)
-                                                    .loadToken(
-                                                        nativeBalance:
-                                                            getWalletProvider(
-                                                                    context)
-                                                                .nativeBalance,
-                                                        address: address,
-                                                        network: Core
-                                                            .networks[index]);
-                                                Navigator.of(context).pop();
-                                              },
-                                              title: Row(
-                                                children: [
-                                                  Container(
-                                                    width: 7,
-                                                    height: 7,
-                                                    decoration: BoxDecoration(
-                                                        color: Core
-                                                            .networks[index]
-                                                            .dotColor,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10)),
+                                  titlePadding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 7),
+                                  contentPadding: const EdgeInsets.all(0),
+                                  content: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    color: Colors.black45.withAlpha(20),
+                                    child: SizedBox(
+                                        child: ListView.builder(
+                                            scrollDirection: Axis.vertical,
+                                            shrinkWrap: true,
+                                            itemCount: Core.networks.length,
+                                            itemBuilder: (context, index) =>
+                                                ListTile(
+                                                  tileColor: Colors.transparent,
+                                                  onTap: () async {
+                                                    final walletProvider =
+                                                        getWalletProvider(
+                                                            context);
+                                                    walletProvider
+                                                        .startNetworkSwitch();
+                                                    await walletProvider
+                                                        .changeNetwork(index);
+                                                    getTokenProvider(context)
+                                                        .loadToken(
+                                                            nativeBalance:
+                                                                getWalletProvider(
+                                                                        context)
+                                                                    .nativeBalance,
+                                                            address: address,
+                                                            network:
+                                                                Core.networks[
+                                                                    index]);
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  title: Row(
+                                                    children: [
+                                                      Container(
+                                                        width: 7,
+                                                        height: 7,
+                                                        decoration: BoxDecoration(
+                                                            color: Core
+                                                                .networks[index]
+                                                                .dotColor,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10)),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      WalletText('',
+                                                          localizeKey: Core
+                                                              .networks[index]
+                                                              .networkName),
+                                                    ],
                                                   ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  WalletText('',
-                                                      localizeKey: Core
-                                                          .networks[index]
-                                                          .networkName),
-                                                ],
-                                              ),
-                                            ))),
+                                                ))),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        );
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const WalletText(
-                            '',
-                            localizeKey: 'appName',
-                            fontWeight: FontWeight.w200,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            );
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Container(
-                                width: 7,
-                                height: 7,
-                                decoration: BoxDecoration(
-                                    color:
-                                        walletProvider.activeNetwork.dotColor,
-                                    borderRadius: BorderRadius.circular(10)),
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              WalletText(
+                              const WalletText(
                                 '',
-                                localizeKey:
-                                    Provider.of<WalletProvider>(context)
+                                localizeKey: 'appName',
+                                fontWeight: FontWeight.w200,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: 7,
+                                    height: 7,
+                                    decoration: BoxDecoration(
+                                        color: getLiveWalletProvider(context)
+                                            .activeNetwork
+                                            .dotColor,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  WalletText(
+                                    '',
+                                    localizeKey: getLiveWalletProvider(context)
                                         .activeNetwork
                                         .networkName,
-                                textVarient: TextVarient.body3,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  leading: IconButton(
-                      onPressed: () {
-                        _scafoldKey.currentState?.openDrawer();
-                      },
-                      icon: const Icon(
-                        Icons.menu,
-                        color: Colors.black,
-                      )),
-                  actions: const [
-                      Icon(
-                        Icons.add,
-                        color: Colors.transparent,
-                      ),
-                    ])
-              : null,
-          body: Provider.of<WalletProvider>(context).switchingChain
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : IndexedStack(
-                  index: index,
-                  children: [
-                    NestedScrollView(
-                        body: SizedBox(
-                          height: MediaQuery.of(context).size.height,
-                          width: MediaQuery.of(context).size.width,
-                          child: Column(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 1,
-                                color: Colors.grey.withAlpha(60),
-                              ),
-                              const Expanded(
-                                child: TokenTab(),
+                                    textVarient: TextVarient.body3,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         ),
-                        headerSliverBuilder: (context, _) => [
-                              SliverToBoxAdapter(
-                                child: SizedBox(
+                      ),
+                      leading: IconButton(
+                          onPressed: () {
+                            _scafoldKey.currentState?.openDrawer();
+                          },
+                          icon: const Icon(
+                            Icons.menu,
+                            color: Colors.black,
+                          )),
+                      actions: [
+                          IconButton(
+                            onPressed: () =>
+                                context.push(() => const ChatScreen()),
+                            icon: const Icon(Icons.chat),
+                            color: Colors.transparent,
+                          ),
+                        ])
+                  : null,
+              body: IndexedStack(
+                index: index,
+                children: [
+                  Provider.of<WalletProvider>(context).switchingChain
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : NestedScrollView(
+                          body: SizedBox(
+                            height: MediaQuery.of(context).size.height,
+                            width: MediaQuery.of(context).size.width,
+                            child: Column(
+                              children: [
+                                Container(
                                   width: MediaQuery.of(context).size.width,
-                                  child: Column(
-                                    children: [
-                                      !user.seedPhraseBackedUp
-                                          ? renderAlert(
-                                              context,
-                                              'backUp',
-                                              () {
-                                                Navigator.of(context).pushNamed(
-                                                    SecuritySettingsScreen
-                                                        .route);
-                                              },
-                                              localizeKey: 'youHaventBackedup',
-                                            )
-                                          : addHeight(SpacingSize.s),
-                                      InkWell(
-                                        onTap: onAccountChangeHandler,
-                                        child: AvatarWidget(
-                                          radius: 50,
-                                          address: walletProvider.activeWallet
-                                              .wallet.privateKey.address.hex,
+                                  height: 1,
+                                  color: Colors.grey.withAlpha(60),
+                                ),
+                                const Expanded(
+                                  child: TokenTab(),
+                                ),
+                              ],
+                            ),
+                          ),
+                          headerSliverBuilder: (context, _) => [
+                                SliverToBoxAdapter(
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Column(
+                                      children: [
+                                        !user.seedPhraseBackedUp
+                                            ? renderAlert(
+                                                context,
+                                                'backUp',
+                                                () {
+                                                  goToSecuritySettings(
+                                                    context,
+                                                    () async {
+                                                      final walletProvider =
+                                                          getWalletProvider(
+                                                              context);
+                                                      walletProvider
+                                                          .showLoading();
+                                                      await RemoteServer
+                                                          .setBackedUp();
+                                                      walletProvider
+                                                          .hideLoading();
+                                                      user.seedPhraseBackedUp =
+                                                          true;
+                                                    },
+                                                  );
+                                                },
+                                                localizeKey:
+                                                    'youHaventBackedup',
+                                              )
+                                            : addHeight(SpacingSize.s),
+                                        InkWell(
+                                          onTap: onAccountChangeHandler,
+                                          child: AvatarWidget(
+                                            radius: 50,
+                                            address:
+                                                getLiveWalletProvider(context)
+                                                    .activeWallet
+                                                    .wallet
+                                                    .privateKey
+                                                    .address
+                                                    .hex,
+                                          ),
                                         ),
-                                      ),
-                                      addHeight(SpacingSize.xs),
-                                      WalletText(
-                                        '',
-                                        localizeKey:
-                                            walletProvider.getAccountName(),
-                                        textVarient: TextVarient.body1,
-                                        bold: true,
-                                      ),
-                                      addHeight(SpacingSize.xs),
-                                      WalletText('',
-                                          onTap: onAddressTapHandler,
+                                        addHeight(SpacingSize.xs),
+                                        WalletText(
+                                          '',
+                                          localizeKey:
+                                              getLiveWalletProvider(context)
+                                                  .getAccountName(),
                                           textVarient: TextVarient.body1,
-                                          localizeKey: showEllipse(
-                                              walletProvider.activeWallet.wallet
-                                                  .privateKey.address.hex)),
-                                      addHeight(SpacingSize.xs),
-                                      WalletText(
-                                        '',
-                                        localizeKey: walletProvider
-                                            .getNativeBalanceFormatted(),
-                                        textVarient: TextVarient.heading,
-                                      ),
-                                      addHeight(SpacingSize.xs),
-                                      WalletText(
-                                        '',
-                                        localizeKey: walletProvider
-                                            .getPreferedBalanceFormatted(),
-                                        textVarient: TextVarient.heading,
-                                      ),
-                                      addHeight(SpacingSize.xs),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          CustomIconButton(
-                                            onPressed: onReceiveHandler,
-                                            localizeKey: 'receive',
-                                            iconData: Icons.call_received,
-                                          ),
-                                          addWidth(SpacingSize.s),
-                                          CustomIconButton(
-                                            onPressed: onSendHandler,
-                                            localizeKey: 'send',
-                                            iconData: Icons.send,
-                                          ),
-                                          addWidth(SpacingSize.s),
-                                        ],
-                                      ),
-                                      addHeight(SpacingSize.s),
-                                    ],
+                                          bold: true,
+                                        ),
+                                        addHeight(SpacingSize.xs),
+                                        WalletText('',
+                                            onTap: onAddressTapHandler,
+                                            textVarient: TextVarient.body1,
+                                            localizeKey: showEllipse(
+                                                getLiveWalletProvider(context)
+                                                    .activeWallet
+                                                    .wallet
+                                                    .privateKey
+                                                    .address
+                                                    .hex)),
+                                        addHeight(SpacingSize.xs),
+                                        WalletText(
+                                          '',
+                                          localizeKey:
+                                              getLiveWalletProvider(context)
+                                                  .getNativeBalanceFormatted(),
+                                          textVarient: TextVarient.heading,
+                                        ),
+                                        addHeight(SpacingSize.xs),
+                                        WalletText(
+                                          '',
+                                          localizeKey: getLiveWalletProvider(
+                                                  context)
+                                              .getPreferedBalanceFormatted(),
+                                          textVarient: TextVarient.heading,
+                                        ),
+                                        addHeight(SpacingSize.xs),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            CustomIconButton(
+                                              onPressed: onReceiveHandler,
+                                              localizeKey: 'receive',
+                                              iconData: Icons.call_received,
+                                            ),
+                                            addWidth(SpacingSize.s),
+                                            CustomIconButton(
+                                              onPressed: onSendHandler,
+                                              localizeKey: 'send',
+                                              iconData: Icons.send,
+                                            ),
+                                            addWidth(SpacingSize.s),
+                                          ],
+                                        ),
+                                        addHeight(SpacingSize.s),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ]),
-                    // BrowserScreen(index: index)
-                    // BrowserScreen(
-                    //   index: index,
-                    // )
-                  ],
+                              ]),
+                  BrowserScreen(index: index)
+                  // BrowserScreen(
+                  //   index: index,
+                  // )
+                ],
+              ),
+            )),
+        getLiveWalletProvider(context).loading
+            ? Container(
+                height: Get.height,
+                width: Get.width,
+                color: Colors.black87.withAlpha(200),
+                child: const Center(
+                  child: CircularProgressIndicator(),
                 ),
-        ));
+              )
+            : const SizedBox(),
+      ],
+    );
   }
 }

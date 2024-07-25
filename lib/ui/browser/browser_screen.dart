@@ -234,13 +234,7 @@ class _BrowserScreenState extends State<BrowserScreen> {
               url: WebUri("https://${value.trim()}"),
             ));
       }
-      // try {
-      //   var tab = tabs.firstWhere((element) =>
-      //       element.hashCode == (selectedTab as BrowserView).hashCode);
-      //   tab.webViewModel.url = url;
-      // } catch (e) {
-      //   log(e.toString());
-      // }
+
       return;
     }
     String googleSearchUrl = "https://www.google.com/search?q=$value";

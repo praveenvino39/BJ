@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:developer';
 
@@ -5,14 +7,17 @@ import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
+import 'package:wallet_cryptomask/ui/setttings/security_settings_screen/security_settings_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -47,6 +52,64 @@ copyAddressToClipBoard(String address, BuildContext context,
         isPk
             ? "Privatekey copied to clipboard"
             : "Public address copied to clipboard");
+  });
+}
+
+showPasswordInputModal(
+  BuildContext context,
+  Function() onVerified,
+) {
+  final passwordEditingController = TextEditingController();
+  showModalBottomSheet(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(builder: (context, setState) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16),
+          child: Column(children: [
+            WalletTextField(
+                textEditingController: passwordEditingController,
+                textFieldType: TextFieldType.password,
+                labelLocalizeKey: 'password'),
+            const SizedBox(
+              height: 20,
+            ),
+            WalletButton(
+              onPressed: () async {
+                final password = (await const FlutterSecureStorage().read(
+                      key: "password",
+                    )) ??
+                    "";
+                Navigator.of(context).pop();
+                final inputPassword = passwordEditingController.text;
+                passwordEditingController.clear();
+                if (inputPassword == password) {
+                  await onVerified();
+                  return Navigator.of(context)
+                      .pushNamed(SecuritySettingsScreen.route);
+                }
+                showErrorSnackBar(
+                    context, "Invalid", "Passwod is invalid, Please try again");
+              },
+              localizeKey: 'verify',
+            )
+          ]),
+        );
+      });
+    },
+  );
+}
+
+goToSecuritySettings(BuildContext context, Function() onVerified) {
+  showPasswordInputModal(context, onVerified);
+}
+
+copyToClipBoard(BuildContext context, String content, String message) {
+  log(content);
+  Clipboard.setData(
+    ClipboardData(text: content),
+  ).then((value) {
+    showPositiveSnackBar(context, 'Copied', message);
   });
 }
 

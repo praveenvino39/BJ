@@ -43,8 +43,6 @@ class _BrowserViewState extends State<BrowserView> {
   bool dissableProgressAnimation = false;
   bool isAttached = false;
   PullToRefreshController refreshController = PullToRefreshController();
-  WC2Service web3service =
-      GetIt.I<WC2Service>(instanceName: walletConnectSingleTon);
 
   @override
   void initState() {
@@ -61,20 +59,20 @@ class _BrowserViewState extends State<BrowserView> {
     return BlocListener<WalletCubit, WalletState>(
       listener: (context, state) async {
         if (state is WalletNetworkChanged) {
-          web3service.initHandlers(
-              Provider.of<WalletProvider>(context).activeNetwork.nameSpace,
-              state.currentNetwork.chainId.toString());
-          webViewController?.postWebMessage(
-              message: WebMessage(
-                data: jsonEncode({
-                  "method": "wallet_networkChanged",
-                  "data": {
-                    "rpc": state.currentNetwork.url,
-                    "chainId": state.currentNetwork.chainId
-                  }
-                }),
-              ),
-              targetOrigin: WebUri("*"));
+          // getWalletProvider(context).initHandlers(
+          //     getWalletProvider(context).activeNetwork.nameSpace,
+          //     state.currentNetwork.chainId.toString());
+          // webViewController?.postWebMessage(
+          //     message: WebMessage(
+          //       data: jsonEncode({
+          //         "method": "wallet_networkChanged",
+          //         "data": {
+          //           "rpc": state.currentNetwork.url,
+          //           "chainId": state.currentNetwork.chainId
+          //         }
+          //       }),
+          //     ),
+          //     targetOrigin: WebUri("*"));
         }
         if (state is WalletAccountChanged) {
           webViewController?.postWebMessage(
@@ -235,7 +233,7 @@ class _BrowserViewState extends State<BrowserView> {
   void handleRequestToWalletConnect(Uri url) async {
     if (url.queryParameters["symKey"] != null) {
       try {
-        await web3service.web3Wallet!.pair(uri: url);
+        await getWalletProvider(context).web3Wallet!.pair(uri: url);
       } catch (e) {
         Get.dialog(AlertDialog(
           title: const Text("Error in connection"),

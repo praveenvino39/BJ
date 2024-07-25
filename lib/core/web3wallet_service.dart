@@ -300,7 +300,7 @@ class WC2Service {
           title: const Text("Personal sign"),
           actions: [
             WalletButton(
-                textContent: "Approve",
+                localizeKey: "Approve",
                 type: WalletButtonType.filled,
                 onPressed: () {
                   final encodedMessage = hexToBytes(params[0]);
@@ -311,7 +311,7 @@ class WC2Service {
                   return signFuture.complete(sign);
                 }),
             WalletButton(
-                textContent: "Reject",
+                localizeKey: "Reject",
                 onPressed: () {
                   Get.back();
                   return signFuture.completeError("User rejected");

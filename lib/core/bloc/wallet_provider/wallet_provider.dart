@@ -15,18 +15,32 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
+import 'package:provider/provider.dart';
+import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/core/model/wallet_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
+import 'package:wallet_cryptomask/ui/dapp_widgets/connect_sheet.dart';
+import 'package:wallet_cryptomask/ui/dapp_widgets/network_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/utils.dart';
+import 'package:walletconnect_flutter_v2/apis/sign_api/models/session_models.dart';
+import 'package:walletconnect_flutter_v2/apis/sign_api/models/sign_client_events.dart';
+import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart' as WC;
 import 'package:web3dart/web3dart.dart';
 
 WalletProvider getWalletProvider(BuildContext context) =>
     context.read<WalletProvider>();
+
+WalletProvider getLiveWalletProvider(BuildContext context) =>
+    Provider.of<WalletProvider>(context);
 
 class WalletProvider extends ChangeNotifier {
   bool loading = false;
@@ -42,6 +56,7 @@ class WalletProvider extends ChangeNotifier {
   List<WalletModel> wallets = [];
   String balanceInPrefereCurrency = "0";
   double nativeBalance = 0.0;
+  WC.Web3Wallet? web3Wallet;
 
   WalletProvider(this.fss, this.userPreference);
 
@@ -83,7 +98,12 @@ class WalletProvider extends ChangeNotifier {
     Client httpClient = Client();
     activeNetwork = network;
     web3client = Web3Client(network.url, httpClient);
+    setupWalletConnect();
     notifyListeners();
+  }
+
+  Future<String?> getSecretRecoveryPhrase() {
+    return fss.read(key: "seed_phrase");
   }
 
   String getAccountName() {
@@ -146,6 +166,23 @@ class WalletProvider extends ChangeNotifier {
     initWeb3Client(network);
   }
 
+  // setupWalletConnect() async {
+  //   // if (GetIt.I.isRegistered<WC2Service>(instance: walletConnectSingleTon)) {
+  //   await GetIt.I.unregister<WC2Service>(instanceName: walletConnectSingleTon);
+  //   // }
+  //   WC2Service web3service = WC2Service(
+  //       address: activeWallet.wallet.privateKey.address.hex,
+  //       chainId: activeNetwork.chainId.toString(),
+  //       nameSpace: activeNetwork.nameSpace,
+  //       preference: userPreference,
+  //       privateKey: activeWallet.wallet.privateKey,
+  //       networks: Core.networks);
+  //   GetIt.I.registerSingleton<WC2Service>(web3service,
+  //       instanceName: walletConnectSingleTon);
+  //   web3service.create();
+  //   await web3service.init();
+  // }
+
   updateBalance() {
     try {
       web3client
@@ -185,11 +222,12 @@ class WalletProvider extends ChangeNotifier {
     }
     String activeNetwork = userPreference.get("NETWORK",
         defaultValue: Core.networks[0].networkName);
-    initWeb3Client(getNetwork(activeNetwork));
+
     activeAccountIndex = userPreference.get("ACCOUNT", defaultValue: 0);
     defaultCurrency = userPreference.get("CURRENCY", defaultValue: "usd");
     final walletJson = jsonDecode(walletString);
     await loadWallets(walletJson, password);
+    initWeb3Client(getNetwork(activeNetwork));
     await login();
     updateBalanceTimer();
     notifyListeners();
@@ -281,6 +319,7 @@ class WalletProvider extends ChangeNotifier {
         message: message,
         hash: hash,
         address: activeWallet.wallet.privateKey.address.hex);
+    debugPrint(userLoginResponse.data.token ?? "");
     Get.put(userLoginResponse.data);
   }
 
@@ -421,6 +460,414 @@ class WalletProvider extends ChangeNotifier {
       box.put("RECENT-TRANSACTION-ADDRESS", recentAddresses);
       hideLoading();
       return transactionHash;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  setupWalletConnect() async {
+    web3Wallet = WC.Web3Wallet(
+      core: WC.Core(
+        projectId: '3304b720b5bb3ee4918ff6cf62f6262a',
+      ),
+      metadata: const WC.PairingMetadata(
+        name: 'Example Wallet',
+        description: 'Example Wallet',
+        url: 'https://walletconnect.com/',
+        icons: ['https://walletconnect.com/walletconnect-logo.png'],
+      ),
+    );
+    web3Wallet!.onSessionProposal.subscribe(_onSessionProposal);
+    await web3Wallet!.init();
+    initHandlers(activeNetwork.nameSpace, activeNetwork.chainId.toString());
+  }
+
+  initHandlers(String namespace, String chainId) {
+    setupPersonalSignHandler(namespace, chainId);
+    setupEthSignHandler(namespace, chainId);
+    setupSignTransactionHandler(namespace, chainId);
+    setupTransactionHandler(namespace, chainId);
+    setupSignTypedDataHandler(namespace, chainId);
+  }
+
+  setupTransactionHandler(String namespace, String chainId) {
+    web3Wallet!.registerRequestHandler(
+      chainId: "$namespace:$chainId",
+      method: "eth_sendTransaction",
+      handler: (method, params) {
+        Completer sendTransactionFuture = Completer();
+        // onSendTransactionV2(
+        //   WCEthereumTransaction.fromJson(params[0]),
+        //   iconUrl: "iconUrl",
+        //   origin: "origin",
+        //   onApprove: (txHash) {
+        //     sendTransactionFuture.complete(txHash);
+        //   },
+        //   onReject: () {
+        //     sendTransactionFuture.completeError("User rejected");
+        //   },
+        // );
+        return sendTransactionFuture.future;
+      },
+    );
+  }
+
+  setupSignTransactionHandler(String namespace, String chainId) {
+    web3Wallet!.registerRequestHandler(
+      chainId: "$namespace:$chainId",
+      method: "eth_signTransaction",
+      handler: (method, params) {
+        Completer signFuture = Completer();
+        Get.dialog(AlertDialog(
+          title: const Text("Eth Sign"),
+          actions: [
+            WalletButton(
+                textContent: "Approve",
+                onPressed: () {
+                  String sign = EthSigUtil.signPersonalTypedData(
+                      jsonData: params[1],
+                      version: TypedDataVersion.V4,
+                      privateKeyInBytes:
+                          activeWallet.wallet.privateKey.privateKey);
+                  Get.back();
+                  return signFuture.complete(sign);
+                })
+          ],
+        ));
+        return signFuture.future;
+      },
+    );
+  }
+
+  setupSignTypedDataHandler(String namespace, String chainId) {
+    web3Wallet!.registerRequestHandler(
+      chainId: "$namespace:$chainId",
+      method: "eth_signTypedData",
+      handler: (method, params) {
+        Completer signFuture = Completer();
+        Get.dialog(AlertDialog(
+          title: const Text("Sign Data"),
+          content: Text(params[1]),
+          actions: [
+            WalletButton(
+                textContent: "Approve",
+                type: WalletButtonType.filled,
+                onPressed: () {
+                  String sign = EthSigUtil.signTypedData(
+                      jsonData: params[1],
+                      version: TypedDataVersion.V4,
+                      privateKeyInBytes:
+                          activeWallet.wallet.privateKey.privateKey);
+                  Get.back();
+                  return signFuture.complete(sign);
+                }),
+            WalletButton(
+                textContent: "Reject",
+                onPressed: () {
+                  Get.back();
+                  return signFuture.complete(null);
+                }),
+          ],
+        ));
+        return signFuture.future;
+      },
+    );
+    web3Wallet!.registerRequestHandler(
+      chainId: "${activeNetwork.nameSpace}:${activeNetwork.chainId}",
+      method: "eth_signTypedData_v1",
+      handler: (method, params) {
+        Completer signFuture = Completer();
+        Get.dialog(AlertDialog(
+          title: const Text("Sign Data"),
+          content: Text(params[1]),
+          actions: [
+            WalletButton(
+                textContent: "Approve",
+                type: WalletButtonType.filled,
+                onPressed: () {
+                  String sign = EthSigUtil.signTypedData(
+                      jsonData: params[1],
+                      version: TypedDataVersion.V1,
+                      privateKeyInBytes:
+                          activeWallet.wallet.privateKey.privateKey);
+                  Get.back();
+                  return signFuture.complete(sign);
+                }),
+            WalletButton(
+                textContent: "Reject",
+                onPressed: () {
+                  Get.back();
+                  return signFuture.complete(null);
+                }),
+          ],
+        ));
+        return signFuture.future;
+      },
+    );
+    web3Wallet!.registerRequestHandler(
+      chainId: "${activeNetwork.nameSpace}:${activeNetwork.chainId}",
+      method: "eth_signTypedData_v3",
+      handler: (method, params) {
+        Completer signFuture = Completer();
+        Get.dialog(AlertDialog(
+          title: const Text("Sign Data"),
+          content: Text(params[1]),
+          actions: [
+            WalletButton(
+                type: WalletButtonType.filled,
+                textContent: "Approve",
+                onPressed: () {
+                  String sign = EthSigUtil.signTypedData(
+                      jsonData: params[1],
+                      version: TypedDataVersion.V3,
+                      privateKeyInBytes:
+                          activeWallet.wallet.privateKey.privateKey);
+                  Get.back();
+                  return signFuture.complete(sign);
+                }),
+            WalletButton(
+                type: WalletButtonType.filled,
+                textContent: "Reject",
+                onPressed: () {
+                  Get.back();
+                  return signFuture.complete(null);
+                }),
+          ],
+        ));
+        return signFuture.future;
+      },
+    );
+    web3Wallet!.registerRequestHandler(
+      chainId: "${activeNetwork.nameSpace}:${activeNetwork.chainId}",
+      method: "eth_signTypedData_v4",
+      handler: (method, params) {
+        Completer signFuture = Completer();
+        Get.dialog(AlertDialog(
+          title: const Text("Sign Data"),
+          content: Text(params[1]),
+          actions: [
+            WalletButton(
+                textContent: "Approve",
+                type: WalletButtonType.filled,
+                onPressed: () {
+                  String sign = EthSigUtil.signTypedData(
+                      jsonData: params[1],
+                      version: TypedDataVersion.V4,
+                      privateKeyInBytes:
+                          activeWallet.wallet.privateKey.privateKey);
+                  Get.back();
+                  return signFuture.complete(sign);
+                }),
+            WalletButton(
+                textContent: "Reject",
+                onPressed: () {
+                  Get.back();
+                  return signFuture.complete(null);
+                }),
+          ],
+        ));
+        return signFuture.future;
+      },
+    );
+  }
+
+  setupEthSignHandler(String namespace, String chainId) {
+    web3Wallet!.registerRequestHandler(
+      chainId: "$namespace:$chainId",
+      method: "eth_sign",
+      handler: (method, params) {
+        Completer signFuture = Completer();
+        Get.dialog(AlertDialog(
+          content: isHexString(params[1])
+              ? Text(String.fromCharCodes(hexToBytes(params[1])))
+              : Text(params[1]),
+          title: const Text("Sign Message"),
+          actions: [
+            WalletButton(
+                textContent: "Approve",
+                type: WalletButtonType.filled,
+                onPressed: () {
+                  final encodedMessage = hexToBytes(params[1]);
+                  String sign = EthSigUtil.signMessage(
+                      message: encodedMessage,
+                      privateKeyInBytes:
+                          activeWallet.wallet.privateKey.privateKey);
+                  Get.back();
+                  return signFuture.complete(sign);
+                }),
+            WalletButton(
+                textContent: "Reject",
+                onPressed: () {
+                  Get.back();
+                  return signFuture.complete(null);
+                })
+          ],
+        ));
+        return signFuture.future;
+      },
+    );
+  }
+
+  setupPersonalSignHandler(String namespace, String chainId) {
+    web3Wallet!.registerRequestHandler(
+      chainId: "$namespace:$chainId",
+      method: "personal_sign",
+      handler: (method, params) {
+        Completer signFuture = Completer();
+        Get.dialog(AlertDialog(
+          content: isHexString(params[0])
+              ? Text(String.fromCharCodes(hexToBytes(params[0])))
+              : Text(params[0]),
+          title: const Text("Personal sign"),
+          actions: [
+            WalletButton(
+                localizeKey: "Approve",
+                type: WalletButtonType.filled,
+                onPressed: () {
+                  final encodedMessage = hexToBytes(params[0]);
+                  String sign = EthSigUtil.signPersonalMessage(
+                      message: encodedMessage,
+                      privateKeyInBytes:
+                          activeWallet.wallet.privateKey.privateKey);
+                  Get.back();
+                  return signFuture.complete(sign);
+                }),
+            WalletButton(
+                localizeKey: "Reject",
+                onPressed: () {
+                  Get.back();
+                  return signFuture.completeError("User rejected");
+                })
+          ],
+        ));
+        return signFuture.future;
+      },
+    );
+  }
+
+  void _onSessionProposal(SessionProposalEvent? args) async {
+    if (args != null) {
+      String requiredNamespaceKey =
+          args.params.requiredNamespaces.keys.toList()[0];
+      String requiredChain =
+          args.params.requiredNamespaces[requiredNamespaceKey]?.chains![0] ??
+              "eip:155:5";
+      Network? network = getNetworkFromRequiredChain(requiredChain);
+      if (network == null) {
+        return;
+      }
+      if (network.chainId == activeNetwork.chainId) {
+        Get.bottomSheet(
+            ConnectSheet(
+              imageUrl: args.params.proposer.metadata.icons[0],
+              connectingOrgin: args.params.proposer.metadata.url,
+              onApprove: (addresses) async {
+                try {
+                  await web3Wallet!.approveSession(
+                      id: args.id,
+                      namespaces: getWalletNamespaceForCurrentChain(
+                          args.params.requiredNamespaces));
+                } catch (e) {
+                  String requiredNamespaceKey =
+                      args.params.requiredNamespaces.keys.toList()[0];
+                  String requiredChain = args
+                          .params
+                          .requiredNamespaces[requiredNamespaceKey]
+                          ?.chains![0] ??
+                      "eip:155:5";
+                  Network? network = getNetworkFromRequiredChain(requiredChain);
+                  Get.snackbar("", "",
+                      backgroundColor: Colors.redAccent,
+                      snackPosition: SnackPosition.BOTTOM,
+                      borderRadius: 0,
+                      margin: const EdgeInsets.all(0),
+                      titleText: const WalletText(
+                        "Error",
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      messageText: network != null
+                          ? WalletText(
+                              '',
+                              localizeKey:
+                                  "Please switch to ${network.networkName}",
+                              color: Colors.white,
+                            )
+                          : const WalletText("",
+                              localizeKey: 'Something went wrong',
+                              color: Colors.white));
+                }
+              },
+              onReject: () async {
+                await web3Wallet!.rejectSession(
+                  id: args.id,
+                  reason: WC.Errors.getSdkError(
+                    WC.Errors.USER_REJECTED,
+                  ),
+                );
+              },
+            ),
+            backgroundColor: Colors.white);
+      } else {
+        Get.bottomSheet(
+            NetworkChangeSheet(
+                imageUrl: args.params.proposer.metadata.icons[0],
+                onApprove: (p0) {
+                  Get.back();
+                  Completer networkSwitchCompleter = Completer();
+                  Get.bottomSheet(
+                      ConnectSheet(
+                        imageUrl: args.params.proposer.metadata.icons[0],
+                        connectingOrgin: args.params.proposer.metadata.url,
+                        onApprove: (addresses) async {
+                          await web3Wallet!.approveSession(
+                              id: args.id,
+                              namespaces: getWalletNamespaceForCurrentChain(
+                                  args.params.requiredNamespaces));
+                        },
+                        onReject: () async {
+                          await web3Wallet!.rejectSession(
+                            id: args.id,
+                            reason: WC.Errors.getSdkError(
+                              WC.Errors.USER_REJECTED,
+                            ),
+                          );
+                        },
+                      ),
+                      backgroundColor: Colors.white);
+                  return networkSwitchCompleter.future;
+                },
+                onReject: () {},
+                connectingOrgin: args.params.proposer.metadata.url,
+                chainId: network.chainId.toString()),
+            backgroundColor: Colors.white);
+      }
+    }
+  }
+
+  getWalletNamespaceForCurrentChain(dynamic requiredNamespaces) {
+    Map<String, Namespace> walletNamespaces = {};
+    requiredNamespaces.forEach((key, value) {
+      List<String> methods =
+          requiredNamespaces[activeNetwork.nameSpace]?.methods ?? [];
+      List<String> events =
+          requiredNamespaces[activeNetwork.nameSpace]?.events ?? [];
+      List<String> accounts = [];
+      (requiredNamespaces[activeNetwork.nameSpace]?.chains ?? []).map((chain) {
+        accounts.add(
+            "$chain:${activeWallet.wallet.privateKey.address.hex.toString()}");
+      }).toList();
+
+      walletNamespaces[key] =
+          Namespace(accounts: accounts, methods: methods, events: events);
+    });
+    return walletNamespaces;
+  }
+
+  Network? getNetworkFromRequiredChain(String chainIdInEIP) {
+    try {
+      return Core.networks.firstWhere((Network network) =>
+          "${network.nameSpace}:${network.chainId}" == chainIdInEIP);
     } catch (e) {
       return null;
     }

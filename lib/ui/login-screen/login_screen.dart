@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:new_version/new_version.dart';
 import 'package:provider/provider.dart';
+import 'package:routerino/routerino.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
@@ -157,7 +158,8 @@ class _LoginScreenState extends State<LoginScreen> {
         walletProvider.hideLoading();
         final user = Get.find<User>();
         if (user.isDeactivated) {
-          return Navigator.of(context).pushNamed(DeactivatedScreen.route);
+          return context.pushAndRemoveUntil(
+              removeUntil: bool, builder: () => const DeactivatedScreen());
         }
         Navigator.of(context).pushNamedAndRemoveUntil(
           HomeScreen.route,

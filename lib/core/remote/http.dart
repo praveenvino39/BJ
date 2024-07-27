@@ -2,13 +2,16 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as dioLibrary;
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:wallet_cryptomask/core/model/coin_gecko_token_model.dart';
 import 'package:wallet_cryptomask/core/model/gas_tracker_api.dart';
+import 'package:wallet_cryptomask/core/model/message.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/erc20_transaction_log.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/moralis_token_response.dart';
@@ -134,6 +137,23 @@ Future<List<String>?> getSupportedVsCurrency() async {
       currencyList.add(currency);
     }
     return currencyList;
+  } catch (e) {
+    log(e.toString());
+  }
+  return null;
+}
+
+Future<Media?> uploadFile(String token, File file, String fileName) async {
+  try {
+    final formData = dioLibrary.FormData.fromMap({
+      'file':
+          await dioLibrary.MultipartFile.fromFile(file.path, filename: fileName)
+    });
+    var response = await Dio().post("$baseUrl/api/user/upload",
+        data: formData,
+        options: Options(headers: {"Authorization": "Bearer $token"}));
+    final media = Media.fromJson(response.data['data']);
+    return media;
   } catch (e) {
     log(e.toString());
   }

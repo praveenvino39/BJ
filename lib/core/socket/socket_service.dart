@@ -55,6 +55,15 @@ class SocketService {
         chats.add(
           ChatMessage(
             text: message.message,
+            medias: message.attachment != null
+                ? [
+                    ChatMedia(
+                      url: message.attachment!.url,
+                      fileName: message.attachment!.fileName,
+                      type: MediaType.parse(message.attachment!.mediaType),
+                    )
+                  ]
+                : null,
             status: MessageStatus.received,
             user: ChatUser(
                 firstName: message.isAdminMessage
@@ -80,6 +89,16 @@ class SocketService {
     final messageTemplate = {
       "timestamp": DateTime.now().toString(),
       "message": message,
+      "forId": forId,
+    };
+    _socket?.emit(SocketEvent.private_message, messageTemplate);
+  }
+
+  void sendMessageWithAttachment(String message, Media media) {
+    final messageTemplate = {
+      "timestamp": DateTime.now().toString(),
+      "message": message,
+      "attachment": media.toJson(),
       "forId": forId,
     };
     _socket?.emit(SocketEvent.private_message, messageTemplate);

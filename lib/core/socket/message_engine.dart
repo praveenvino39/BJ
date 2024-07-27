@@ -1,6 +1,7 @@
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet_cryptomask/core/model/message.dart';
 import 'package:wallet_cryptomask/core/socket/socket_service.dart';
 
 class MessageEngine extends ChangeNotifier {
@@ -27,6 +28,10 @@ class MessageEngine extends ChangeNotifier {
 
   sendMessage(String message) {
     _socketService.sendMessage(message);
+  }
+
+  sendMessageWithAttachment(String message, Media attachment) {
+    _socketService.sendMessageWithAttachment(message, attachment);
   }
 
   getChatFor(int id) {

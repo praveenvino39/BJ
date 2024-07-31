@@ -6,22 +6,26 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
+import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/utils.dart';
 
 class ConnectSheet extends StatefulWidget {
   // final BrowserView browser;
   final Function(List<String>) onApprove;
+  List<Network>? requestedNetworks;
   final Function() onReject;
   final String connectingOrgin;
   final String imageUrl;
-  const ConnectSheet(
+  ConnectSheet(
       {super.key,
       required this.onApprove,
       required this.onReject,
       required this.connectingOrgin,
-      required this.imageUrl});
+      required this.imageUrl,
+      this.requestedNetworks});
 
   @override
   State<ConnectSheet> createState() => _ConnectSheetState();
@@ -159,6 +163,9 @@ class _ConnectSheetState extends State<ConnectSheet>
                       const SizedBox(
                         width: 10,
                       ),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       Expanded(
                         child: InkWell(
                           onTap: () {},
@@ -180,6 +187,25 @@ class _ConnectSheetState extends State<ConnectSheet>
                     ],
                   ),
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
+                widget.requestedNetworks != null
+                    ? Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(7),
+                            border: Border.all(
+                                width: 1, color: Colors.grey.withAlpha(60))),
+                        child: WalletText(
+                          "",
+                          localizeKey:
+                              "${widget.requestedNetworks?.length} chains requested",
+                        ),
+                      )
+                    : const SizedBox(),
                 const SizedBox(
                   height: 20,
                 ),

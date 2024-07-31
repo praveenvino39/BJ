@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
@@ -10,10 +11,10 @@ import 'package:wallet_cryptomask/ui/shared/chain_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 
 class NetworkChangeSheet extends StatefulWidget {
-  final Function(dynamic) onApprove;
+  final Function() onApprove;
   final Function() onReject;
   final String connectingOrgin;
-  final String chainId;
+  final int chainId;
   final String imageUrl;
   // final String messageToBeSigned;
   const NetworkChangeSheet(
@@ -34,12 +35,8 @@ class _NetworkChangeSheetState extends State<NetworkChangeSheet> {
   @override
   void initState() {
     try {
-      requestNetwork = Core.networks.firstWhere(
-        (network) {
-          return intToHex(network.chainId) ==
-              intToHex(int.parse(widget.chainId));
-        },
-      );
+      requestNetwork = Core.networks
+          .firstWhereOrNull((element) => element.chainId == widget.chainId);
       setState(() {});
     } catch (e) {
       widget.onReject();
@@ -204,14 +201,7 @@ class _NetworkChangeSheetState extends State<NetworkChangeSheet> {
                             localizeKey: "Approve",
                             type: WalletButtonType.filled,
                             onPressed: () async {
-                              final index = Core.networks.indexWhere(
-                                  (element) =>
-                                      element.chainId ==
-                                      requestNetwork!.chainId);
-                              if (index > 0) {
-                                getWalletProvider(context).changeNetwork(index);
-                                widget.onApprove(null);
-                              }
+                              widget.onApprove();
                             }),
                       ),
                     ],

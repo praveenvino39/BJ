@@ -225,9 +225,9 @@ class _TransactionSheetState extends State<TransactionSheet> {
                             width: double.infinity,
                             child: Row(
                               children: [
-                                Column(
+                                const Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
+                                  children: [
                                     Text(
                                       "Estimated gas fee",
                                       style: TextStyle(
@@ -269,9 +269,9 @@ class _TransactionSheetState extends State<TransactionSheet> {
                             width: double.infinity,
                             child: Row(
                               children: [
-                                Column(
+                                const Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
+                                  children: [
                                     Text(
                                       "Total",
                                       style: TextStyle(
@@ -308,78 +308,68 @@ class _TransactionSheetState extends State<TransactionSheet> {
                             listener: (context, state) {},
                             builder: (context, state) {
                               return state is WalletLoaded
-                                  ? state.balanceInNative > 0
-                                      ? Column(
-                                          children: [
-                                            // Text("Warning: ${state.wallet.privateKey.address.hex.toLowerCase() != transaction?.from.toString() ? "You're sending transaction from different account" : ""}"),
-                                            SizedBox(
-                                                height: 50,
-                                                width: double.infinity,
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: WalletButton(
-                                                          textContent: "Reject",
-                                                          onPressed: () async {
-                                                            widget.onReject();
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          }),
-                                                    ),
-                                                    Expanded(
-                                                      child: WalletButton(
-                                                          textContent:
-                                                              "Approve",
-                                                          type: WalletButtonType
-                                                              .filled,
-                                                          onPressed: () async {
-                                                            var currentState =
-                                                                Provider.of<
-                                                                        WalletProvider>(
-                                                                    context,
-                                                                    listen:
-                                                                        false);
-                                                            // widget.transaction.gasPrice =
+                                  ? Column(
+                                      children: [
+                                        // Text("Warning: ${state.wallet.privateKey.address.hex.toLowerCase() != transaction?.from.toString() ? "You're sending transaction from different account" : ""}"),
+                                        SizedBox(
+                                            height: 50,
+                                            width: double.infinity,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: WalletButton(
+                                                      textContent: "Reject",
+                                                      onPressed: () async {
+                                                        widget.onReject();
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      }),
+                                                ),
+                                                state.balanceInNative > 0
+                                                    ? Expanded(
+                                                        child: WalletButton(
+                                                            textContent:
+                                                                "Approve",
+                                                            type:
+                                                                WalletButtonType
+                                                                    .filled,
+                                                            onPressed:
+                                                                () async {
+                                                              var currentState =
+                                                                  Provider.of<
+                                                                          WalletProvider>(
+                                                                      context,
+                                                                      listen:
+                                                                          false);
+                                                              // widget.transaction.gasPrice =
 
-                                                            var txhash = await currentState
-                                                                .web3client
-                                                                .sendTransaction(
-                                                                    currentState
-                                                                        .activeWallet
-                                                                        .wallet
-                                                                        .privateKey,
-                                                                    transaction!,
-                                                                    chainId: currentState
-                                                                        .activeNetwork
-                                                                        .chainId);
-                                                            log("DAPP REQUST =====> $txhash");
-                                                            widget.onApprove(
-                                                                txhash);
-                                                            // widget.onApprove("signature");
-                                                            // String.fromCharCodes(
-                                                            //     hexToBytes(widget.messageToBeSigned));
-                                                            // widget.onApprove([
-                                                            //   getWalletLoadedState(context)(context)
-                                                            //       .wallet
-                                                            //       .privateKey
-                                                            //       .address
-                                                            //       .hex
-                                                            // ]);
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          }),
-                                                    ),
-                                                  ],
-                                                )),
-                                          ],
-                                        )
-                                      : Text(
-                                          AppLocalizations.of(context)!
-                                              .insufficientFund,
-                                          style: const TextStyle(
-                                              color: Colors.red))
+                                                              var txhash = await currentState.web3client.sendTransaction(
+                                                                  currentState
+                                                                      .activeWallet
+                                                                      .wallet
+                                                                      .privateKey,
+                                                                  transaction!,
+                                                                  chainId: currentState
+                                                                      .activeNetwork
+                                                                      .chainId);
+                                                              log("DAPP REQUST =====> $txhash");
+                                                              widget.onApprove(
+                                                                  txhash);
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            }),
+                                                      )
+                                                    : Text(
+                                                        AppLocalizations.of(
+                                                                context)!
+                                                            .insufficientFund,
+                                                        style: const TextStyle(
+                                                            color: Colors.red)),
+                                              ],
+                                            )),
+                                      ],
+                                    )
                                   : const SizedBox();
                             },
                           ),
@@ -519,9 +509,9 @@ class _TransactionSheetState extends State<TransactionSheet> {
                           width: double.infinity,
                           child: Row(
                             children: [
-                              Column(
+                              const Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
+                                children: [
                                   Text(
                                     "Estimated gas fee",
                                     style:
@@ -563,9 +553,9 @@ class _TransactionSheetState extends State<TransactionSheet> {
                           width: double.infinity,
                           child: Row(
                             children: [
-                              Column(
+                              const Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
+                                children: [
                                   Text(
                                     "Total",
                                     style:

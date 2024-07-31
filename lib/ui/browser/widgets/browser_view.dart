@@ -58,32 +58,8 @@ class _BrowserViewState extends State<BrowserView> {
   Widget build(BuildContext context) {
     return BlocListener<WalletCubit, WalletState>(
       listener: (context, state) async {
-        if (state is WalletNetworkChanged) {
-          // getWalletProvider(context).initHandlers(
-          //     getWalletProvider(context).activeNetwork.nameSpace,
-          //     state.currentNetwork.chainId.toString());
-          // webViewController?.postWebMessage(
-          //     message: WebMessage(
-          //       data: jsonEncode({
-          //         "method": "wallet_networkChanged",
-          //         "data": {
-          //           "rpc": state.currentNetwork.url,
-          //           "chainId": state.currentNetwork.chainId
-          //         }
-          //       }),
-          //     ),
-          //     targetOrigin: WebUri("*"));
-        }
-        if (state is WalletAccountChanged) {
-          webViewController?.postWebMessage(
-              message: WebMessage(
-                data: jsonEncode({
-                  "method": "wallet_accountChanged",
-                  "data": state.wallet.privateKey.address.hex
-                }),
-              ),
-              targetOrigin: WebUri("*"));
-        }
+        if (state is WalletNetworkChanged) {}
+        if (state is WalletAccountChanged) {}
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,7 +83,7 @@ class _BrowserViewState extends State<BrowserView> {
               shouldOverrideUrlLoading: (controller, navigationAction) async {
                 if (navigationAction.request.url.toString().contains("wc:")) {
                   handleRequestToWalletConnect(
-                      navigationAction.request.url!.uriValue);
+                      context, navigationAction.request.url!.uriValue);
                   return NavigationActionPolicy.CANCEL;
                 }
                 return NavigationActionPolicy.ALLOW;
@@ -135,25 +111,20 @@ class _BrowserViewState extends State<BrowserView> {
                 setState(() {});
               },
               onProgressChanged: (controller, progress) async {
-                await attachWalletHandler();
                 widget.webViewModel.progress =
                     double.parse(progress.toString()) * progressFactor;
                 this.progress =
                     double.parse(progress.toString()) * progressFactor;
                 if (progress == 100) {
-                  // widget.webViewModel.webViewController
-                  //     ?.evaluateJavascript(source: "localStorage.clear()");
                   widget.webViewModel.title =
                       await widget.webViewModel.webViewController?.getTitle() ??
                           "New page";
                 }
-                log("PAGE LOADING =====> ");
                 setState(() {});
               },
               onLoadStop: (controller, url) async {
                 log(url.toString());
               },
-              // initialUrlRequest: URLRequest(url: widget.webViewModel.url),
             ),
           ),
           Container(
@@ -166,80 +137,21 @@ class _BrowserViewState extends State<BrowserView> {
     );
   }
 
-  attachWalletHandler() async {
-    log("DAPP REQUEST ====> $isAttached");
-    await widget.webViewModel.webViewController?.evaluateJavascript(
-        source:
-            'window.rpc = "${Provider.of<WalletProvider>(context, listen: false).activeNetwork.url}"',
-        contentWorld: ContentWorld.PAGE);
-    await widget.webViewModel.webViewController?.evaluateJavascript(
-        source:
-            'window.chainId = ${Provider.of<WalletProvider>(context, listen: false).activeNetwork.chainId}',
-        contentWorld: ContentWorld.PAGE);
-
-    webViewController?.injectJavascriptFileFromAsset(
-        assetFilePath: "assets/provider/provider.js");
-    Box box = await Hive.openBox("user_preference");
-    DappResolver dappResolver = DappResolver(box: box);
-    widget.webViewModel.webViewController?.addJavaScriptHandler(
-        handlerName: 'wallet',
-        callback: (args) async {
-          var request = args[0];
-          if (request == "metamask_showAutocomplete") {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => BrowserUrlField(
-                  onUrlSubmit: widget.onUrlSubmit,
-                  webViewModel: widget.webViewModel,
-                  certified: certified,
-                  url: url?.toString() ?? ""),
-            ));
-          }
-          if (request == "open_url_bar") {
-            log("console from dart =====> ${args[0]}");
-            widget.onUrlSubmit(args[1], widget.webViewModel);
-            return null;
-          }
-          if (walletMethods.contains(request["method"])) {
-            try {
-              dynamic result = await dappResolver.processRequest(request,
-                  context: context, webViewModel: widget.webViewModel);
-              return jsonEncode(result);
-            } catch (e) {
-              return jsonEncode({
-                "method": request["method"],
-                "data": {
-                  "code": 4001,
-                  "message": "Request rejected by user",
-                  "name": 'User Rejected Request'
-                }
-              });
-            }
-          } else {
-            var repsonse = await callBlockChain(
-                request,
-                Provider.of<WalletProvider>(context, listen: false)
-                    .activeNetwork
-                    .url);
-            return jsonEncode(repsonse["result"]);
-          }
-        });
-  }
-
   void loadHomepage() async {
     widget.webViewModel.webViewController
         ?.loadUrl(urlRequest: URLRequest(url: WebUri(homepageUrl)));
   }
+}
 
-  void handleRequestToWalletConnect(Uri url) async {
-    if (url.queryParameters["symKey"] != null) {
-      try {
-        await getWalletProvider(context).web3Wallet!.pair(uri: url);
-      } catch (e) {
-        Get.dialog(AlertDialog(
-          title: const Text("Error in connection"),
-          content: Text(e.toString()),
-        ));
-      }
+void handleRequestToWalletConnect(BuildContext context, url) async {
+  if (url.queryParameters["symKey"] != null) {
+    try {
+      await getWalletProvider(context).web3Wallet!.pair(uri: url);
+    } catch (e) {
+      Get.dialog(AlertDialog(
+        title: const Text("Error in connection"),
+        content: Text(e.toString()),
+      ));
     }
   }
 }

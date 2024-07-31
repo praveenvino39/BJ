@@ -241,24 +241,24 @@ class DappResolver {
           final network = Core.networks.firstWhere((element) =>
               intToHex(element.chainId) ==
               intToHex(int.parse(request.params[0]["chainId"])));
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => Material(
-                child: NetworkChangeSheet(
-                  onApprove: (signature) {
-                    Navigator.of(context).pop();
-                    completer.complete(null);
-                  },
-                  onReject: (() {
-                    completer.completeError("User rejected");
-                  }),
-                  imageUrl: "",
-                  connectingOrgin: webViewModel!.url!.origin,
-                  chainId: request.params[0]["chainId"],
-                ),
-              ),
-            ),
-          );
+          // Navigator.of(context).push(
+          //   MaterialPageRoute(
+          //     builder: (context) => Material(
+          //       child: NetworkChangeSheet(
+          //         onApprove: (signature) {
+          //           Navigator.of(context).pop();
+          //           completer.complete(null);
+          //         },
+          //         onReject: (() {
+          //           completer.completeError("User rejected");
+          //         }),
+          //         imageUrl: "",
+          //         connectingOrgin: webViewModel!.url!.origin,
+          //         chainId: request.params[0]["chainId"],
+          //       ),
+          //     ),
+          //   ),
+          // );
         } catch (e) {}
         return completer.future;
 

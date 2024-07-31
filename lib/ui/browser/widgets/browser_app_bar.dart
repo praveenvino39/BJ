@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
@@ -7,6 +9,7 @@ import 'package:wallet_cryptomask/ui/browser/widgets/browser_url_field.dart';
 import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/shared/chain_change_sheet.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 // import 'package:wallet_cryptomask/ui/shared/chain_change_sheet.dart';
 
 class BrowserUrlBar extends StatefulWidget {
@@ -28,6 +31,7 @@ class BrowserUrlBar extends StatefulWidget {
 }
 
 class _BrowserUrlBarState extends State<BrowserUrlBar> {
+  String walletConnectURL = "";
   double actionContainerWidth = 0;
   FocusNode urFocusNode = FocusNode();
   bool enableClear = false;
@@ -61,6 +65,22 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
       backgroundColor: Colors.white,
       centerTitle: true,
       automaticallyImplyLeading: false,
+      actions: [
+        if (kDebugMode)
+          IconButton(
+              onPressed: () {
+                context
+                    .read<WebViewModel>()
+                    .webViewController
+                    ?.webStorage
+                    .localStorage
+                    .clear();
+              },
+              icon: const Icon(
+                Icons.clear,
+                color: Colors.red,
+              ))
+      ],
       title: _buildSearchTextField(),
     );
   }
@@ -82,35 +102,41 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.lock,
-                  size: 14,
-                  color: Colors.green,
-                ),
-                const SizedBox(
-                  width: 3,
-                ),
-                Text(
-                  urlController.text.toString().contains(
-                          "file:///android_asset/flutter_assets/assets/html/homepage.html")
-                      ? "home.egon.wallet"
-                      : Uri.parse(urlController.text).authority,
-                  overflow: TextOverflow.fade,
-                  style: const TextStyle(fontSize: 13, color: Colors.black),
-                ),
-                const Icon(
-                  Icons.lock,
-                  size: 14,
-                  color: Colors.white,
-                ),
-                const SizedBox(
-                  width: 3,
-                ),
-              ],
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 7),
+              decoration: BoxDecoration(
+                  color: kPrimaryColor.withAlpha(30),
+                  borderRadius: BorderRadius.circular(5)),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.lock,
+                    size: 14,
+                    color: Colors.green,
+                  ),
+                  const SizedBox(
+                    width: 3,
+                  ),
+                  Text(
+                    urlController.text.toString().contains(
+                            "file:///android_asset/flutter_assets/assets/html/homepage.html")
+                        ? "home.egon.wallet"
+                        : Uri.parse(urlController.text).authority,
+                    overflow: TextOverflow.fade,
+                    style: const TextStyle(fontSize: 13, color: Colors.black),
+                  ),
+                  const Icon(
+                    Icons.lock,
+                    size: 14,
+                    color: Colors.transparent,
+                  ),
+                  const SizedBox(
+                    width: 3,
+                  ),
+                ],
+              ),
             ),
 
             const SizedBox(

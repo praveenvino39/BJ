@@ -12,6 +12,7 @@ import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/core.dart';
+import 'package:wallet_cryptomask/core/cubit_helper.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
@@ -66,6 +67,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       messageEngine.socketService.forId = user.id;
       messageEngine.setToken(user.token!);
     }
+    getWalletProvider(context).setupWalletConnect();
+    getWalletProvider(context).init();
     messageEngine.connect();
     super.initState();
   }

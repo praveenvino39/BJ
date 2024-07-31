@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:clipboard_watcher/clipboard_watcher.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/config.dart';
@@ -21,7 +23,7 @@ class BrowserScreen extends StatefulWidget {
   State<BrowserScreen> createState() => _BrowserScreenState();
 }
 
-class _BrowserScreenState extends State<BrowserScreen> {
+class _BrowserScreenState extends State<BrowserScreen> with ClipboardListener {
   native.WebViewController? webViewController_;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   InAppWebViewController? webViewController;
@@ -69,6 +71,9 @@ class _BrowserScreenState extends State<BrowserScreen> {
 
   @override
   void initState() {
+    clipboardWatcher.addListener(this);
+    clipboardWatcher.start();
+
     tabs.add(BrowserView(
         webViewModel: WebViewModel(progress: 0, url: WebUri(homepageUrl)),
         onUrlSubmit: onUrlSumbit));
@@ -116,6 +121,31 @@ class _BrowserScreenState extends State<BrowserScreen> {
 
   openDrawer() {
     _scaffoldKey.currentState?.openDrawer();
+  }
+
+  @override
+  void dispose() {
+    clipboardWatcher.removeListener(this);
+    clipboardWatcher.stop();
+    super.dispose();
+  }
+
+  @override
+  void onClipboardChanged() async {
+    ClipboardData? newClipboardData =
+        await Clipboard.getData(Clipboard.kTextPlain);
+    if (newClipboardData != null &&
+        newClipboardData.text != null &&
+        newClipboardData.text!.startsWith("wc:")) {
+      try {
+        if (context.mounted) {
+          handleRequestToWalletConnect(
+              context, Uri.parse(newClipboardData.text!));
+        }
+      } catch (e) {
+        log(e.toString());
+      }
+    }
   }
 
   @override

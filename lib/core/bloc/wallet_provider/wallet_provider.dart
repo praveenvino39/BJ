@@ -14,7 +14,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
@@ -23,14 +22,16 @@ import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/core/model/wallet_model.dart';
+import 'package:wallet_cryptomask/core/model/wc_ethereum_transaction.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/ui/dapp_widgets/connect_sheet.dart';
 import 'package:wallet_cryptomask/ui/dapp_widgets/network_change_sheet.dart';
+import 'package:wallet_cryptomask/ui/dapp_widgets/transaction_sheet.dart';
 import 'package:wallet_cryptomask/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:walletconnect_flutter_v2/apis/sign_api/models/proposal_models.dart';
 import 'package:walletconnect_flutter_v2/apis/sign_api/models/session_models.dart';
 import 'package:walletconnect_flutter_v2/apis/sign_api/models/sign_client_events.dart';
 import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart' as WC;
@@ -94,11 +95,14 @@ class WalletProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  getPrivateKey() {
+    return activeWallet.wallet.privateKey;
+  }
+
   initWeb3Client(Network network) {
     Client httpClient = Client();
     activeNetwork = network;
     web3client = Web3Client(network.url, httpClient);
-    setupWalletConnect();
     notifyListeners();
   }
 
@@ -109,6 +113,10 @@ class WalletProvider extends ChangeNotifier {
   String getAccountName() {
     return userPreference
         .get(activeWallet.wallet.privateKey.address.hex.toLowerCase());
+  }
+
+  String getCurrentAccountAddress() {
+    return activeWallet.wallet.privateKey.address.hex;
   }
 
   String getAccountNameFor(String address) {
@@ -164,6 +172,13 @@ class WalletProvider extends ChangeNotifier {
     final network = Core.networks[index];
     await userPreference.put("NETWORK", network.networkName);
     initWeb3Client(network);
+    emitChainChanged(network.chainId.toString(), network.nameSpace);
+  }
+
+  Future<void> changeNetworkWithChainId(int chainId, String topic) async {
+    final network =
+        Core.networks.firstWhereOrNull((chain) => chain.chainId == chainId);
+    initWeb3Client(network!);
   }
 
   // setupWalletConnect() async {
@@ -210,9 +225,11 @@ class WalletProvider extends ChangeNotifier {
     });
   }
 
-  changeAccount(int index) {
+  changeAccount(int index) async {
     activeWallet = wallets[index];
     notifyListeners();
+    emitAccountChanged(
+        getCurrentAccountAddress(), activeWallet.wallet.privateKey);
   }
 
   Future<void> openWallet({required password}) async {
@@ -228,6 +245,9 @@ class WalletProvider extends ChangeNotifier {
     final walletJson = jsonDecode(walletString);
     await loadWallets(walletJson, password);
     initWeb3Client(getNetwork(activeNetwork));
+    emitAccountChanged(getAccountName(), activeWallet.wallet.privateKey);
+    emitChainChanged(this.activeNetwork.chainId.toString(),
+        getCurrentNamespaceWithChainId());
     await login();
     updateBalanceTimer();
     notifyListeners();
@@ -318,7 +338,7 @@ class WalletProvider extends ChangeNotifier {
     final userLoginResponse = await RemoteServer.loginUser(
         message: message,
         hash: hash,
-        address: activeWallet.wallet.privateKey.address.hex);
+        address: wallets[0].wallet.privateKey.address.hex);
     debugPrint(userLoginResponse.data.token ?? "");
     Get.put(userLoginResponse.data);
   }
@@ -465,7 +485,7 @@ class WalletProvider extends ChangeNotifier {
     }
   }
 
-  setupWalletConnect() async {
+  setupWalletConnect() {
     web3Wallet = WC.Web3Wallet(
       core: WC.Core(
         projectId: '3304b720b5bb3ee4918ff6cf62f6262a',
@@ -477,17 +497,153 @@ class WalletProvider extends ChangeNotifier {
         icons: ['https://walletconnect.com/walletconnect-logo.png'],
       ),
     );
-    web3Wallet!.onSessionProposal.subscribe(_onSessionProposal);
+    web3Wallet?.onSessionProposal.subscribe(onSessionProposal);
+  }
+
+  bool isSupported(int chainId) {
+    return Core.networks
+            .firstWhereOrNull((network) => network.chainId == chainId) !=
+        null;
+  }
+
+  Future<void> init() async {
     await web3Wallet!.init();
-    initHandlers(activeNetwork.nameSpace, activeNetwork.chainId.toString());
+    // final methods = [
+    //   "eth_accounts",
+    //   "eth_requestAccounts",
+    //   "eth_sendRawTransaction",
+    //   "eth_sign",
+    //   "eth_signTransaction",
+    //   "eth_signTypedData",
+    //   "eth_signTypedData_v3",
+    //   "eth_signTypedData_v4",
+    //   "eth_sendTransaction",
+    //   "personal_sign",
+    //   "wallet_switchEthereumChain",
+    //   "wallet_addEthereumChain",
+    //   "wallet_getPermissions",
+    //   "wallet_requestPermissions",
+    //   "wallet_registerOnboarding",
+    //   "wallet_watchAsset",
+    //   "wallet_scanQRCode",
+    //   "wallet_sendCalls",
+    //   "wallet_getCallsStatus",
+    //   "wallet_showCallsStatus",
+    //   "wallet_getCapabilities",
+    // ];
+    // final events = [
+    //   "chainChanged",
+    //   "accountsChanged",
+    //   "message",
+    //   "disconnect",
+    //   "connect",
+    // ];
+    // final network = activeNetwork;
+    // for (var event in events) {
+    //   web3Wallet?.registerEventEmitter(
+    //       chainId: "${network.nameSpace}:${network.chainId}", event: event);
+    // }
+    // for (var event in events) {
+    //   web3Wallet?.registerEventEmitter(
+    //       chainId: "${network.nameSpace}:${network.chainId}", event: event);
+    // }
+    // for (var method in methods) {
+    //   web3Wallet?.registerRequestHandler(
+    //       chainId: "${network.nameSpace}:${network.chainId}", method: method);
+    // }
+
+    for (var network in Core.networks) {
+      initHandlers("eip155", network.chainId.toString());
+    }
   }
 
   initHandlers(String namespace, String chainId) {
+    setupAddChainRequest(namespace, chainId);
     setupPersonalSignHandler(namespace, chainId);
     setupEthSignHandler(namespace, chainId);
     setupSignTransactionHandler(namespace, chainId);
     setupTransactionHandler(namespace, chainId);
     setupSignTypedDataHandler(namespace, chainId);
+  }
+
+  onSendTransactionV2(
+    String from,
+    WCEthereumTransaction ethereumTransaction, {
+    required String iconUrl,
+    required String origin,
+    required Function(String) onApprove,
+    required Function() onReject,
+  }) {
+    Get.dialog(
+        AlertDialog(
+            insetPadding: const EdgeInsets.all(0),
+            contentPadding: const EdgeInsets.all(0),
+            content: WillPopScope(
+              onWillPop: () async {
+                Completer<bool> completor = Completer<bool>();
+                Get.dialog(SimpleDialog(
+                  title: const Text("Reject Cofirmation"),
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        "Are you surely want to reject this request ?",
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: WalletButton(
+                              textContent: "Yes, Reject",
+                              onPressed: () {
+                                Get.back();
+                                onReject();
+                                completor.complete(false);
+                              }),
+                        ),
+                        Expanded(
+                          child: WalletButton(
+                              textContent: "No",
+                              onPressed: () {
+                                Get.back();
+                                completor.complete(false);
+                              }),
+                        ),
+                      ],
+                    )
+                  ],
+                ));
+                return completor.future;
+              },
+              child: TransactionSheet(
+                  fromWalletConnect: true,
+                  iconUrl: iconUrl,
+                  onApprove: (txHash) {
+                    onApprove(txHash);
+                  },
+                  onReject: () {
+                    onReject();
+                  },
+                  connectingOrgin: origin,
+                  transaction: ethereumTransaction.toJson()),
+            )),
+        barrierDismissible: false);
+    if (ethereumTransaction.from.toLowerCase() != from.toLowerCase()) {
+      Get.dialog(Center(
+        child: WalletButton(
+          onPressed: () {
+            final wallet = wallets.firstWhereOrNull((wallet) =>
+                wallet.wallet.privateKey.address.hex.toLowerCase() ==
+                from.toLowerCase());
+            if (wallet != null) {
+              changeAccount(wallets.indexOf(wallet));
+            }
+          },
+          localizeKey: 'switchAccount',
+        ),
+      ));
+    }
   }
 
   setupTransactionHandler(String namespace, String chainId) {
@@ -496,17 +652,19 @@ class WalletProvider extends ChangeNotifier {
       method: "eth_sendTransaction",
       handler: (method, params) {
         Completer sendTransactionFuture = Completer();
-        // onSendTransactionV2(
-        //   WCEthereumTransaction.fromJson(params[0]),
-        //   iconUrl: "iconUrl",
-        //   origin: "origin",
-        //   onApprove: (txHash) {
-        //     sendTransactionFuture.complete(txHash);
-        //   },
-        //   onReject: () {
-        //     sendTransactionFuture.completeError("User rejected");
-        //   },
-        // );
+        onSendTransactionV2(
+          activeWallet.wallet.privateKey.address.hex,
+          WCEthereumTransaction.fromJson(params[0]),
+          iconUrl: "iconUrl",
+          origin: "Current Dapp",
+          onApprove: (txHash) {
+            sendTransactionFuture.complete(txHash);
+          },
+          onReject: () {
+            sendTransactionFuture.completeError("User rejected");
+          },
+        );
+
         return sendTransactionFuture.future;
       },
     );
@@ -551,6 +709,7 @@ class WalletProvider extends ChangeNotifier {
           actions: [
             WalletButton(
                 textContent: "Approve",
+                localizeKey: "approve",
                 type: WalletButtonType.filled,
                 onPressed: () {
                   String sign = EthSigUtil.signTypedData(
@@ -563,6 +722,7 @@ class WalletProvider extends ChangeNotifier {
                 }),
             WalletButton(
                 textContent: "Reject",
+                localizeKey: "reject",
                 onPressed: () {
                   Get.back();
                   return signFuture.complete(null);
@@ -583,6 +743,7 @@ class WalletProvider extends ChangeNotifier {
           actions: [
             WalletButton(
                 textContent: "Approve",
+                localizeKey: "approve",
                 type: WalletButtonType.filled,
                 onPressed: () {
                   String sign = EthSigUtil.signTypedData(
@@ -595,6 +756,7 @@ class WalletProvider extends ChangeNotifier {
                 }),
             WalletButton(
                 textContent: "Reject",
+                localizeKey: "reject",
                 onPressed: () {
                   Get.back();
                   return signFuture.complete(null);
@@ -616,6 +778,7 @@ class WalletProvider extends ChangeNotifier {
             WalletButton(
                 type: WalletButtonType.filled,
                 textContent: "Approve",
+                localizeKey: "approve",
                 onPressed: () {
                   String sign = EthSigUtil.signTypedData(
                       jsonData: params[1],
@@ -628,6 +791,7 @@ class WalletProvider extends ChangeNotifier {
             WalletButton(
                 type: WalletButtonType.filled,
                 textContent: "Reject",
+                localizeKey: "reject",
                 onPressed: () {
                   Get.back();
                   return signFuture.complete(null);
@@ -648,6 +812,7 @@ class WalletProvider extends ChangeNotifier {
           actions: [
             WalletButton(
                 textContent: "Approve",
+                localizeKey: "approve",
                 type: WalletButtonType.filled,
                 onPressed: () {
                   String sign = EthSigUtil.signTypedData(
@@ -660,6 +825,7 @@ class WalletProvider extends ChangeNotifier {
                 }),
             WalletButton(
                 textContent: "Reject",
+                localizeKey: "reject",
                 onPressed: () {
                   Get.back();
                   return signFuture.complete(null);
@@ -685,17 +851,20 @@ class WalletProvider extends ChangeNotifier {
           actions: [
             WalletButton(
                 textContent: "Approve",
+                localizeKey: "approve",
                 type: WalletButtonType.filled,
                 onPressed: () {
                   final encodedMessage = hexToBytes(params[1]);
                   String sign = EthSigUtil.signMessage(
-                      message: encodedMessage,
-                      privateKeyInBytes:
-                          activeWallet.wallet.privateKey.privateKey);
+                    message: encodedMessage,
+                    privateKey:
+                        bytesToHex(activeWallet.wallet.privateKey.privateKey),
+                  );
                   Get.back();
                   return signFuture.complete(sign);
                 }),
             WalletButton(
+                localizeKey: 'reject',
                 textContent: "Reject",
                 onPressed: () {
                   Get.back();
@@ -708,6 +877,19 @@ class WalletProvider extends ChangeNotifier {
     );
   }
 
+  setupAddChainRequest(String namespace, String chainId) {
+    web3Wallet!.registerRequestHandler(
+      chainId: "$namespace:$chainId",
+      method: "wallet_addEthereumChain",
+      handler: (method, params) {
+        if (hexToDartInt(params[0]['chainId']) == activeNetwork.chainId) {
+          return activeNetwork.chainId;
+        }
+        return null;
+      },
+    );
+  }
+
   setupPersonalSignHandler(String namespace, String chainId) {
     web3Wallet!.registerRequestHandler(
       chainId: "$namespace:$chainId",
@@ -716,8 +898,10 @@ class WalletProvider extends ChangeNotifier {
         Completer signFuture = Completer();
         Get.dialog(AlertDialog(
           content: isHexString(params[0])
-              ? Text(String.fromCharCodes(hexToBytes(params[0])))
-              : Text(params[0]),
+              // ignore: prefer_interpolation_to_compose_strings
+              ? Text("${String.fromCharCodes(hexToBytes(params[0]))}/n" +
+                  params[1])
+              : Text(params[0] + "/n" + params[1]),
           title: const Text("Personal sign"),
           actions: [
             WalletButton(
@@ -745,58 +929,42 @@ class WalletProvider extends ChangeNotifier {
     );
   }
 
-  void _onSessionProposal(SessionProposalEvent? args) async {
+  void onSessionProposal(SessionProposalEvent? args) async {
     if (args != null) {
-      String requiredNamespaceKey =
-          args.params.requiredNamespaces.keys.toList()[0];
-      String requiredChain =
-          args.params.requiredNamespaces[requiredNamespaceKey]?.chains![0] ??
-              "eip:155:5";
-      Network? network = getNetworkFromRequiredChain(requiredChain);
-      if (network == null) {
+      List<String> chains = [];
+      for (var key in args.params.requiredNamespaces.keys) {
+        final namespace = args.params.requiredNamespaces[key];
+        for (var chain in namespace?.chains ?? []) {
+          chains.add(chain);
+        }
+      }
+
+      for (var key in args.params.optionalNamespaces.keys) {
+        final namespace = args.params.optionalNamespaces[key];
+        for (var chain in namespace?.chains ?? []) {
+          chains.add(chain);
+        }
+      }
+
+      if (chains.isEmpty) {
         return;
       }
-      if (network.chainId == activeNetwork.chainId) {
+      final namespaceExist = chains.contains(getCurrentNamespaceWithChainId());
+      if (namespaceExist) {
         Get.bottomSheet(
             ConnectSheet(
-              imageUrl: args.params.proposer.metadata.icons[0],
+              imageUrl: args.params.proposer.metadata.icons.isNotEmpty
+                  ? args.params.proposer.metadata.icons[0]
+                  : "",
               connectingOrgin: args.params.proposer.metadata.url,
               onApprove: (addresses) async {
-                try {
-                  await web3Wallet!.approveSession(
-                      id: args.id,
-                      namespaces: getWalletNamespaceForCurrentChain(
-                          args.params.requiredNamespaces));
-                } catch (e) {
-                  String requiredNamespaceKey =
-                      args.params.requiredNamespaces.keys.toList()[0];
-                  String requiredChain = args
-                          .params
-                          .requiredNamespaces[requiredNamespaceKey]
-                          ?.chains![0] ??
-                      "eip:155:5";
-                  Network? network = getNetworkFromRequiredChain(requiredChain);
-                  Get.snackbar("", "",
-                      backgroundColor: Colors.redAccent,
-                      snackPosition: SnackPosition.BOTTOM,
-                      borderRadius: 0,
-                      margin: const EdgeInsets.all(0),
-                      titleText: const WalletText(
-                        "Error",
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      messageText: network != null
-                          ? WalletText(
-                              '',
-                              localizeKey:
-                                  "Please switch to ${network.networkName}",
-                              color: Colors.white,
-                            )
-                          : const WalletText("",
-                              localizeKey: 'Something went wrong',
-                              color: Colors.white));
-                }
+                Map<String, RequiredNamespace> allNamespace = {};
+                allNamespace.addAll(args.params.requiredNamespaces);
+                allNamespace.addAll(args.params.optionalNamespaces);
+                await web3Wallet!.approveSession(
+                    id: args.id,
+                    namespaces:
+                        getWalletNamespaceForCurrentChain(allNamespace));
               },
               onReject: () async {
                 await web3Wallet!.rejectSession(
@@ -809,43 +977,78 @@ class WalletProvider extends ChangeNotifier {
             ),
             backgroundColor: Colors.white);
       } else {
-        Get.bottomSheet(
-            NetworkChangeSheet(
-                imageUrl: args.params.proposer.metadata.icons[0],
-                onApprove: (p0) {
-                  Get.back();
-                  Completer networkSwitchCompleter = Completer();
-                  Get.bottomSheet(
-                      ConnectSheet(
-                        imageUrl: args.params.proposer.metadata.icons[0],
-                        connectingOrgin: args.params.proposer.metadata.url,
-                        onApprove: (addresses) async {
-                          await web3Wallet!.approveSession(
-                              id: args.id,
-                              namespaces: getWalletNamespaceForCurrentChain(
-                                  args.params.requiredNamespaces));
-                        },
-                        onReject: () async {
-                          await web3Wallet!.rejectSession(
-                            id: args.id,
-                            reason: WC.Errors.getSdkError(
-                              WC.Errors.USER_REJECTED,
-                            ),
-                          );
-                        },
-                      ),
-                      backgroundColor: Colors.white);
-                  return networkSwitchCompleter.future;
-                },
-                onReject: () {},
-                connectingOrgin: args.params.proposer.metadata.url,
-                chainId: network.chainId.toString()),
-            backgroundColor: Colors.white);
+        final networks = Core.networks
+            .where((e) => chains.contains("${e.nameSpace}:${e.chainId}"))
+            .toList();
+        Get.snackbar("", "",
+            backgroundColor: Colors.redAccent,
+            snackPosition: SnackPosition.BOTTOM,
+            borderRadius: 0,
+            margin: const EdgeInsets.all(0),
+            titleText: const WalletText(
+              "",
+              localizeKey: "error",
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            messageText: WalletText("",
+                localizeKey: networks.isNotEmpty
+                    ? "Please switch network to ${networks[0].networkName}"
+                    : "Unsupported network",
+                color: Colors.white));
       }
     }
   }
 
-  getWalletNamespaceForCurrentChain(dynamic requiredNamespaces) {
+  emitChainChanged(String chainId, String nameSpace) {
+    web3Wallet?.sessions.getAll().forEach((session) {
+      web3Wallet?.updateSession(
+          topic: session.topic, namespaces: session.namespaces);
+      web3Wallet?.emitSessionEvent(
+          topic: session.topic,
+          chainId: "$nameSpace:$chainId",
+          event: WC.SessionEventParams(name: "chainChanged", data: chainId));
+    });
+  }
+
+  emitAccountChanged(String address, EthPrivateKey privateKey) {
+    web3Wallet?.registerAccount(
+      chainId: getCurrentNamespaceWithChainId(),
+      accountAddress: activeWallet.wallet.privateKey.address.hex,
+    );
+    web3Wallet?.sessions.getAll().forEach((session) {
+      web3Wallet!.emitSessionEvent(
+          topic: session.topic,
+          chainId: getCurrentNamespaceWithChainId(),
+          event: WC.SessionEventParams(
+              name: "accountsChanged",
+              data: "${getCurrentNamespaceWithChainId()}:$address"));
+    });
+  }
+
+  getWalletNamespaceForCurrentChain(
+      Map<String, RequiredNamespace> requiredNamespaces) {
+    Map<String, Namespace> walletNamespaces = {};
+    requiredNamespaces.forEach((key, value) {
+      List<String> methods =
+          requiredNamespaces[activeNetwork.nameSpace]?.methods ?? [];
+      List<String> events =
+          requiredNamespaces[activeNetwork.nameSpace]?.events ?? [];
+      List<String> accounts = [];
+      (requiredNamespaces[activeNetwork.nameSpace]?.chains ?? []).map((chain) {
+        accounts.add(
+            "$chain:${activeWallet.wallet.privateKey.address.hex.toString()}");
+      }).toList();
+
+      walletNamespaces[key] =
+          Namespace(accounts: accounts, methods: methods, events: events);
+    });
+    return walletNamespaces;
+  }
+
+  getWalletNamesapceForRequested(
+    Map<String, RequiredNamespace> requiredNamespaces,
+  ) {
     Map<String, Namespace> walletNamespaces = {};
     requiredNamespaces.forEach((key, value) {
       List<String> methods =
@@ -871,6 +1074,10 @@ class WalletProvider extends ChangeNotifier {
     } catch (e) {
       return null;
     }
+  }
+
+  String getCurrentNamespaceWithChainId() {
+    return "${activeNetwork.nameSpace}:${activeNetwork.chainId}";
   }
 }
 

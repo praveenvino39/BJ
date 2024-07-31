@@ -59,7 +59,7 @@ dependencies:
   new_version: ^0.3.1
   url_launcher: ^6.1.7
   eth_sig_util: ^0.0.9
-  walletconnect_flutter_v2: ^2.0.12
+  walletconnect_flutter_v2: 2.2.0
   uni_links: ^0.5.1
   get_it: ^7.6.0
 
@@ -77,8 +77,8 @@ dependencies:
   socket_io_client: ^2.0.3+1
   image_picker: ^1.0.8
   file_picker: ^8.0.0+1
-  flutter_downloader: ^1.11.7
   document_file_save_plus: ^2.0.0
+  clipboard_watcher: ^0.2.0
 
 dev_dependencies:
   hive_generator: ^2.0.1

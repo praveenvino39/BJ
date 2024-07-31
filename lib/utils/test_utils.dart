@@ -98,7 +98,7 @@ Widget testWrapper(Widget widget, {CreateWalletProvider? mockProvider}) {
           if (setting.name == HomeScreen.route) {
             // String password = (setting.arguments! as dynamic)["password"];
             return MaterialPageRoute(
-                builder: (context) => HomeScreen(
+                builder: (context) => const HomeScreen(
                     // password: password,
                     ));
           }

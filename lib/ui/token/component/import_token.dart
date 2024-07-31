@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/core/cubit_helper.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/token/component/custom_token.dart';
 import 'package:wallet_cryptomask/ui/token/component/search_import_token.dart';

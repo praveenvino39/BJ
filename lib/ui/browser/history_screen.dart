@@ -77,9 +77,9 @@ class _HistoryScreenState extends State<HistoryScreen>
                               widget.onUrlSubmit(snapshot.data?[index].url);
                               Navigator.of(context).pop();
                             },
-                            leading: Column(
+                            leading: const Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.public,
                                   size: 20,

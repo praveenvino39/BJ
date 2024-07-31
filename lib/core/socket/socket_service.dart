@@ -1,12 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:wallet_cryptomask/core/model/message.dart';
-import 'package:wallet_cryptomask/core/socket/message_engine.dart';
 import 'package:wallet_cryptomask/utils.dart';
 
 class SocketEvent {

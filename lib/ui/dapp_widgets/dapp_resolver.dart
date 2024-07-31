@@ -11,7 +11,6 @@ import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/ui/browser/model/request.dart';
 import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
 import 'package:wallet_cryptomask/ui/dapp_widgets/connect_sheet.dart';
-import 'package:wallet_cryptomask/ui/dapp_widgets/network_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/dapp_widgets/sign_sheet.dart';
 import 'package:wallet_cryptomask/ui/dapp_widgets/sign_typed_data_sheet.dart';
 import 'package:wallet_cryptomask/ui/dapp_widgets/transaction_sheet.dart';

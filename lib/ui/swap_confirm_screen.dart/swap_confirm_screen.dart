@@ -399,8 +399,8 @@ class _SwapConfirmScreenState extends State<SwapConfirmScreen> {
                         ),
                       ],
                     )
-                  : Column(
-                      children: const [
+                  : const Column(
+                      children: [
                         CircularProgressIndicator(
                           color: kPrimaryColor,
                         ),

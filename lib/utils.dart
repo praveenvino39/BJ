@@ -1,9 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
 import 'dart:developer';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +14,6 @@ import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/setttings/security_settings_screen/security_settings_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
-import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 import 'package:web3dart/web3dart.dart';

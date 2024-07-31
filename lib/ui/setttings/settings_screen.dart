@@ -1,19 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
-import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/setttings/general_settings_screen/general_settings_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:wallet_cryptomask/ui/setttings/security_settings_screen/security_settings_screen.dart';
-import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
 import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 import 'package:wallet_cryptomask/utils.dart';
 

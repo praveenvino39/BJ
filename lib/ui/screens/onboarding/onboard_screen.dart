@@ -3,7 +3,6 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/ui/screens/wallet_setup/wallet_setup_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 import 'package:wallet_cryptomask/utils/update_utils.dart';

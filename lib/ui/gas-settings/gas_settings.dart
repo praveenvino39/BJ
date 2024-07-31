@@ -117,10 +117,10 @@ class _GasSettingsState extends State<GasSettings> {
                         height: 20,
                         width: double.infinity,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: double.infinity,
                         child: Stack(
-                          children: const [
+                          children: [
                             Positioned(
                               left: 0,
                               child: Icon(Icons.arrow_back_ios),
@@ -300,12 +300,12 @@ class _GasSettingsState extends State<GasSettings> {
                       const SizedBox(
                         height: 5,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40, right: 40),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 40, right: 40),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Text("Low"),
                             Expanded(
                                 child: SizedBox(
@@ -330,9 +330,9 @@ class _GasSettingsState extends State<GasSettings> {
                               children: [
                                 InkWell(
                                   onTap: () => widget.onAdvanceOptionClicked!(),
-                                  child: Row(
+                                  child: const Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
+                                    children: [
                                       Text(
                                         "Advance options",
                                         style: TextStyle(
@@ -362,13 +362,13 @@ class _GasSettingsState extends State<GasSettings> {
                                 SizedBox(
                                   child: Column(
                                     children: [
-                                      Padding(
-                                          padding: const EdgeInsets.symmetric(
+                                      const Padding(
+                                          padding: EdgeInsets.symmetric(
                                               horizontal: 0),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
-                                            children: const [
+                                            children: [
                                               Text(
                                                 "Gas limit",
                                                 style: TextStyle(
@@ -431,13 +431,13 @@ class _GasSettingsState extends State<GasSettings> {
                                       const SizedBox(
                                         height: 20,
                                       ),
-                                      Padding(
-                                          padding: const EdgeInsets.symmetric(
+                                      const Padding(
+                                          padding: EdgeInsets.symmetric(
                                               horizontal: 0),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
-                                            children: const [
+                                            children: [
                                               Text(
                                                 "Max priority fee (GWEI)",
                                                 style: TextStyle(
@@ -508,13 +508,13 @@ class _GasSettingsState extends State<GasSettings> {
                                       const SizedBox(
                                         height: 20,
                                       ),
-                                      Padding(
-                                          padding: const EdgeInsets.symmetric(
+                                      const Padding(
+                                          padding: EdgeInsets.symmetric(
                                               horizontal: 0),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
-                                            children: const [
+                                            children: [
                                               Text(
                                                 "Max fee (GWEI)",
                                                 style: TextStyle(

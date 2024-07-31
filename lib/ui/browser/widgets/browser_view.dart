@@ -1,24 +1,16 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/route_manager.dart';
-import 'package:get_it/get_it.dart';
-import 'package:hive/hive.dart';
-import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/core/remote/http.dart';
-import 'package:wallet_cryptomask/core/web3wallet_service.dart';
 import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
-import 'package:wallet_cryptomask/ui/browser/widgets/browser_url_field.dart';
-import 'package:wallet_cryptomask/ui/dapp_widgets/dapp_resolver.dart';
 
 class BrowserView extends StatefulWidget {
   final WebViewModel webViewModel;

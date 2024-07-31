@@ -7,7 +7,6 @@ import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart
 import 'package:wallet_cryptomask/core/create_wallet_provider/create_wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/home/home_screen.dart';
 import 'package:wallet_cryptomask/ui/onboard/component/circle_stepper.dart';
-import 'package:wallet_cryptomask/ui/screens/onboarding/onboard_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/utils.dart';

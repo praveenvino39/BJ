@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/core.dart';
-import 'package:wallet_cryptomask/core/cubit_helper.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';

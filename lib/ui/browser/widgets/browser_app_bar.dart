@@ -1,15 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
 import 'package:wallet_cryptomask/ui/browser/widgets/browser_url_field.dart';
-import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
-import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/shared/chain_change_sheet.dart';
-import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 // import 'package:wallet_cryptomask/ui/shared/chain_change_sheet.dart';
 
 class BrowserUrlBar extends StatefulWidget {

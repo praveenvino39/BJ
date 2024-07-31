@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 
 import '../../../constant.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // ignore: must_be_immutable
 class CircleStepper extends StatefulWidget {

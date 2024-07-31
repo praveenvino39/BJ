@@ -31,14 +31,13 @@ class _WalletButtonWithIconState extends State<WalletButtonWithIcon> {
         width: double.infinity,
         child: OutlinedButton(
           style: OutlinedButton.styleFrom(
-            padding: kIsWeb || Platform.isMacOS
-                ? const EdgeInsets.symmetric(horizontal: 17.0, vertical: 22)
-                : const EdgeInsets.symmetric(horizontal: 17.0, vertical: 10),
-            primary: widget.type == WalletButtonType.filled
+            foregroundColor: widget.type == WalletButtonType.filled
                 ? widget.onPressed != null
                     ? Colors.white
                     : Colors.grey
-                : kPrimaryColor,
+                : kPrimaryColor, padding: kIsWeb || Platform.isMacOS
+                ? const EdgeInsets.symmetric(horizontal: 17.0, vertical: 22)
+                : const EdgeInsets.symmetric(horizontal: 17.0, vertical: 10),
             backgroundColor: widget.type == WalletButtonType.filled
                 ? widget.onPressed != null
                     ? kPrimaryColor

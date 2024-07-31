@@ -1,32 +1,23 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
-import 'package:get_it/get_it.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/core.dart';
-import 'package:wallet_cryptomask/core/cubit_helper.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/core/socket/message_engine.dart';
-import 'package:wallet_cryptomask/core/socket/socket_service.dart';
-import 'package:wallet_cryptomask/core/web3wallet_service.dart';
-import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/atoms/custom_icon_button.dart';
 import 'package:wallet_cryptomask/ui/browser/browser_screen.dart';
-import 'package:wallet_cryptomask/ui/collectibles/collectibles_tab.dart';
 import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/home/component/drawer_component.dart';
 import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
-import 'package:wallet_cryptomask/ui/setttings/security_settings_screen/security_settings_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/support/chat_screen.dart';
 import 'package:wallet_cryptomask/ui/token/token_tab.dart';

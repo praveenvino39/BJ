@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/moralis_transaction_response.dart';
-import 'package:wallet_cryptomask/core/remote/response-model/transaction_log_result.dart';
 import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/transaction-history/widget/transaction_tile.dart';

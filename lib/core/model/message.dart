@@ -2,7 +2,6 @@
 //
 //     final message = messageFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';

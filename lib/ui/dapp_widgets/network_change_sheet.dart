@@ -1,9 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';

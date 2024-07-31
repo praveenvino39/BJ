@@ -1,7 +1,5 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/ui/token/component/token_tile.dart';

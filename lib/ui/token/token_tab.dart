@@ -6,10 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
-import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/token-dashboard-screen/token_dashboard_screen.dart';
-import 'package:wallet_cryptomask/ui/token/component/import_token_tile.dart';
 import 'package:wallet_cryptomask/ui/token/component/token_tile.dart';
 
 class TokenTab extends StatefulWidget {

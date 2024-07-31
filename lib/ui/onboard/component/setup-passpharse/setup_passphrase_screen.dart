@@ -106,8 +106,7 @@ class _SetupPassphraseScreenState extends State<SetupPassphraseScreen> {
                           width: double.infinity,
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.all(15.0),
-                                primary: Colors.white,
+                                foregroundColor: Colors.white, padding: const EdgeInsets.all(15.0),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30.0),
                                 ),

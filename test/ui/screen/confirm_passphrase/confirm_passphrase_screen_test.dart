@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,9 +8,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wallet_cryptomask/core/create_wallet_provider/create_wallet_provider.dart';
 import 'package:wallet_cryptomask/mock/mock.dart';
-import 'package:wallet_cryptomask/ui/home/home_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/confirm_passphrase/confirm_passphrase_screen.dart';
-import 'package:wallet_cryptomask/ui/screens/onboarding/onboard_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/utils/test_utils.dart';
 

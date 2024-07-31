@@ -8,7 +8,6 @@ import 'package:ethers/crypto/formatting.dart';
 import 'package:ethers/utils/hdnode/hd_node.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:get/get.dart' as getx;
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';

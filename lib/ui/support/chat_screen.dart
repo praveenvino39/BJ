@@ -1,26 +1,19 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dash_chat_2/dash_chat_2.dart';
-import 'package:document_file_save_plus/document_file_save_plus.dart';
-import 'package:document_file_save_plus/document_file_save_plus_platform_interface.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
-import 'package:intl/intl.dart';
 import 'package:jazzicon/jazzicon.dart';
-import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:provider/provider.dart';
 import 'package:routerino/routerino.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/model/message.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/core/socket/message_engine.dart';
-import 'package:wallet_cryptomask/core/socket/socket_service.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/utils.dart';
 

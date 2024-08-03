@@ -321,7 +321,7 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                         Text(
                           widget.isCollectibles
                               ? "${collectible?.name} #${widget.tokenId}"
-                              : "${token?.balance.toStringAsFixed(4)} ${token?.symbol}",
+                              : "${token?.balance.toStringAsFixed(5)} ${token?.symbol}",
                           style: const TextStyle(fontSize: 25),
                         ),
                         addHeight(SpacingSize.xs),

@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:routerino/routerino_home.dart';
 import 'package:wallet_cryptomask/core/bloc/collectible-bloc/cubit/collectible_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/collectible_provider/collectible_provider.dart';
+import 'package:wallet_cryptomask/core/bloc/contact_provider/contact_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/preference-bloc/cubit/preference_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/token-bloc/cubit/token_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
@@ -25,6 +26,7 @@ import 'package:wallet_cryptomask/core/create_wallet_provider/create_wallet_prov
 import 'package:wallet_cryptomask/core/locale_provider/cubit/locale_cubit.dart';
 import 'package:wallet_cryptomask/core/model/coin_gecko_token_model.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
+import 'package:wallet_cryptomask/core/model/contact_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/promotion.dart';
@@ -74,13 +76,15 @@ void main() async {
     Hive
       ..init("")
       ..registerAdapter(TokenAdapter())
-      ..registerAdapter(CollectibleAdapter());
+      ..registerAdapter(CollectibleAdapter())
+      ..registerAdapter(ContactAdapter());
   } else {
     final appDocumentDirectory = await getApplicationDocumentsDirectory();
     Hive
       ..init(appDocumentDirectory.path)
       ..registerAdapter(TokenAdapter())
-      ..registerAdapter(CollectibleAdapter());
+      ..registerAdapter(CollectibleAdapter())
+      ..registerAdapter(ContactAdapter());
   }
   FlutterSecureStorage fss = const FlutterSecureStorage();
   String? wallet = await fss.read(key: "wallet");
@@ -160,6 +164,9 @@ class _MyAppState extends State<MyApp> {
             providers: [
               ChangeNotifierProvider(
                   create: (ctx) => CreateWalletProvider(fss)),
+              ChangeNotifierProvider(
+                  create: (ctx) =>
+                      ContactProvider(box: widget.userPreferenceBox)),
               ChangeNotifierProvider(
                   create: (ctx) =>
                       TokenProvider(userPreference: widget.userPreferenceBox)),

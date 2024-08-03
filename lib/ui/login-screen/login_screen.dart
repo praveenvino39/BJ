@@ -17,6 +17,7 @@ import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart'
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/deactivated-screen/deactivated_screen.dart';
 import 'package:wallet_cryptomask/ui/home/home_screen.dart';
+import 'package:wallet_cryptomask/ui/screens/onboarding/onboard_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
@@ -242,22 +243,34 @@ class _LoginScreenState extends State<LoginScreen> {
                       var alert = AlertDialog(
                           actions: [
                             ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(kPrimaryColor)),
-                              child: const Text("Cancel"),
-                            ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        kPrimaryColor)),
+                                child: const WalletText(
+                                  "",
+                                  localizeKey: "Cancel",
+                                )),
                             ElevatedButton(
                                 onPressed: () {
-                                  context.read<WalletCubit>().eraseWallet();
+                                  context
+                                      .read<WalletCubit>()
+                                      .eraseWallet()
+                                      .then((value) {
+                                    context.pushAndRemoveUntil(
+                                        removeUntil: bool,
+                                        builder: () => const OnboardScreen());
+                                  });
                                 },
                                 style: ButtonStyle(
                                     backgroundColor:
                                         MaterialStateProperty.all(Colors.red)),
-                                child: const Text("Erase and continue")),
+                                child: const WalletText(
+                                  "",
+                                  localizeKey: "Erase and Continue",
+                                )),
                           ],
                           title: const Text("Confirmation"),
                           content: SizedBox(

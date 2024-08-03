@@ -86,50 +86,6 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
               children: [
                 const SizedBox(height: 20),
                 Text(
-                  AppLocalizations.of(context)!.currencyConversion,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 7,
-                ),
-                Text(AppLocalizations.of(context)!.displayFiat),
-                const SizedBox(
-                  height: 7,
-                ),
-                FutureBuilder<List<String>?>(
-                    future: getSupportedVsCurrency(),
-                    builder: (context, snapshot) {
-                      return DropdownButtonHideUnderline(
-                          child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(width: 1, color: kPrimaryColor)),
-                        child: DropdownButton<String>(
-                            isExpanded: true,
-                            value: vsCurrency,
-                            items: snapshot.data
-                                ?.map<DropdownMenuItem<String>>(
-                                    (e) => DropdownMenuItem<String>(
-                                          value: e,
-                                          child: Text(e.toUpperCase()),
-                                        ))
-                                .toList(),
-                            onChanged: (value) {
-                              context
-                                  .read<WalletCubit>()
-                                  .changeVsCurrency(value!);
-                              setState(() {
-                                vsCurrency = value;
-                              });
-                            }),
-                      ));
-                    }),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
                   AppLocalizations.of(context)!.currentLanguage,
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold),

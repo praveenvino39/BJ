@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/bloc/contact_provider/contact_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
@@ -22,6 +23,8 @@ import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
+
+import '../contacts/contact_tile.dart';
 
 class TransferScreen extends StatefulWidget {
   static const route = "transfer_screen";
@@ -48,7 +51,7 @@ class _TransferScreenState extends State<TransferScreen>
 
   @override
   void initState() {
-    tabContoller = TabController(length: 2, vsync: this);
+    tabContoller = TabController(length: 3, vsync: this);
 
     Hive.openBox("user_preference").then((box) {
       setState(() {
@@ -362,6 +365,9 @@ class _TransferScreenState extends State<TransferScreen>
                 TabBar(
                   tabs: [
                     Tab(
+                      text: getText(context, key: 'My Contacts'),
+                    ),
+                    Tab(
                       text: getText(context, key: 'My Accounts'),
                     ),
                     Tab(
@@ -372,6 +378,26 @@ class _TransferScreenState extends State<TransferScreen>
                 ),
                 Expanded(
                     child: TabBarView(controller: tabContoller, children: [
+                  ListView.builder(
+                      itemCount:
+                          getContactProviderLive(context).contacts.length,
+                      itemBuilder: (context, index) {
+                        final contact =
+                            getContactProviderLive(context).contacts[index];
+                        return ContactTile(
+                            key: Key(contact.address),
+                            name: contact.name,
+                            address: contact.address,
+                            network: "",
+                            id: contact.id,
+                            mode: "SELECT",
+                            onChoose: (address) {
+                              _address.text = address;
+                              setState(() {
+                                isAddressValid = true;
+                              });
+                            });
+                      }),
                   ListView.builder(
                     itemCount:
                         Provider.of<WalletProvider>(context).wallets.length,

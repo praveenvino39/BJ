@@ -126,7 +126,7 @@ class WalletProvider extends ChangeNotifier {
 
   Future<void> copyPublicAddress() async {
     await Clipboard.setData(
-      ClipboardData(text: activeWallet.wallet.privateKey.address.hex ?? ""),
+      ClipboardData(text: activeWallet.wallet.privateKey.address.hex),
     );
   }
 

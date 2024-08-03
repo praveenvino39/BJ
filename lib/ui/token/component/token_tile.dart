@@ -34,11 +34,11 @@ class _TokenTileState extends State<TokenTile> {
         imageUrl: widget.imageUrl,
       ),
       title: Text(
-        "${widget.balance.toStringAsFixed(18).split(".")[0]}.${widget.balance.toStringAsFixed(18).split(".")[1].substring(0, 4)} ${widget.symbol.toUpperCase()}",
+        widget.balance.toStringAsFixed(6),
         style: const TextStyle(fontSize: 16),
       ),
       subtitle: Text(
-        "\$${widget.balanceInFiat.toStringAsFixed(5)}",
+        "\$${widget.balanceInFiat.toStringAsFixed(6)}",
         style: const TextStyle(fontSize: 12, color: Colors.black),
       ),
       trailing: const Icon(

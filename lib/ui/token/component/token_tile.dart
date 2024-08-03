@@ -38,7 +38,7 @@ class _TokenTileState extends State<TokenTile> {
         style: const TextStyle(fontSize: 16),
       ),
       subtitle: Text(
-        "\$${widget.balanceInFiat}",
+        "\$${widget.balanceInFiat.toStringAsFixed(5)}",
         style: const TextStyle(fontSize: 12, color: Colors.black),
       ),
       trailing: const Icon(

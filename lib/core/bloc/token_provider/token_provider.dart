@@ -25,7 +25,7 @@ class TokenProvider extends ChangeNotifier {
 
   TokenProvider({required this.userPreference});
 
-  loadToken({
+  Future<List<Token>> loadToken({
     required double nativeBalance,
     required String address,
     required Network network,
@@ -35,12 +35,16 @@ class TokenProvider extends ChangeNotifier {
           address: address, chainId: network.chainId.toString());
       List<Token> tokens = [];
       for (var token in moralisTokenResponse.data) {
-        tokens.add(Token(
-            tokenAddress: token.token.contractAddress,
-            symbol: token.token.symbol,
-            decimal: token.token.decimals,
-            balance: double.parse(token.value),
-            balanceInFiat: 0));
+        tokens.add(
+          Token(
+            tokenAddress: !token.nativeToken ? token.tokenAddress : "",
+            symbol: token.symbol,
+            imageUrl: token.logo,
+            decimal: token.decimals,
+            balance: double.parse(token.balanceFormatted),
+            balanceInFiat: token.usdValue ?? 0,
+          ),
+        );
       }
       this.tokens = tokens;
     } catch (e) {
@@ -48,6 +52,7 @@ class TokenProvider extends ChangeNotifier {
     }
 
     notifyListeners();
+    return tokens;
   }
 
   String getTokenStorageKey({required address, required Network network}) {
@@ -73,9 +78,10 @@ class TokenProvider extends ChangeNotifier {
     try {
       final moralisTokenTransactionResponse =
           await RemoteServer.getTransactionForToken(
-              tokenAddress: tokenAddress,
-              address: address,
-              chainId: network.chainId.toString());
+        tokenAddress: tokenAddress,
+        address: address,
+        chainId: network.chainId.toString(),
+      );
       return moralisTokenTransactionResponse.data;
     } catch (e) {
       return [];

@@ -91,6 +91,11 @@ class WalletProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  changeFiatBalance(String balanceInFiat) {
+    balanceInPrefereCurrency = balanceInFiat;
+    notifyListeners();
+  }
+
   getPrivateKey() {
     return activeWallet.wallet.privateKey;
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
@@ -10,11 +11,13 @@ import 'package:wallet_cryptomask/core/cubit_helper.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/moralis_token_transfer.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/moralis_transaction_response.dart';
 import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
 import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
 import 'package:wallet_cryptomask/ui/transaction-history/widget/token_transaction_tile.dart';
+import 'package:wallet_cryptomask/ui/transaction-history/widget/transaction_tile.dart';
 import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
@@ -113,80 +116,178 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
             width: MediaQuery.of(context).size.width,
             child: Column(
               children: [
-                Expanded(
-                  child: FutureBuilder<List<TokenTransfer>?>(
-                    future: getTokenProvider(context).getTokenTransfer(
-                        address: getWalletProvider(context)
-                            .activeWallet
-                            .wallet
-                            .privateKey
-                            .address
-                            .hex,
-                        network: getWalletProvider(context).activeNetwork,
-                        tokenAddress: token!.tokenAddress),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return snapshot.data!.isNotEmpty
-                            ? Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      child: ListView.builder(
-                                          itemCount: snapshot.data?.length,
-                                          itemBuilder: (context, index) {
-                                            return TokenTransactionTile(
-                                                date: snapshot.data![index]
-                                                    .blockTimestamp,
-                                                data: snapshot.data![index]);
-                                          }),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: SafeArea(
-                                        child: InkWell(
-                                          onTap: () {
-                                            final state =
-                                                getWalletLoadedState(context);
-                                            Navigator.of(context).pushNamed(
-                                                BlockWebView.router,
-                                                arguments: {
-                                                  "title": state.currentNetwork
-                                                      .networkName,
-                                                  "url": viewAddressOnEtherScan(
-                                                      state.currentNetwork,
-                                                      state.wallet.privateKey
-                                                          .address.hex)
-                                                });
-                                          },
-                                          child: const Text(
-                                            "View full history on Explorer",
-                                            style:
-                                                TextStyle(color: kPrimaryColor),
+                if (widget.tokenAddress.isNotEmpty)
+                  Expanded(
+                    child: FutureBuilder<List<TokenTransfer>?>(
+                      future: getTokenProvider(context).getTokenTransfer(
+                          address: getWalletProvider(context)
+                              .activeWallet
+                              .wallet
+                              .privateKey
+                              .address
+                              .hex,
+                          network: getWalletProvider(context).activeNetwork,
+                          tokenAddress: token!.tokenAddress),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return snapshot.data!.isNotEmpty
+                              ? Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: ListView.builder(
+                                            itemCount: snapshot.data?.length,
+                                            itemBuilder: (context, index) {
+                                              return TokenTransactionTile(
+                                                  date: snapshot.data![index]
+                                                      .blockTimestamp,
+                                                  data: snapshot.data![index]);
+                                            }),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SafeArea(
+                                          child: InkWell(
+                                            onTap: () {
+                                              final state =
+                                                  getWalletLoadedState(context);
+                                              Navigator.of(context).pushNamed(
+                                                  BlockWebView.router,
+                                                  arguments: {
+                                                    "title": state
+                                                        .currentNetwork
+                                                        .networkName,
+                                                    "url":
+                                                        viewAddressOnEtherScan(
+                                                            state
+                                                                .currentNetwork,
+                                                            state
+                                                                .wallet
+                                                                .privateKey
+                                                                .address
+                                                                .hex)
+                                                  });
+                                            },
+                                            child: const Text(
+                                              "View full history on Explorer",
+                                              style: TextStyle(
+                                                  color: kPrimaryColor),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
-                            : const Center(
-                                child: Text(
-                                  "You have no transactions!",
-                                  style: TextStyle(
-                                      fontSize: 18, color: Colors.grey),
-                                ),
-                              );
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: kPrimaryColor,
-                          ),
-                        );
-                      }
-                    },
+                                      )
+                                    ],
+                                  ),
+                                )
+                              : const Center(
+                                  child: Text(
+                                    "You have no transactions!",
+                                    style: TextStyle(
+                                        fontSize: 18, color: Colors.grey),
+                                  ),
+                                );
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: kPrimaryColor,
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   ),
-                ),
+                if (widget.tokenAddress.isEmpty)
+                  Expanded(
+                    child: FutureBuilder<List<MoralisTransaction>?>(
+                      future: getTokenProvider(context).getTransactions(
+                          address: getWalletProvider(context)
+                              .activeWallet
+                              .wallet
+                              .privateKey
+                              .address
+                              .hex,
+                          network: getWalletProvider(context).activeNetwork),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return snapshot.data!.isNotEmpty
+                              ? Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: ListView.builder(
+                                            itemCount: snapshot.data?.length,
+                                            itemBuilder: (context, index) {
+                                              // Define the format of the input date string
+                                              DateFormat dateFormat = DateFormat(
+                                                  "EEE MMM dd yyyy HH:mm:ss 'GMT'Z");
+
+                                              // Parse the date string to DateTime
+                                              DateTime date = dateFormat.parse(
+                                                  snapshot.data![index]
+                                                      .blockTimestamp
+                                                      .replaceAll(
+                                                          RegExp(r' \([^)]*\)'),
+                                                          ''),
+                                                  true);
+                                              return TransactionTile(
+                                                  date: date,
+                                                  data: snapshot.data![index]);
+                                            }),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SafeArea(
+                                          child: InkWell(
+                                            onTap: () {
+                                              final state =
+                                                  getWalletLoadedState(context);
+                                              Navigator.of(context).pushNamed(
+                                                  BlockWebView.router,
+                                                  arguments: {
+                                                    "title": state
+                                                        .currentNetwork
+                                                        .networkName,
+                                                    "url":
+                                                        viewAddressOnEtherScan(
+                                                            state
+                                                                .currentNetwork,
+                                                            state
+                                                                .wallet
+                                                                .privateKey
+                                                                .address
+                                                                .hex)
+                                                  });
+                                            },
+                                            child: const Text(
+                                              "View full history on Explorer",
+                                              style: TextStyle(
+                                                  color: kPrimaryColor),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              : const Center(
+                                  child: Text(
+                                    "You have no transactions!",
+                                    style: TextStyle(
+                                        fontSize: 18, color: Colors.grey),
+                                  ),
+                                );
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: kPrimaryColor,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
               ],
             ),
           ),

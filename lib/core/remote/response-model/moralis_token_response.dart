@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'moralis_token.dart';
+
 MoralisTokensResponse moralisTokensResponseFromJson(String str) =>
     MoralisTokensResponse.fromJson(json.decode(str));
 
@@ -29,26 +31,6 @@ class MoralisTokensResponse {
   Map<String, dynamic> toJson() => {
         "status": status,
         "data": List<dynamic>.from(data.map((x) => x.toJson())),
-      };
-}
-
-class MoralisToken {
-  String value;
-  Token token;
-
-  MoralisToken({
-    required this.value,
-    required this.token,
-  });
-
-  factory MoralisToken.fromJson(Map<String, dynamic> json) => MoralisToken(
-        value: json["value"],
-        token: Token.fromJson(json["token"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "value": value,
-        "token": token.toJson(),
       };
 }
 

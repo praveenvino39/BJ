@@ -28,8 +28,8 @@ class _TokenTabState extends State<TokenTab> {
     setupAndLoadToken();
   }
 
-  setupAndLoadToken() {
-    getTokenProvider(context).loadToken(
+  setupAndLoadToken() async {
+    final tokens = await getTokenProvider(context).loadToken(
         nativeBalance: getWalletProvider(context).nativeBalance,
         address: getWalletProvider(context)
             .activeWallet
@@ -38,6 +38,10 @@ class _TokenTabState extends State<TokenTab> {
             .address
             .hex,
         network: getWalletProvider(context).activeNetwork);
+    if (context.mounted) {
+      getWalletProvider(context)
+          .changeFiatBalance(tokens[0].balanceInFiat.toStringAsFixed(5));
+    }
   }
 
   onTokenPressHandler(Token token) {

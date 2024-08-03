@@ -393,19 +393,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         addHeight(SpacingSize.xs),
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
+                                            addWidth(SpacingSize.s),
+                                            addWidth(SpacingSize.s),
                                             CustomIconButton(
                                               onPressed: onReceiveHandler,
                                               localizeKey: 'receive',
                                               iconData: Icons.call_received,
                                             ),
-                                            addWidth(SpacingSize.s),
                                             CustomIconButton(
                                               onPressed: onSendHandler,
                                               localizeKey: 'send',
                                               iconData: Icons.send,
                                             ),
+                                            addWidth(SpacingSize.s),
                                             addWidth(SpacingSize.s),
                                           ],
                                         ),

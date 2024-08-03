@@ -47,7 +47,7 @@ class Translations {
 }
 
 var en = {
-  "appName": "Phimask",
+  "appName": "Cryptomask",
   'createWallet': "Create Wallet",
   'noRecent': "No recent transaction",
   "accepTermsWarning":
@@ -247,7 +247,7 @@ var en = {
 };
 
 var es = {
-  "appName": "Phimask",
+  "appName": "Cryptomask",
   "getStarted": "Comenzar",
   "currentLanguage": "Idioma actual",
   "trusedByMillion": "Trused por millones",

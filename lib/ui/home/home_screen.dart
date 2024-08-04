@@ -347,26 +347,49 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                               )
                                             : addHeight(SpacingSize.s),
                                         InkWell(
+                                          splashFactory: NoSplash.splashFactory,
                                           onTap: onAccountChangeHandler,
-                                          child: AvatarWidget(
-                                            radius: 50,
-                                            address:
-                                                getLiveWalletProvider(context)
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              AvatarWidget(
+                                                radius: 50,
+                                                address: getLiveWalletProvider(
+                                                        context)
                                                     .activeWallet
                                                     .wallet
                                                     .privateKey
                                                     .address
                                                     .hex,
+                                              ),
+                                              addHeight(SpacingSize.xs),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  const Icon(
+                                                    Icons.keyboard_arrow_down,
+                                                    color: Colors.transparent,
+                                                  ),
+                                                  addHeight(SpacingSize.xs),
+                                                  WalletText(
+                                                    '',
+                                                    localizeKey:
+                                                        getLiveWalletProvider(
+                                                                context)
+                                                            .getAccountName(),
+                                                    textVarient:
+                                                        TextVarient.body1,
+                                                    bold: true,
+                                                  ),
+                                                  addHeight(SpacingSize.xs),
+                                                  const Icon(
+                                                      Icons.keyboard_arrow_down)
+                                                ],
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                        addHeight(SpacingSize.xs),
-                                        WalletText(
-                                          '',
-                                          localizeKey:
-                                              getLiveWalletProvider(context)
-                                                  .getAccountName(),
-                                          textVarient: TextVarient.body1,
-                                          bold: true,
                                         ),
                                         addHeight(SpacingSize.xs),
                                         WalletText('',

@@ -113,68 +113,65 @@ class _ContactTileState extends State<ContactTile> {
             TextButton(
               onPressed: () {
                 showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                          backgroundColor: Colors.white,
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const WalletText(
-                                "",
-                                localizeKey: "deleteWarning",
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    backgroundColor: Colors.white,
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const WalletText(
+                          "",
+                          localizeKey: "deleteWarning",
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: 40,
+                              width: 130,
+                              child: WalletButton(
+                                textSize: 14.0,
+                                localizeKey: 'cancel',
+                                textContent: '',
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                type: WalletButtonType.outline,
                               ),
-                              const SizedBox(
-                                height: 20,
+                            ),
+                            SizedBox(
+                              height: 40,
+                              width: 130,
+                              child: WalletButton(
+                                textSize: 14.0,
+                                textContent: "",
+                                localizeKey: 'delete',
+                                onPressed: () {
+                                  getContactProvider(context).deleteContacts(
+                                      address: widget.address,
+                                      alreadyExist: () {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content: WalletText(
+                                            "",
+                                            localizeKey: 'contactExist',
+                                          ),
+                                          backgroundColor: kPrimaryColor,
+                                        ));
+                                      });
+                                  Get.back();
+                                },
+                                type: WalletButtonType.filled,
                               ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    height: 40,
-                                    width: 130,
-                                    child: WalletButton(
-                                      textSize: 14.0,
-                                      localizeKey: 'cancel',
-                                      textContent: '',
-                                      onPressed: () {
-                                        Get.back();
-                                      },
-                                      type: WalletButtonType.outline,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 40,
-                                    width: 130,
-                                    child: WalletButton(
-                                      textSize: 14.0,
-                                      textContent: "",
-                                      localizeKey: 'delete',
-                                      onPressed: () {
-                                        getContactProvider(context)
-                                            .deleteContacts(
-                                                address: widget.address,
-                                                alreadyExist: () {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                          const SnackBar(
-                                                    content: WalletText(
-                                                      "",
-                                                      localizeKey:
-                                                          'contactExist',
-                                                    ),
-                                                    backgroundColor:
-                                                        kPrimaryColor,
-                                                  ));
-                                                });
-                                        Get.back();
-                                      },
-                                      type: WalletButtonType.filled,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ));
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
               },
               style: ButtonStyle(
                   splashFactory: NoSplash.splashFactory,

@@ -7,15 +7,18 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/home/home_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -55,12 +58,19 @@ class _TransactionConfirmationScreenState
   double selectedMaxFee = 0;
   bool readyToConfirm = false;
   int? manualEstimation;
+  bool isNative = true;
 
   EtherAmount? estimatedGasInWei;
   EtherAmount? maxFeeInWei;
 
   double totalAmount = 0;
   int gasLimit = 21000;
+
+  //FEE
+  double platformFeePercentage = 0;
+  EtherAmount platformFeeForNative = EtherAmount.zero();
+  double platformFeeForToken = 0;
+  EthereumAddress? adminAddress;
 
   DeployedContract? _deployedContract;
   Token? selectedToken;
@@ -78,8 +88,8 @@ class _TransactionConfirmationScreenState
           EtherUnit.wei, (basePrice * pow(10, 9)).toInt() * gasLimit);
       totalAmount =
           widget.value + estimatedGasInWei!.getValueInUnit(EtherUnit.ether);
-      readyToConfirm = true;
     });
+    estimatePlatformFee();
   }
 
   estimateGasDetailsForTokenAndNFT() {
@@ -98,9 +108,32 @@ class _TransactionConfirmationScreenState
                 EtherUnit.wei, (basePrice * pow(10, 9)).toInt() * gasLimit);
             totalAmount = widget.value +
                 estimatedGasInWei!.getValueInUnit(EtherUnit.ether);
-            readyToConfirm = true;
+            estimatePlatformFee();
           });
         });
+      });
+    });
+  }
+
+  estimatePlatformFee() {
+    RemoteServer.getPlatformFee().then((platformFeeData) {
+      setState(() {
+        platformFeePercentage = platformFeeData.data.fee;
+        adminAddress =
+            EthereumAddress.fromHex(platformFeeData.data.adminAddress);
+        if (isNative) {
+          if (widget.value != 0 && platformFeePercentage != 0) {
+            final percentageValue =
+                (platformFeePercentage / 100) * widget.value;
+            BigInt weiValue = BigInt.from(percentageValue * 1e18);
+            platformFeeForNative = EtherAmount.inWei(weiValue);
+            totalAmount = totalAmount +
+                platformFeeForNative.getValueInUnit(EtherUnit.ether);
+          }
+        } else {
+          platformFeeForToken = (platformFeePercentage / 100) * widget.value;
+        }
+        readyToConfirm = true;
       });
     });
   }
@@ -117,6 +150,9 @@ class _TransactionConfirmationScreenState
             Provider.of<WalletProvider>(context, listen: false)
                 .activeNetwork
                 .currency) {
+          setState(() {
+            isNative = false;
+          });
           estimateGasDetailsForTokenAndNFT();
         } else {
           estimateGasDetailForNative();
@@ -128,10 +164,8 @@ class _TransactionConfirmationScreenState
   }
 
   Future<int> estimateGasFromContract() async {
-    selectedToken = Provider.of<TokenProvider>(context, listen: false)
-        .tokens
-        .firstWhere(
-            (element) => element.tokenAddress == widget.contractAddress);
+    selectedToken = getTokenProvider(context).tokens.firstWhere(
+        (element) => element.tokenAddress == widget.contractAddress);
     var contractABI =
         ContractAbi.fromJson(jsonEncode(abi), widget.token.toString());
     _deployedContract = DeployedContract(
@@ -168,57 +202,150 @@ class _TransactionConfirmationScreenState
   }
 
   onConfirmAndApprove() {
-    // Transaction Native currency
     try {
-      if (widget.token ==
-          Provider.of<WalletProvider>(context, listen: false)
-              .activeNetwork
-              .symbol) {
-        Provider.of<WalletProvider>(context, listen: false)
-            .sendTransaction(widget.to, widget.value, selectedPriority,
-                selectedMaxFee, gasLimit)
-            .then((txHash) {
-          Navigator.of(context).popUntil((route) => route.isFirst);
-          showPositiveSnackBar(context, 'Success',
-              'Transaction with $txHash is sumbitted to the network');
-        }).catchError((e) {
-          showErrorSnackBar(context, "Transaction failed",
-              'Transaction is failed sumbit to the network');
-        });
+      final walletProvider = getWalletProvider(context);
+      getWalletProvider(context).showLoading();
 
-        return;
-      }
+      // Transaction Native currency
+      if (isNative) {
+        if (platformFeePercentage > 0) {
+          // SENDING ADMIN FEE
+          walletProvider
+              .sendTransaction(
+                  adminAddress!.hex,
+                  platformFeeForNative.getValueInUnit(EtherUnit.ether),
+                  selectedPriority,
+                  selectedMaxFee,
+                  gasLimit,
+                  true)
+              .then((feeHash) async {
+            if (feeHash == null) {
+              return;
+            }
+            await getTransactionReceiptFromHash(context, feeHash);
 
-      // Transaction Token
-      Provider.of<TokenProvider>(context, listen: false)
-          .sendTokenTransaction(
-              widget.to,
-              widget.value,
-              gasLimit,
-              selectedPriority,
-              selectedMaxFee,
-              selectedToken!,
-              _deployedContract!,
-              Provider.of<WalletProvider>(context, listen: false)
-                  .activeWallet
-                  .wallet,
-              Provider.of<WalletProvider>(context, listen: false).activeNetwork)
-          .then((txHash) {
-        getWalletProvider(context).hideLoading();
-        if (txHash != null) {
-          if (kDebugMode) {
-            print(txHash);
-          }
-          showPositiveSnackBar(context, "Transaction sumbitted",
-              "Transaction with hash ${showEllipse(txHash)} has been submitted successfully");
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            HomeScreen.route,
-            (route) => false,
-          );
+            // SUBMITTING ACTUAL TRANSACTION
+            walletProvider
+                .sendTransaction(widget.to, widget.value, selectedPriority,
+                    selectedMaxFee, gasLimit, false)
+                .then((txHash) {
+              getWalletProvider(context).hideLoading();
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              showPositiveSnackBar(context, 'Success',
+                  'Transaction with $txHash is sumbitted to the network');
+            }).catchError((e) {
+              showErrorSnackBar(context, "Transaction failed",
+                  'Transaction is failed sumbit to the network');
+            });
+          }).catchError((e) {
+            showErrorSnackBar(context, "Transaction failed",
+                'Transaction is failed sumbit to the network');
+          });
+        } else {
+          walletProvider
+              .sendTransaction(widget.to, widget.value, selectedPriority,
+                  selectedMaxFee, gasLimit, false)
+              .then((txHash) {
+            getWalletProvider(context).hideLoading();
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            showPositiveSnackBar(context, 'Success',
+                'Transaction with $txHash is sumbitted to the network');
+          }).catchError((e) {
+            showErrorSnackBar(context, "Transaction failed",
+                'Transaction is failed sumbit to the network');
+          });
         }
-      }).catchError((e) {
-        showErrorSnackBar(context, "Transaction failed", e.toString());
-      });
+      } else {
+        final tokenProvider = getTokenProvider(context);
+        if (platformFeePercentage > 0) {
+          // Submitting fee transaction
+          tokenProvider
+              .sendTokenTransaction(
+                  adminAddress!.hex,
+                  platformFeeForToken,
+                  gasLimit,
+                  selectedPriority,
+                  selectedMaxFee,
+                  selectedToken!,
+                  _deployedContract!,
+                  Provider.of<WalletProvider>(context, listen: false)
+                      .activeWallet
+                      .wallet,
+                  Provider.of<WalletProvider>(context, listen: false)
+                      .activeNetwork,
+                  true)
+              .then((feeHash) async {
+            if (feeHash == null) {
+              return;
+            }
+            await getTransactionReceiptFromHash(context, feeHash);
+            // Submitting actual transaction
+            tokenProvider
+                .sendTokenTransaction(
+                    widget.to,
+                    widget.value,
+                    gasLimit,
+                    selectedPriority,
+                    selectedMaxFee,
+                    selectedToken!,
+                    _deployedContract!,
+                    walletProvider.activeWallet.wallet,
+                    walletProvider.activeNetwork,
+                    false)
+                .then((txHash) {
+              getWalletProvider(context).hideLoading();
+              if (txHash != null) {
+                if (kDebugMode) {
+                  print(txHash);
+                }
+                showPositiveSnackBar(context, "Transaction sumbitted",
+                    "Transaction with hash ${showEllipse(txHash)} has been submitted successfully");
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  HomeScreen.route,
+                  (route) => false,
+                );
+              }
+            }).catchError((e) {
+              showErrorSnackBar(context, "Transaction failed", e.toString());
+            });
+          }).catchError((e) {
+            showErrorSnackBar(context, "Transaction failed", e.toString());
+          });
+        } else {
+          // Transaction Token
+          Provider.of<TokenProvider>(context, listen: false)
+              .sendTokenTransaction(
+                  widget.to,
+                  widget.value,
+                  gasLimit,
+                  selectedPriority,
+                  selectedMaxFee,
+                  selectedToken!,
+                  _deployedContract!,
+                  Provider.of<WalletProvider>(context, listen: false)
+                      .activeWallet
+                      .wallet,
+                  Provider.of<WalletProvider>(context, listen: false)
+                      .activeNetwork,
+                  false)
+              .then((txHash) {
+            getWalletProvider(context).hideLoading();
+            if (txHash != null) {
+              if (kDebugMode) {
+                print(txHash);
+              }
+              showPositiveSnackBar(context, "Transaction sumbitted",
+                  "Transaction with hash ${showEllipse(txHash)} has been submitted successfully");
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                HomeScreen.route,
+                (route) => false,
+              );
+            }
+          }).catchError((e) {
+            showErrorSnackBar(context, "Transaction failed", e.toString());
+          });
+        }
+      }
     } catch (e) {
       showErrorSnackBar(context, "Failed", e.toString());
     }
@@ -445,8 +572,10 @@ class _TransactionConfirmationScreenState
                   height: 10,
                 ),
                 !readyToConfirm
-                    ? const Center(
-                        child: CircularProgressIndicator(),
+                    ? const SafeArea(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       )
                     : Container(
                         margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -478,42 +607,28 @@ class _TransactionConfirmationScreenState
                             const SizedBox(
                               height: 7,
                             ),
-                            Provider.of<WalletProvider>(context)
-                                    .activeNetwork
-                                    .supportsEip1559
-                                ? Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        priority == TransactionPriority.medium
-                                            ? AppLocalizations.of(context)!
-                                                .likelyIn30Second
-                                            : priority ==
-                                                    TransactionPriority.low
-                                                ? AppLocalizations.of(context)!
-                                                    .mayBeIn30Second
-                                                : priority ==
-                                                        TransactionPriority.high
-                                                    ? AppLocalizations.of(
-                                                            context)!
-                                                        .likelyIn15Second
-                                                    : "Custom gas fee",
-                                        style: TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            fontWeight: FontWeight.bold,
-                                            color: priority ==
-                                                        TransactionPriority
-                                                            .low ||
-                                                    priority ==
-                                                        TransactionPriority
-                                                            .custom
-                                                ? Colors.red
-                                                : Colors.green),
-                                      ),
-                                    ],
-                                  )
-                                : const SizedBox(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const WalletText(
+                                  "",
+                                  localizeKey: 'Platform fee',
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                Text(
+                                  isNative
+                                      ? "${platformFeeForNative.getValueInUnit(EtherUnit.ether).toStringAsFixed(8)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol} ($platformFeePercentage%)"
+                                      : "$platformFeeForToken ${selectedToken!.symbol}",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: kPrimaryColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 7,
+                            ),
                             const SizedBox(
                               height: 10,
                             ),
@@ -534,7 +649,7 @@ class _TransactionConfirmationScreenState
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  "${widget.token != null && widget.token != Provider.of<WalletProvider>(context).activeNetwork.currency ? '${widget.value} ${selectedToken?.symbol} + ' : ''} ${totalAmount.toStringAsFixed(6)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
+                                  "${widget.token != null && widget.token != Provider.of<WalletProvider>(context).activeNetwork.currency ? '${widget.value + platformFeeForToken} ${selectedToken?.symbol} + ' : ''} ${totalAmount.toStringAsFixed(6)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 ),

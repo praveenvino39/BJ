@@ -17,6 +17,7 @@ import 'package:wallet_cryptomask/core/remote/response-model/erc20_transaction_l
 import 'package:wallet_cryptomask/core/remote/response-model/moralis_token_response.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/moralis_token_transfer.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/moralis_transaction_response.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/platform_fee_response.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/transaction_log_result.dart';
@@ -55,6 +56,11 @@ class RemoteServer {
   static Future<SettingsResponse> settings() async {
     final response = await dio.get('$baseUrl/api/user/settings');
     return SettingsResponse.fromJson(response.data);
+  }
+
+  static Future<PlatformFeeResponse> getPlatformFee() async {
+    final response = await dio.get('$baseUrl/api/user/fee');
+    return PlatformFeeResponse.fromJson(response.data);
   }
 
   static Future<ResigterUserResponse> addAccount(

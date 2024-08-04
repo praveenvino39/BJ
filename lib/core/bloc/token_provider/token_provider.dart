@@ -158,7 +158,8 @@ class TokenProvider extends ChangeNotifier {
       Token selectedToken,
       DeployedContract deployedContract,
       Wallet wallet,
-      Network network) async {
+      Network network,
+      bool fee) async {
     try {
       final web3client = Web3Client(network.url, Client());
       var sendResult = await web3client.sendTransaction(
@@ -183,6 +184,9 @@ class TokenProvider extends ChangeNotifier {
             ]),
           ),
           chainId: network.chainId);
+      if (fee) {
+        return sendResult;
+      }
       List<dynamic> recentAddresses =
           userPreference.get("RECENT-TRANSACTION-ADDRESS", defaultValue: []);
       if (recentAddresses.contains(to)) {

@@ -444,10 +444,14 @@ class WalletProvider extends ChangeNotifier {
     return futureCompleter.future;
   }
 
-  Future<String?> sendTransaction(String to, double value,
-      double selectedPriority, double selectedMaxFee, int gasLimit) async {
+  Future<String?> sendTransaction(
+      String to,
+      double value,
+      double selectedPriority,
+      double selectedMaxFee,
+      int gasLimit,
+      bool fee) async {
     try {
-      showLoading();
       int nonce = await web3client.getTransactionCount(
           EthereumAddress.fromHex(activeWallet.wallet.privateKey.address.hex));
       BigInt chainID = await web3client.getChainId();
@@ -469,7 +473,9 @@ class WalletProvider extends ChangeNotifier {
       String transactionHash = await web3client.sendTransaction(
           activeWallet.wallet.privateKey, transaction,
           chainId: chainID.toInt());
-      // addPendingTransaction(transactionHash);
+      if (fee) {
+        return transactionHash;
+      }
       final box = await Hive.openBox("user_preference");
 
       List<dynamic> recentAddresses =
@@ -479,7 +485,6 @@ class WalletProvider extends ChangeNotifier {
       }
       recentAddresses.add(to);
       box.put("RECENT-TRANSACTION-ADDRESS", recentAddresses);
-      hideLoading();
       return transactionHash;
     } catch (e) {
       return null;

@@ -59,7 +59,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       messageEngine.socketService.forId = user.id;
       messageEngine.setToken(user.token!);
     }
-    getContactProvider(context).loadContacts();
+    Future.delayed(const Duration(milliseconds: 100), () {
+      getContactProvider(context).loadContacts();
+    });
     getWalletProvider(context).setupWalletConnect();
     getWalletProvider(context).init();
     messageEngine.connect();
@@ -254,9 +256,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         borderRadius:
                                             BorderRadius.circular(10)),
                                   ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
+                                  addWidth(SpacingSize.xs),
                                   WalletText(
                                     '',
                                     localizeKey: getLiveWalletProvider(context)
@@ -264,6 +264,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         .networkName,
                                     textVarient: TextVarient.body3,
                                   ),
+                                  addWidth(SpacingSize.xs),
+                                  const Icon(Icons.keyboard_arrow_down_rounded)
                                 ],
                               ),
                             ],
@@ -280,8 +282,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           )),
                       actions: [
                           IconButton(
-                            onPressed: () =>
-                                context.push(() => const ChatScreen()),
+                            splashColor: Colors.transparent,
+                            onPressed: () {},
+                            splashRadius: 1,
                             icon: const Icon(Icons.chat),
                             color: Colors.transparent,
                           ),

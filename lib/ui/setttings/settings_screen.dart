@@ -2,12 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/setttings/general_settings_screen/general_settings_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/ui/support/chat_screen.dart';
+import 'package:wallet_cryptomask/ui/wallet-connect/walletconnect_session_screen.dart';
 import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 import 'package:wallet_cryptomask/utils.dart';
 
@@ -94,10 +97,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 height: 1,
                 color: Colors.grey.withAlpha(60),
               ),
+              ListTile(
+                onTap: () {
+                  context.push(() => const WalletConnectSessionScreen());
+                },
+                title: const WalletText(
+                  '',
+                  localizeKey: 'WalletConnect',
+                ),
+                subtitle: const WalletText(
+                  '',
+                  localizeKey: 'Manage WalletConnect session',
+                ),
+                trailing: const Icon(Icons.arrow_forward_ios),
+              ),
               Container(
                 width: double.infinity,
                 height: 1,
                 color: Colors.grey.withAlpha(60),
+              ),
+              ListTile(
+                onTap: () {
+                  context.push(() => const ChatScreen());
+                },
+                title: const WalletText(
+                  '',
+                  localizeKey: 'Contact us',
+                ),
+                subtitle: const WalletText(
+                  '',
+                  localizeKey: 'Send a message to us',
+                ),
+                trailing: const Icon(Icons.arrow_forward_ios),
               ),
               Container(
                 width: double.infinity,

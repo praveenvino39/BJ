@@ -1,19 +1,23 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
+import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/setttings/security_settings_screen/security_settings_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 import 'package:web3dart/web3dart.dart';
@@ -50,6 +54,73 @@ copyAddressToClipBoard(String address, BuildContext context,
             ? "Privatekey copied to clipboard"
             : "Public address copied to clipboard");
   });
+}
+
+showConfirmationDialog({
+  required BuildContext context,
+  required String question,
+  required String primaryCtaText,
+  required String secondaryCtaText,
+  required Function() primaryOnPress,
+  required Function() secondaryOnPress,
+}) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: Colors.white,
+      content: SizedBox(
+        width: context.width,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            WalletText(
+              "",
+              localizeKey: question,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: WalletButton(
+                    textSize: 14.0,
+                    localizeKey: secondaryCtaText,
+                    textContent: '',
+                    onPressed: secondaryOnPress,
+                    type: WalletButtonType.outline,
+                  ),
+                ),
+                Expanded(
+                  child: WalletButton(
+                    textSize: 14.0,
+                    textContent: "",
+                    localizeKey: primaryCtaText,
+                    onPressed: primaryOnPress,
+                    type: WalletButtonType.filled,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+Future<TransactionReceipt> getTransactionReceiptFromHash(
+    BuildContext context, String hash) {
+  Completer<TransactionReceipt> completor = Completer();
+  Timer.periodic(const Duration(seconds: 5), (timer) async {
+    final transactionReceipt =
+        await getWalletProvider(context).web3client.getTransactionReceipt(hash);
+    if (transactionReceipt != null) {
+      timer.cancel();
+      completor.complete(transactionReceipt);
+    }
+  });
+  return completor.future;
 }
 
 showPasswordInputModal(

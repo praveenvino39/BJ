@@ -11,7 +11,7 @@ import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/transaction-confirmation/transaction_confirmation.dart';
-import 'package:wallet_cryptomask/ui/widgets/sheets/token_selection_sheet.dart';
+import 'package:wallet_cryptomask/utils.dart';
 
 class AmountScreen extends StatefulWidget {
   static const route = "amount_screen";
@@ -48,16 +48,17 @@ class _AmountScreenState extends State<AmountScreen> {
     Navigator.of(context).pop();
   }
 
-  openTokenSelection() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) =>
-          TokenSelectionSheet(onTokenSelect: onTokenSelection),
-    );
-  }
-
   onNextHandler() {
+    final valueString = inputAmount.text;
+
+    // Check if the value has more than 18 decimal places
+    final decimalIndex = valueString.indexOf('.');
+    if (decimalIndex != -1 &&
+        valueString.length - decimalIndex - 1 > widget.token.decimal) {
+      showErrorSnackBar(context, "Invalid input",
+          'The value cannot have more than ${widget.token.decimal} decimal places.');
+      return;
+    }
     Navigator.of(context)
         .pushNamed(TransactionConfirmationScreen.route, arguments: {
       "balance": widget.balance,
@@ -179,33 +180,10 @@ class _AmountScreenState extends State<AmountScreen> {
             width: double.infinity,
             height: 20,
           ),
-          Row(
+          const Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Expanded(child: Text("")),
-              InkWell(
-                onTap: openTokenSelection,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  decoration: BoxDecoration(
-                      color: kPrimaryColor,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        selectedToken,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                      const Icon(
-                        Icons.arrow_drop_down_outlined,
-                        color: Colors.white,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              const Expanded(
+              Expanded(
                   child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

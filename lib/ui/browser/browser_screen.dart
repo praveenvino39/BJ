@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:clipboard_watcher/clipboard_watcher.dart';
 import 'package:flutter/foundation.dart';
@@ -71,8 +72,10 @@ class _BrowserScreenState extends State<BrowserScreen> with ClipboardListener {
 
   @override
   void initState() {
-    clipboardWatcher.addListener(this);
-    clipboardWatcher.start();
+    if (Platform.isIOS) {
+      clipboardWatcher.addListener(this);
+      clipboardWatcher.start();
+    }
 
     tabs.add(BrowserView(
         webViewModel: WebViewModel(progress: 0, url: WebUri(homepageUrl)),

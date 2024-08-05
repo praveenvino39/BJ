@@ -2,7 +2,7 @@
 
 import 'dart:async';
 import 'package:dash_chat_2/dash_chat_2.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:wallet_cryptomask/core/model/message.dart';
 import 'package:wallet_cryptomask/utils.dart';
 
@@ -15,14 +15,14 @@ class SocketEvent {
 class SocketService {
   Function(List<ChatMessage>)? updateMessages;
   String? token;
-  IO.Socket? _socket;
+  io.Socket? _socket;
   StreamController<String>? messageController;
   int? forId;
 
   void connect() {
-    _socket = IO.io(
+    _socket = io.io(
         'http://192.168.29.226:3001',
-        IO.OptionBuilder()
+        io.OptionBuilder()
             .setExtraHeaders({'authorization': token})
             .setTransports(['websocket']) // for Flutter or Dart VM
             .disableAutoConnect() // disable auto-connection

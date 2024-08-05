@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'wc_ethereum_transaction.g.dart';

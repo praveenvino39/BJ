@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_return_type_for_catch_error
+
 import 'dart:developer';
 import 'dart:io';
 
@@ -48,8 +50,8 @@ class _LoginScreenState extends State<LoginScreen> {
           showDialog(
             barrierDismissible: false,
             context: context,
-            builder: (context) => WillPopScope(
-              onWillPop: () async => false,
+            builder: (context) => PopScope(
+              canPop: false,
               child: AlertDialog(
                 title: const Text("Update available"),
                 content: Column(
@@ -82,8 +84,8 @@ class _LoginScreenState extends State<LoginScreen> {
           showDialog(
             barrierDismissible: false,
             context: context,
-            builder: (context) => WillPopScope(
-              onWillPop: () async => false,
+            builder: (context) => PopScope(
+              canPop: false,
               child: AlertDialog(
                 title: const Text("Update available"),
                 content: Column(

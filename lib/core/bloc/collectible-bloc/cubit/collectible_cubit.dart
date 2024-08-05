@@ -1,4 +1,6 @@
 // ignore: depend_on_referenced_packages
+// ignore_for_file: deprecated_member_use
+
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
@@ -48,7 +50,6 @@ class CollectibleCubit extends Cubit<CollectibleState> {
     var contract = DeployedContract(
         contractAbi, EthereumAddress.fromHex(collectible.tokenAddress));
     var function = contract.function('ownerOf');
-    var uriTokenFunction = contract.function('tokenURI');
     var ownerResult =
         await web3client.call(contract: contract, function: function, params: [
       BigInt.parse(collectible.tokenId),

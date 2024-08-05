@@ -1,4 +1,6 @@
 // ignore: depend_on_referenced_packages
+// ignore_for_file: deprecated_member_use
+
 import 'dart:convert';
 import 'dart:developer' as debug_print;
 import 'dart:math';
@@ -9,7 +11,7 @@ import 'package:decimal/decimal.dart';
 import 'package:hive/hive.dart';
 // ignore: depend_on_referenced_packages
 import 'package:meta/meta.dart';
-import 'package:wallet_cryptomask/core/ERC20.dart';
+import 'package:wallet_cryptomask/core/erc20.dart';
 import 'package:wallet_cryptomask/core/abi.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/core.dart';

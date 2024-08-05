@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/contact_provider/contact_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
@@ -20,7 +19,6 @@ import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/home/component/drawer_component.dart';
 import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/ui/support/chat_screen.dart';
 import 'package:wallet_cryptomask/ui/token/token_tab.dart';
 import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
 import 'package:wallet_cryptomask/utils.dart';
@@ -46,14 +44,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool switchEditName = false;
   String accountName = "";
   String currency = "";
-  late TabController _tabController;
   final GlobalKey<ScaffoldState> _scafoldKey = GlobalKey();
   final GlobalKey<ScaffoldState> _fakeScafoldKey = GlobalKey();
   int index = 0;
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
     final messageEngine = MessageEngine.getMessageEngine(context);
     if (user.token != null) {
       messageEngine.socketService.forId = user.id;

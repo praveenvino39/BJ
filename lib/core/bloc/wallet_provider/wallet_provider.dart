@@ -30,7 +30,7 @@ import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:walletconnect_flutter_v2/apis/sign_api/models/proposal_models.dart';
 import 'package:walletconnect_flutter_v2/apis/sign_api/models/session_models.dart';
 import 'package:walletconnect_flutter_v2/apis/sign_api/models/sign_client_events.dart';
-import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart' as WC;
+import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart' as wc;
 import 'package:web3dart/web3dart.dart';
 
 WalletProvider getWalletProvider(BuildContext context) =>
@@ -53,7 +53,7 @@ class WalletProvider extends ChangeNotifier {
   List<WalletModel> wallets = [];
   String balanceInPrefereCurrency = "0";
   double nativeBalance = 0.0;
-  WC.Web3Wallet? web3Wallet;
+  wc.Web3Wallet? web3Wallet;
 
   WalletProvider(this.fss, this.userPreference);
 
@@ -492,11 +492,11 @@ class WalletProvider extends ChangeNotifier {
   }
 
   setupWalletConnect() {
-    web3Wallet = WC.Web3Wallet(
-      core: WC.Core(
+    web3Wallet = wc.Web3Wallet(
+      core: wc.Core(
         projectId: '3304b720b5bb3ee4918ff6cf62f6262a',
       ),
-      metadata: const WC.PairingMetadata(
+      metadata: const wc.PairingMetadata(
         name: 'Example Wallet',
         description: 'Example Wallet',
         url: 'https://walletconnect.com/',
@@ -975,8 +975,8 @@ class WalletProvider extends ChangeNotifier {
               onReject: () async {
                 await web3Wallet!.rejectSession(
                   id: args.id,
-                  reason: WC.Errors.getSdkError(
-                    WC.Errors.USER_REJECTED,
+                  reason: wc.Errors.getSdkError(
+                    wc.Errors.USER_REJECTED,
                   ),
                 );
               },
@@ -1013,7 +1013,7 @@ class WalletProvider extends ChangeNotifier {
       web3Wallet?.emitSessionEvent(
           topic: session.topic,
           chainId: "$nameSpace:$chainId",
-          event: WC.SessionEventParams(name: "chainChanged", data: chainId));
+          event: wc.SessionEventParams(name: "chainChanged", data: chainId));
     });
   }
 
@@ -1026,7 +1026,7 @@ class WalletProvider extends ChangeNotifier {
       web3Wallet!.emitSessionEvent(
           topic: session.topic,
           chainId: getCurrentNamespaceWithChainId(),
-          event: WC.SessionEventParams(
+          event: wc.SessionEventParams(
               name: "accountsChanged",
               data: "${getCurrentNamespaceWithChainId()}:$address"));
     });

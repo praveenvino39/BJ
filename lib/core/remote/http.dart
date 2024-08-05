@@ -6,7 +6,7 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:dio/dio.dart';
-import 'package:dio/dio.dart' as dioLibrary;
+import 'package:dio/dio.dart' as dio_library;
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:wallet_cryptomask/core/model/coin_gecko_token_model.dart';
@@ -151,9 +151,9 @@ Future<List<String>?> getSupportedVsCurrency() async {
 
 Future<Media?> uploadFile(String token, File file, String fileName) async {
   try {
-    final formData = dioLibrary.FormData.fromMap({
-      'file':
-          await dioLibrary.MultipartFile.fromFile(file.path, filename: fileName)
+    final formData = dio_library.FormData.fromMap({
+      'file': await dio_library.MultipartFile.fromFile(file.path,
+          filename: fileName)
     });
     var response = await Dio().post("$baseUrl/api/user/upload",
         data: formData,

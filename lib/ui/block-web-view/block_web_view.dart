@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/utils.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class BlockWebView extends StatefulWidget {
   static const router = "block_web_view";
@@ -24,8 +23,6 @@ class BlockWebView extends StatefulWidget {
 }
 
 class _BlockWebViewState extends State<BlockWebView> {
-  final WebViewController _controller = WebViewController();
-
   @override
   Widget build(BuildContext context) {
     log(widget.url);

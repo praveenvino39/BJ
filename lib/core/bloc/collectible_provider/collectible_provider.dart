@@ -61,7 +61,9 @@ class CollectibleProvider extends ChangeNotifier {
             "https://ipfs.io/ipfs/${(uriResult as dynamic)[0]}".toString());
         collectible.imageUrl = response.data["image"];
         collectible.description = response.data["description"];
-      } catch (e) {}
+      } catch (e) {
+        debugPrint(e.toString());
+      }
       List<dynamic> collectibles =
           await userPreference.get(collectibleStoragekey) ?? [];
       if (collectibles.contains(collectible)) {

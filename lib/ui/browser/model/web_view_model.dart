@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:collection/collection.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -27,7 +29,7 @@ class WebViewModel extends ChangeNotifier {
 
   WebViewModel(
       {int? tabIndex,
-        WebUri? url,
+      WebUri? url,
       String? title,
       Favicon? favicon,
       double progress = 0.0,
@@ -41,8 +43,8 @@ class WebViewModel extends ChangeNotifier {
       this.windowId,
       this.settings,
       this.webViewController,
-        this.pullToRefreshController,
-        this.findInteractionController,
+      this.pullToRefreshController,
+      this.findInteractionController,
       this.needsToCompleteInitialLoad = true}) {
     _tabIndex = tabIndex;
     _url = url;

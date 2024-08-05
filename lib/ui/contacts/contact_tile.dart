@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:routerino/routerino.dart';
@@ -7,7 +6,6 @@ import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/contact_provider/contact_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/ui/amount/amount_screen.dart';
 import 'package:wallet_cryptomask/ui/contacts/add_contact.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';

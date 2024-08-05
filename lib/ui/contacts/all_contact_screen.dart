@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
-import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/contact_provider/contact_provider.dart';
 import 'package:wallet_cryptomask/ui/contacts/add_contact.dart';
 import 'package:wallet_cryptomask/ui/contacts/contact_tile.dart';

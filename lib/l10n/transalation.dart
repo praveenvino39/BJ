@@ -179,7 +179,6 @@ var en = {
   "maxAmount": "Max amount",
   "transactionFailed": "Transaction failed",
   "transactionSubmitted": "Transaction submitted",
-  "confirmAndApprove": "Confirm and Approve",
   "waitingForConfirmation": "Waiting for confirmation",
   "editPriority": "Edit priority",
   "low": "Low",

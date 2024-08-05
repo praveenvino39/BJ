@@ -33,7 +33,6 @@ import 'package:wallet_cryptomask/core/remote/response-model/promotion.dart';
 import 'package:wallet_cryptomask/core/socket/message_engine.dart';
 import 'package:wallet_cryptomask/ui/amount/amount_screen.dart';
 import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
-import 'package:wallet_cryptomask/ui/collectibles/import_collectible_screen.dart';
 import 'package:wallet_cryptomask/ui/deactivated-screen/deactivated_screen.dart';
 import 'package:wallet_cryptomask/ui/home/home_screen.dart';
 import 'package:wallet_cryptomask/ui/import-account/import_account_screen.dart';
@@ -273,10 +272,6 @@ class _MyAppState extends State<MyApp> {
                 if (setting.name == ImportTokenScreen.route) {
                   return MaterialPageRoute(
                       builder: (context) => const ImportTokenScreen());
-                }
-                if (setting.name == ImportCollectibleScreen.route) {
-                  return MaterialPageRoute(
-                      builder: (context) => const ImportCollectibleScreen());
                 }
                 if (setting.name == TransactionConfirmationScreen.route) {
                   String to = (setting.arguments as dynamic)["to"];

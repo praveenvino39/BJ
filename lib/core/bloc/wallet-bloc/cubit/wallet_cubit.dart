@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages, deprecated_member_use
 
 import 'dart:async';
 import 'dart:convert';
@@ -14,7 +14,7 @@ import 'package:get/route_manager.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart'; //You can also import the browser version
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:wallet_cryptomask/core/ERC20.dart';
+import 'package:wallet_cryptomask/core/erc20.dart';
 import 'package:wallet_cryptomask/core/abi.dart';
 import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
@@ -880,7 +880,6 @@ class WalletCubit extends Cubit<WalletState> {
             maxPriorityFeePerGas:
                 EtherAmount.fromUnitAndValue(EtherUnit.gwei, 2),
             maxGas: 1000000,
-            // value: amount,
             contract: deployedContract,
             function: deployedContract.function("swapTokensForExactETH"),
             parameters: [

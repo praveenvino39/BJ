@@ -7,6 +7,7 @@ import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class ConfirmPassphrase extends StatefulWidget {
   final List<String> passpharse;
@@ -59,9 +60,7 @@ class _ConfirmPassphraseState extends State<ConfirmPassphrase> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            const SizedBox(
-              height: 20,
-            ),
+            addHeight(SpacingSize.m),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
@@ -69,9 +68,7 @@ class _ConfirmPassphraseState extends State<ConfirmPassphrase> {
                 textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            addHeight(SpacingSize.m),
             Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
@@ -184,9 +181,7 @@ class _ConfirmPassphraseState extends State<ConfirmPassphrase> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            addHeight(SpacingSize.m),
             !isLoading
                 ? WalletButton(
                     type: WalletButtonType.filled,

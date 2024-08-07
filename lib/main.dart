@@ -30,13 +30,10 @@ void main() async {
   Box box = await Hive.openBox("user_preference");
 
   runApp(
-    SizedBox(
-      width: 200,
-      child: MainApp(
-        locale: await getAppLocale(box),
-        initialWidget: await getInitialWidget(),
-        userPreferenceBox: box,
-      ),
+    MainApp(
+      locale: await getAppLocale(box),
+      initialWidget: await getInitialWidget(),
+      userPreferenceBox: box,
     ),
   );
 }

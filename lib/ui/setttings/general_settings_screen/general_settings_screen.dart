@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/core/providers/locale_provider/locale_provider.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class GeneralSettingsScreen extends StatefulWidget {
   static String route = "general_setting_screen";
@@ -64,18 +65,14 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
+            addHeight(SpacingSize.m),
             Text(
               AppLocalizations.of(context)!.currentLanguage,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(
-              height: 7,
-            ),
+            addHeight(SpacingSize.xs),
             Text(AppLocalizations.of(context)!.languageDescription),
-            const SizedBox(
-              height: 7,
-            ),
+            addHeight(SpacingSize.xs),
             DropdownButtonHideUnderline(
                 child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
+import 'package:wallet_cryptomask/core/providers/browser_provider/browser_provider.dart';
 import 'package:wallet_cryptomask/ui/browser/widgets/browser_url_field.dart';
 import 'package:wallet_cryptomask/ui/shared/network_dart.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class BrowserUrlBar extends StatefulWidget {
-  final Function(String, WebViewModel) onUrlSubmit;
+  final Function(String, BrowserProvider) onUrlSubmit;
   final bool? certified;
   final String url;
   final Function() openDrawer;
-  final WebViewModel webViewModel;
+  final BrowserProvider webViewModel;
   const BrowserUrlBar(
       {super.key,
       required this.webViewModel,
@@ -41,8 +42,8 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
 
   @override
   void initState() {
-    context.read<WebViewModel>().addListener(() {
-      urlController.text = context.read<WebViewModel>().url.toString();
+    context.read<BrowserProvider>().addListener(() {
+      urlController.text = context.read<BrowserProvider>().url.toString();
       urFocusNode.addListener(() {
         setState(() {
           enableClear = urFocusNode.hasFocus;
@@ -65,7 +66,7 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
           IconButton(
               onPressed: () {
                 context
-                    .read<WebViewModel>()
+                    .read<BrowserProvider>()
                     .webViewController
                     ?.webStorage
                     .localStorage
@@ -81,9 +82,7 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
   }
 
   Widget _buildSearchTextField() {
-    return SizedBox(
-        // height: 40.0,
-        child: GestureDetector(
+    return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => BrowserUrlField(
@@ -133,12 +132,9 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
                 ],
               ),
             ),
-
             const SizedBox(
               height: 2,
             ),
-
-            // const SizedBox(height: 10,),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -146,17 +142,13 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
                   color: getWalletProvider(context).activeNetwork.dotColor,
                   radius: 10,
                 ),
-                const SizedBox(
-                  width: 5,
-                ),
+                addWidth(SpacingSize.xxs),
                 Text(
                   getWalletProvider(context).activeNetwork.networkName,
                   style: const TextStyle(fontSize: 12, color: Colors.black),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(
-                  width: 5,
-                ),
+                addWidth(SpacingSize.xxs),
                 const NetworkDot(
                   color: Colors.transparent,
                   radius: 10,
@@ -164,6 +156,6 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
               ],
             ),
           ]),
-    ));
+    );
   }
 }

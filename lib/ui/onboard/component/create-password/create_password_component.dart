@@ -3,6 +3,7 @@ import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class CreatePasswordCmp extends StatefulWidget {
   final Function? onNext;
@@ -31,16 +32,12 @@ class _CreatePasswordCmpState extends State<CreatePasswordCmp> {
         key: _formKey,
         child: Column(
           children: [
-            const SizedBox(
-              height: 30,
-            ),
+            addHeight(SpacingSize.l),
             Text(
               AppLocalizations.of(context)!.createPassword,
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            addHeight(SpacingSize.m),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
@@ -50,9 +47,7 @@ class _CreatePasswordCmpState extends State<CreatePasswordCmp> {
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            addHeight(SpacingSize.m),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
@@ -71,9 +66,7 @@ class _CreatePasswordCmpState extends State<CreatePasswordCmp> {
                         child: Text(AppLocalizations.of(context)!.show)),
                   ],
                 )),
-            const SizedBox(
-              height: 12,
-            ),
+            addHeight(SpacingSize.s),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TextFormField(
@@ -98,9 +91,7 @@ class _CreatePasswordCmpState extends State<CreatePasswordCmp> {
                           borderSide: BorderSide(color: kPrimaryColor)),
                       border: OutlineInputBorder(borderSide: BorderSide())),
                 )),
-            const SizedBox(
-              height: 30,
-            ),
+            addHeight(SpacingSize.l),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -109,9 +100,7 @@ class _CreatePasswordCmpState extends State<CreatePasswordCmp> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 12,
-            ),
+            addHeight(SpacingSize.s),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TextFormField(
@@ -136,9 +125,7 @@ class _CreatePasswordCmpState extends State<CreatePasswordCmp> {
                           borderSide: BorderSide(color: kPrimaryColor)),
                       border: OutlineInputBorder(borderSide: BorderSide())),
                 )),
-            const SizedBox(
-              height: 12,
-            ),
+            addHeight(SpacingSize.s),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -147,9 +134,7 @@ class _CreatePasswordCmpState extends State<CreatePasswordCmp> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 60,
-            ),
+            addHeight(SpacingSize.xxl),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Row(
@@ -194,9 +179,7 @@ class _CreatePasswordCmpState extends State<CreatePasswordCmp> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            addHeight(SpacingSize.m),
             WalletButton(
                 textContent: AppLocalizations.of(context)!.createPassword,
                 onPressed: () {

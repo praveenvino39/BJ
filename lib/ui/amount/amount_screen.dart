@@ -11,7 +11,8 @@ import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/transaction-confirmation/transaction_confirmation.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 
 class AmountScreen extends StatefulWidget {
   static const route = "amount_screen";
@@ -122,44 +123,39 @@ class _AmountScreenState extends State<AmountScreen> {
           shadowColor: Colors.white,
           elevation: 0,
           backgroundColor: Colors.white,
-          title: SizedBox(
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(AppLocalizations.of(context)!.amount,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(AppLocalizations.of(context)!.amount,
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w200,
+                      color: Colors.black)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 7,
+                    height: 7,
+                    decoration: BoxDecoration(
+                        color: Provider.of<WalletProvider>(context)
+                            .activeNetwork
+                            .dotColor,
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  addWidth(SpacingSize.xs),
+                  Text(
+                    Provider.of<WalletProvider>(context)
+                        .activeNetwork
+                        .networkName,
                     style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w200,
-                        color: Colors.black)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 7,
-                      height: 7,
-                      decoration: BoxDecoration(
-                          color: Provider.of<WalletProvider>(context)
-                              .activeNetwork
-                              .dotColor,
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      Provider.of<WalletProvider>(context)
-                          .activeNetwork
-                          .networkName,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w100,
-                          fontSize: 12,
-                          color: Colors.black),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                        fontWeight: FontWeight.w100,
+                        fontSize: 12,
+                        color: Colors.black),
+                  ),
+                ],
+              ),
+            ],
           ),
           actions: [
             TextButton(
@@ -176,27 +172,18 @@ class _AmountScreenState extends State<AmountScreen> {
           ]),
       body: Column(
         children: [
-          const SizedBox(
-            width: double.infinity,
-            height: 20,
-          ),
-          const Row(
+          addHeight(SpacingSize.s),
+          Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                   child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    width: 10,
-                  ),
-                ],
+                children: [addWidth(SpacingSize.xs)],
               ))
             ],
           ),
-          const SizedBox(
-            height: 30,
-          ),
+          addWidth(SpacingSize.m),
           TextFormField(
             keyboardType: TextInputType.number,
             controller: inputAmount,
@@ -205,14 +192,10 @@ class _AmountScreenState extends State<AmountScreen> {
             style: const TextStyle(fontSize: 30),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(
-            height: 30,
-          ),
+          addHeight(SpacingSize.m),
           Text(
               "${AppLocalizations.of(context)!.balance}: ${selectedToken != Provider.of<WalletProvider>(context).activeNetwork.symbol ? selectedTokenObj!.balance.toString() + selectedToken : Provider.of<WalletProvider>(context).getNativeBalanceFormatted()}"),
-          const SizedBox(
-            height: 30,
-          ),
+          addHeight(SpacingSize.m),
           const Expanded(child: SizedBox()),
           isValidAmount
               ? SafeArea(
@@ -228,9 +211,7 @@ class _AmountScreenState extends State<AmountScreen> {
                     style: TextStyle(color: Colors.red),
                   ),
                 ),
-          const SizedBox(
-            height: 20,
-          )
+          addHeight(SpacingSize.s),
         ],
       ),
     );

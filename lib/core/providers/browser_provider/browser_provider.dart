@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-class WebViewModel extends ChangeNotifier {
+class BrowserProvider extends ChangeNotifier {
   int? _tabIndex;
   WebUri? _url;
   String? _title;
@@ -27,7 +27,7 @@ class WebViewModel extends ChangeNotifier {
   Uint8List? screenshot;
   bool needsToCompleteInitialLoad;
 
-  WebViewModel(
+  BrowserProvider(
       {int? tabIndex,
       WebUri? url,
       String? title,
@@ -187,7 +187,7 @@ class WebViewModel extends ChangeNotifier {
     }
   }
 
-  void updateWithValue(WebViewModel webViewModel) {
+  void updateWithValue(BrowserProvider webViewModel) {
     tabIndex = webViewModel.tabIndex;
     url = webViewModel.url;
     title = webViewModel.title;
@@ -208,9 +208,9 @@ class WebViewModel extends ChangeNotifier {
     findInteractionController = webViewModel.findInteractionController;
   }
 
-  static WebViewModel? fromMap(Map<String, dynamic>? map) {
+  static BrowserProvider? fromMap(Map<String, dynamic>? map) {
     return map != null
-        ? WebViewModel(
+        ? BrowserProvider(
             tabIndex: map["tabIndex"],
             url: map["url"] != null ? WebUri(map["url"]) : null,
             title: map["title"],

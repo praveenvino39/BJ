@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 
 class WebViewScreen extends StatefulWidget {
   static const router = "web_view_screen";

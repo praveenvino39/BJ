@@ -6,6 +6,7 @@ import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/import-account/import_account_screen.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class AccountChangeSheet extends StatefulWidget {
   final Function(String address, int? index)? onChange;
@@ -29,9 +30,7 @@ class _AccountChangeSheetState extends State<AccountChangeSheet> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(
-              height: 10,
-            ),
+            addHeight(SpacingSize.s),
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -40,12 +39,8 @@ class _AccountChangeSheetState extends State<AccountChangeSheet> {
               width: 50,
               height: 4,
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
+            addHeight(SpacingSize.s),
+            addHeight(SpacingSize.s),
             Container(
               width: double.infinity,
               height: 1,
@@ -88,9 +83,7 @@ class _AccountChangeSheetState extends State<AccountChangeSheet> {
               height: 1,
               color: Colors.grey.withAlpha(60),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            addHeight(SpacingSize.s),
             InkWell(
               onTap: () {
                 final walletProvider = getWalletProvider(context);
@@ -108,17 +101,13 @@ class _AccountChangeSheetState extends State<AccountChangeSheet> {
                       style: TextStyle(color: kPrimaryColor),
                     ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            addHeight(SpacingSize.s),
             Container(
               width: double.infinity,
               height: 1,
               color: Colors.grey.withAlpha(60),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            addHeight(SpacingSize.s),
             InkWell(
               onTap: () async {
                 Navigator.of(context).pushNamed(ImportAccount.route);
@@ -128,17 +117,13 @@ class _AccountChangeSheetState extends State<AccountChangeSheet> {
                 style: TextStyle(color: kPrimaryColor),
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            addHeight(SpacingSize.s),
             Container(
               width: double.infinity,
               height: 1,
               color: Colors.grey.withAlpha(60),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            addHeight(SpacingSize.s),
           ],
         ),
       ),

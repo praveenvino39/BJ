@@ -12,7 +12,8 @@ import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/support/chat_screen.dart';
 import 'package:wallet_cryptomask/ui/wallet-connect/walletconnect_session_screen.dart';
 import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const route = "settings_screen";
@@ -63,9 +64,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(
-                height: 10,
-              ),
+              addHeight(SpacingSize.s),
               ListTile(
                 onTap: () {
                   Navigator.of(context).pushNamed(GeneralSettingsScreen.route);

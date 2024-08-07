@@ -5,7 +5,8 @@ import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 import 'package:web3dart/crypto.dart';
 
 class SecuritySettingsScreen extends StatefulWidget {
@@ -60,7 +61,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 20),
+                  addHeight(SpacingSize.m),
                   InkWell(
                     onTap: () {
                       copyToClipBoard(
@@ -80,22 +81,18 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                             localizeKey: 'showPrivateKey',
                             size: 16,
                             fontWeight: FontWeight.bold),
-                        const SizedBox(
-                          height: 7,
-                        ),
+                        addHeight(SpacingSize.xs),
                         WalletText('',
                             localizeKey: bytesToHex(getWalletProvider(context)
                                 .activeWallet
                                 .wallet
                                 .privateKey
                                 .privateKey)),
-                        const SizedBox(
-                          height: 7,
-                        ),
+                        addHeight(SpacingSize.xs),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  addHeight(SpacingSize.m),
                   snapshot.data != null
                       ? InkWell(
                           onTap: () {
@@ -114,23 +111,14 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                                 size: 16.0,
                                 fontWeight: FontWeight.bold,
                               ),
-                              const SizedBox(
-                                height: 7,
-                              ),
+                              addHeight(SpacingSize.xs),
                               WalletText('', localizeKey: snapshot.data),
-                              const SizedBox(
-                                height: 7,
-                              ),
+                              addHeight(SpacingSize.xs),
                             ],
                           ),
                         )
                       : const SizedBox(),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const SizedBox(
-                    height: 7,
-                  )
+                  addHeight(SpacingSize.l),
                 ],
               );
             }),

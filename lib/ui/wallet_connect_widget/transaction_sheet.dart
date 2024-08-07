@@ -10,8 +10,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
+import 'package:wallet_cryptomask/core/providers/browser_provider/browser_provider.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -86,12 +87,11 @@ class _TransactionSheetState extends State<TransactionSheet> {
           height: MediaQuery.of(context).size.height,
           child: transaction != null
               ? !widget.fromWalletConnect
-                  ? Consumer<WebViewModel>(
+                  ? Consumer<BrowserProvider>(
                       builder: (context, value, child) => Column(
                         children: [
-                          const SizedBox(
-                            height: 30,
-                          ),
+                          addHeight(SpacingSize.l),
+
                           CircleAvatar(
                             radius: 25,
                             backgroundColor: Colors.white,
@@ -109,9 +109,8 @@ class _TransactionSheetState extends State<TransactionSheet> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          addHeight(SpacingSize.m),
+
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Row(
@@ -133,22 +132,18 @@ class _TransactionSheetState extends State<TransactionSheet> {
                               ],
                             ),
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          addHeight(SpacingSize.s),
+
                           const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16),
                               child: Text("is requesting a transaction")),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          addHeight(SpacingSize.m),
+
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Column(
                               children: [
-                                const SizedBox(
-                                  height: 10,
-                                ),
+                                addHeight(SpacingSize.s),
                                 Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 4),
@@ -171,9 +166,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                                 fontWeight: FontWeight.bold)),
                                       ],
                                     )),
-                                const SizedBox(
-                                  height: 10,
-                                ),
+                                addHeight(SpacingSize.s),
                               ],
                             ),
                           ),
@@ -215,9 +208,8 @@ class _TransactionSheetState extends State<TransactionSheet> {
                               : const SizedBox(),
                           // const Spacer(),
                           const Divider(),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          addHeight(SpacingSize.s),
+
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             width: double.infinity,
@@ -255,13 +247,11 @@ class _TransactionSheetState extends State<TransactionSheet> {
                               ],
                             ),
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          addHeight(SpacingSize.s),
+
                           const Divider(),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          addHeight(SpacingSize.s),
+
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             width: double.infinity,
@@ -299,9 +289,8 @@ class _TransactionSheetState extends State<TransactionSheet> {
                               ],
                             ),
                           ),
-                          const SizedBox(
-                            height: 30,
-                          ),
+                          addHeight(SpacingSize.s),
+
                           Column(
                             children: [
                               // Text("Warning: ${state.wallet.privateKey.address.hex.toLowerCase() != transaction?.from.toString() ? "You're sending transaction from different account" : ""}"),
@@ -357,17 +346,14 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                   )),
                             ],
                           ),
-                          const SizedBox(
-                            height: 30,
-                          )
+                          addHeight(SpacingSize.l),
                         ],
                       ),
                     )
                   : Column(
                       children: [
-                        const SizedBox(
-                          height: 70,
-                        ),
+                        addHeight(SpacingSize.xxxl),
+
                         CircleAvatar(
                           radius: 25,
                           backgroundColor: Colors.white,
@@ -409,22 +395,18 @@ class _TransactionSheetState extends State<TransactionSheet> {
                             ],
                           ),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        addHeight(SpacingSize.s),
+
                         const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Text("is requesting a transaction")),
-                        const SizedBox(
-                          height: 20,
-                        ),
+                        addHeight(SpacingSize.m),
+
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Column(
                             children: [
-                              const SizedBox(
-                                height: 10,
-                              ),
+                              addHeight(SpacingSize.s),
                               Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 4),
@@ -446,9 +428,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                               fontWeight: FontWeight.bold)),
                                     ],
                                   )),
-                              const SizedBox(
-                                height: 10,
-                              ),
+                              addHeight(SpacingSize.s),
                             ],
                           ),
                         ),
@@ -485,9 +465,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                         ),
                         // const Spacer(),
                         const Divider(),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        addHeight(SpacingSize.s),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           width: double.infinity,
@@ -525,13 +503,9 @@ class _TransactionSheetState extends State<TransactionSheet> {
                             ],
                           ),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        addHeight(SpacingSize.s),
                         const Divider(),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        addHeight(SpacingSize.s),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           width: double.infinity,
@@ -569,13 +543,11 @@ class _TransactionSheetState extends State<TransactionSheet> {
                             ],
                           ),
                         ),
-                        const SizedBox(
-                          height: 30,
-                        ),
+                        addHeight(SpacingSize.l),
+
                         Provider.of<WalletProvider>(context).nativeBalance > 0
                             ? Column(
                                 children: [
-                                  // Text("Warning: ${state.wallet.privateKey.address.hex.toLowerCase() != transaction?.from.toString() ? "You're sending transaction from different account" : ""}"),
                                   SizedBox(
                                       height: 50,
                                       width: double.infinity,
@@ -626,9 +598,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                             : Text(
                                 AppLocalizations.of(context)!.insufficientFund,
                                 style: const TextStyle(color: Colors.red)),
-                        const SizedBox(
-                          height: 30,
-                        )
+                        addHeight(SpacingSize.l),
                       ],
                     )
               : const Center(

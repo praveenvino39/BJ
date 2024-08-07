@@ -3,7 +3,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class ReceiveSheet extends StatefulWidget {

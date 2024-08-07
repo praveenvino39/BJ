@@ -20,7 +20,7 @@ import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/transaction-confirmation/transaction_confirmation.dart';
 import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 
@@ -160,9 +160,7 @@ class _TransferScreenState extends State<TransferScreen>
                               .dotColor,
                           borderRadius: BorderRadius.circular(10)),
                     ),
-                    const SizedBox(
-                      width: 5,
-                    ),
+                    addWidth(SpacingSize.xs),
                     Text(
                       Provider.of<WalletProvider>(context)
                           .activeNetwork
@@ -205,17 +203,13 @@ class _TransferScreenState extends State<TransferScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 20,
-                ),
+                addHeight(SpacingSize.m),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       Text("${AppLocalizations.of(context)!.from}:"),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      addWidth(SpacingSize.s),
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -235,9 +229,7 @@ class _TransferScreenState extends State<TransferScreen>
                                     .address
                                     .hex,
                               ),
-                              const SizedBox(
-                                width: 10,
-                              ),
+                              addWidth(SpacingSize.s),
                               Expanded(
                                 child: InkWell(
                                   onTap: onAccountChangeHandler,
@@ -264,17 +256,13 @@ class _TransferScreenState extends State<TransferScreen>
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                addHeight(SpacingSize.s),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       Text("${AppLocalizations.of(context)!.to}:"),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      addWidth(SpacingSize.s),
                       Expanded(
                         child: Row(
                           children: [
@@ -317,9 +305,7 @@ class _TransferScreenState extends State<TransferScreen>
                                                   Icons.check_circle,
                                                   color: Colors.green,
                                                 ),
-                                                const SizedBox(
-                                                  width: 7,
-                                                ),
+                                                addWidth(SpacingSize.s),
                                                 InkWell(
                                                   onTap: onClearTextHandler,
                                                   child: const Icon(
@@ -327,9 +313,7 @@ class _TransferScreenState extends State<TransferScreen>
                                                     color: Colors.black,
                                                   ),
                                                 ),
-                                                const SizedBox(
-                                                  width: 7,
-                                                ),
+                                                addWidth(SpacingSize.s),
                                               ],
                                             ),
                                           )
@@ -359,9 +343,7 @@ class _TransferScreenState extends State<TransferScreen>
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                addHeight(SpacingSize.s),
                 TabBar(
                   tabs: [
                     Tab(

@@ -17,7 +17,7 @@ import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
 import 'package:wallet_cryptomask/ui/transaction-history/widget/token_transaction_tile.dart';
 import 'package:wallet_cryptomask/ui/transaction-history/widget/transaction_tile.dart';
 import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class TokenDashboardScreen extends StatefulWidget {
@@ -67,20 +67,18 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
         shadowColor: Colors.white,
         elevation: 0,
         backgroundColor: Colors.white,
-        title: const SizedBox(
+        title: SizedBox(
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(appName,
+              const Text(appName,
                   style: TextStyle(
                       fontWeight: FontWeight.w200, color: Colors.black)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: 5,
-                  ),
+                  addWidth(SpacingSize.xs),
                 ],
               ),
             ],
@@ -330,9 +328,7 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                 )
                               ],
                             ),
-                            const SizedBox(
-                              width: 25,
-                            ),
+                            addWidth(SpacingSize.l),
                             Column(
                               children: [
                                 Container(

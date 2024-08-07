@@ -10,10 +10,10 @@ import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 
 class ConnectSheet extends StatefulWidget {
-  // final BrowserView browser;
   final Function(List<String>) onApprove;
   List<Network>? requestedNetworks;
   final Function() onReject;
@@ -52,9 +52,7 @@ class _ConnectSheetState extends State<ConnectSheet>
             ),
             child: Column(
               children: [
-                const SizedBox(
-                  height: 20,
-                ),
+                addHeight(SpacingSize.m),
                 Container(
                   clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(
@@ -80,9 +78,7 @@ class _ConnectSheetState extends State<ConnectSheet>
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                addHeight(SpacingSize.s),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
@@ -95,18 +91,14 @@ class _ConnectSheetState extends State<ConnectSheet>
                               size: 16,
                             )
                           : const SizedBox(),
-                      const SizedBox(
-                        width: 5,
-                      ),
+                      addWidth(SpacingSize.xs),
                       Text(
                         widget.connectingOrgin
                             .replaceAll("https://", "")
                             .replaceAll("http://", ""),
                         style: const TextStyle(fontWeight: FontWeight.w900),
                       ),
-                      const SizedBox(
-                        width: 5,
-                      ),
+                      addWidth(SpacingSize.xs),
                     ],
                   ),
                 ),
@@ -118,9 +110,8 @@ class _ConnectSheetState extends State<ConnectSheet>
                           .networkName,
                       style: const TextStyle(fontSize: 14),
                     )),
-                const SizedBox(
-                  height: 15,
-                ),
+                addHeight(SpacingSize.s),
+                addHeight(SpacingSize.xs),
                 const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
@@ -128,9 +119,7 @@ class _ConnectSheetState extends State<ConnectSheet>
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     )),
-                const SizedBox(
-                  height: 20,
-                ),
+                addHeight(SpacingSize.m),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
@@ -138,9 +127,7 @@ class _ConnectSheetState extends State<ConnectSheet>
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                addHeight(SpacingSize.s),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   padding:
@@ -160,12 +147,8 @@ class _ConnectSheetState extends State<ConnectSheet>
                             .address
                             .hex,
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      addHeight(SpacingSize.m),
+
                       Expanded(
                         child: InkWell(
                           onTap: () {},
@@ -187,9 +170,7 @@ class _ConnectSheetState extends State<ConnectSheet>
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
+                addHeight(SpacingSize.m),
                 widget.requestedNetworks != null
                     ? Container(
                         margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -206,9 +187,7 @@ class _ConnectSheetState extends State<ConnectSheet>
                         ),
                       )
                     : const SizedBox(),
-                const SizedBox(
-                  height: 20,
-                ),
+                addHeight(SpacingSize.m),
                 SizedBox(
                     height: 50,
                     width: double.infinity,
@@ -248,9 +227,7 @@ class _ConnectSheetState extends State<ConnectSheet>
                         ),
                       ],
                     )),
-                const SizedBox(
-                  height: 30,
-                )
+                addHeight(SpacingSize.l),
               ],
             ),
           ),

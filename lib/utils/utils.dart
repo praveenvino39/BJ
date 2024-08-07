@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -67,9 +68,7 @@ showConfirmationDialog({
               "",
               localizeKey: question,
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            addHeight(SpacingSize.m),
             Row(
               children: [
                 Expanded(
@@ -129,9 +128,7 @@ showPasswordInputModal(
                 textEditingController: passwordEditingController,
                 textFieldType: TextFieldType.password,
                 labelLocalizeKey: 'password'),
-            const SizedBox(
-              height: 20,
-            ),
+            addHeight(SpacingSize.m),
             WalletButton(
               onPressed: () async {
                 final password = (await const FlutterSecureStorage().read(
@@ -183,9 +180,7 @@ showErrorSnackBar(BuildContext context, String errorTitle, String error) {
               Icons.error,
               color: Colors.white,
             )),
-        const SizedBox(
-          width: 20,
-        ),
+        addWidth(SpacingSize.m),
         SizedBox(
           height: 60,
           child: Column(
@@ -275,9 +270,7 @@ showPositiveSnackBar(BuildContext context, String errorTitle, String error) {
               Icons.check,
               color: Colors.white,
             )),
-        const SizedBox(
-          width: 20,
-        ),
+        addWidth(SpacingSize.m),
         SizedBox(
           height: 60,
           child: Column(
@@ -329,7 +322,24 @@ bool isValidAddress(String address) {
   return true;
 }
 
-enum MetadataSource {
-  ipfs,
-  http,
+class Util {
+  static bool urlIsSecure(Uri url) {
+    return (url.scheme == "https") || Util.isLocalizedContent(url);
+  }
+
+  static bool isLocalizedContent(Uri url) {
+    return (url.scheme == "file" ||
+        url.scheme == "chrome" ||
+        url.scheme == "data" ||
+        url.scheme == "javascript" ||
+        url.scheme == "about");
+  }
+
+  static bool isAndroid() {
+    return !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+  }
+
+  static bool isIOS() {
+    return !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+  }
 }

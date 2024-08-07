@@ -13,7 +13,7 @@ import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/core/socket/message_engine.dart';
-import 'package:wallet_cryptomask/ui/atoms/custom_icon_button.dart';
+import 'package:wallet_cryptomask/ui/shared/custom_icon_button.dart';
 import 'package:wallet_cryptomask/ui/browser/browser_screen.dart';
 import 'package:wallet_cryptomask/ui/home/component/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/home/component/drawer_component.dart';
@@ -21,7 +21,7 @@ import 'package:wallet_cryptomask/ui/home/component/receive_sheet.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/token/token_tab.dart';
 import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 
 import 'component/avatar_component.dart';
@@ -174,58 +174,52 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   content: Container(
                                     width: MediaQuery.of(context).size.width,
                                     color: Colors.black45.withAlpha(20),
-                                    child: SizedBox(
-                                        child: ListView.builder(
-                                            scrollDirection: Axis.vertical,
-                                            shrinkWrap: true,
-                                            itemCount: Core.networks.length,
-                                            itemBuilder: (context, index) =>
-                                                ListTile(
-                                                  tileColor: Colors.transparent,
-                                                  onTap: () async {
-                                                    final walletProvider =
-                                                        getWalletProvider(
-                                                            context);
-                                                    walletProvider
-                                                        .startNetworkSwitch();
-                                                    await walletProvider
-                                                        .changeNetwork(index);
-                                                    getTokenProvider(context)
-                                                        .loadToken(
-                                                            nativeBalance:
-                                                                getWalletProvider(
-                                                                        context)
-                                                                    .nativeBalance,
-                                                            address: address,
-                                                            network:
-                                                                Core.networks[
-                                                                    index]);
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  title: Row(
-                                                    children: [
-                                                      Container(
-                                                        width: 7,
-                                                        height: 7,
-                                                        decoration: BoxDecoration(
-                                                            color: Core
-                                                                .networks[index]
-                                                                .dotColor,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10)),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      WalletText('',
-                                                          localizeKey: Core
-                                                              .networks[index]
-                                                              .networkName),
-                                                    ],
+                                    child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        itemCount: Core.networks.length,
+                                        itemBuilder: (context, index) =>
+                                            ListTile(
+                                              tileColor: Colors.transparent,
+                                              onTap: () async {
+                                                final walletProvider =
+                                                    getWalletProvider(context);
+                                                walletProvider
+                                                    .startNetworkSwitch();
+                                                await walletProvider
+                                                    .changeNetwork(index);
+                                                getTokenProvider(context)
+                                                    .loadToken(
+                                                        nativeBalance:
+                                                            getWalletProvider(
+                                                                    context)
+                                                                .nativeBalance,
+                                                        address: address,
+                                                        network: Core
+                                                            .networks[index]);
+                                                Navigator.of(context).pop();
+                                              },
+                                              title: Row(
+                                                children: [
+                                                  Container(
+                                                    width: 7,
+                                                    height: 7,
+                                                    decoration: BoxDecoration(
+                                                        color: Core
+                                                            .networks[index]
+                                                            .dotColor,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10)),
                                                   ),
-                                                ))),
+                                                  addWidth(SpacingSize.s),
+                                                  WalletText('',
+                                                      localizeKey: Core
+                                                          .networks[index]
+                                                          .networkName),
+                                                ],
+                                              ),
+                                            )),
                                   ),
                                 ),
                               ),

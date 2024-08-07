@@ -7,6 +7,7 @@ import 'package:wallet_cryptomask/core/providers/contact_provider/contact_provid
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 import '../shared/wallet_text_field.dart';
 
 class AddContact extends StatefulWidget {
@@ -65,9 +66,7 @@ class _AddContactState extends State<AddContact> {
                     widget.mode == "CREATE" ? "Add Contact" : "Update Contact",
                 size: 22,
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              addHeight(SpacingSize.m),
               WalletTextField(
                 labelLocalizeKey: "Name",
                 textFieldType: TextFieldType.input,
@@ -79,9 +78,7 @@ class _AddContactState extends State<AddContact> {
                 }),
                 textEditingController: name,
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              addHeight(SpacingSize.m),
               WalletTextField(
                 validator: ((value) {
                   value = value!.trim();
@@ -97,9 +94,7 @@ class _AddContactState extends State<AddContact> {
                 textEditingController: address,
                 labelLocalizeKey: "publicAddress",
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              addHeight(SpacingSize.s),
               WalletButton(
                 textContent: widget.mode == "CREATE" ? "Add" : "Update",
                 localizeKey: widget.mode == "CREATE" ? "add" : "update",

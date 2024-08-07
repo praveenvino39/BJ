@@ -8,11 +8,11 @@ import 'package:get/route_manager.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
+import 'package:wallet_cryptomask/core/providers/browser_provider/browser_provider.dart';
 
 class BrowserView extends StatefulWidget {
-  final WebViewModel webViewModel;
-  final Function(String, WebViewModel) onUrlSubmit;
+  final BrowserProvider webViewModel;
+  final Function(String, BrowserProvider) onUrlSubmit;
 
   const BrowserView(
       {super.key, required this.webViewModel, required this.onUrlSubmit});

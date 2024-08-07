@@ -15,7 +15,8 @@ import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/core/socket/message_engine.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -67,9 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
             const Text(
               "Do yo want to send a file to admin ?",
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            addHeight(SpacingSize.m),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
               decoration: BoxDecoration(
@@ -78,9 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Row(
                 children: [
                   const Icon(Icons.attach_file),
-                  const SizedBox(
-                    width: 10,
-                  ),
+                  addWidth(SpacingSize.s),
                   Expanded(
                     child: Text(
                       name,
@@ -90,9 +87,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            addHeight(SpacingSize.m),
             Row(
               children: [
                 Expanded(
@@ -101,9 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     localizeKey: 'cancel',
                   ),
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
+                addHeight(SpacingSize.l),
                 Expanded(
                   child: WalletButton(
                     type: WalletButtonType.filled,
@@ -148,9 +141,7 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Jazzicon.getIconWidget(
                   Jazzicon.getJazziconData(30, address: "Admin")),
             ),
-            const SizedBox(
-              width: 20,
-            ),
+            addWidth(SpacingSize.m),
             const Expanded(
               child: Text(
                 "Admin",

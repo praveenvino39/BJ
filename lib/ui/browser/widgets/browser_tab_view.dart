@@ -94,66 +94,63 @@ class _TabTileState extends State<TabTile> {
           borderRadius: BorderRadius.circular(10),
         ),
         elevation: 5,
-        child: SizedBox(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: Colors.grey.withAlpha(40),
-                    border:
-                        Border.all(width: 1, color: Colors.grey.withAlpha(40))),
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      widget.browserView.webViewModel.favicon?.url.toString() ??
-                          "",
-                      width: 30,
-                      height: 30,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(Icons.public);
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.grey.withAlpha(40),
+                  border:
+                      Border.all(width: 1, color: Colors.grey.withAlpha(40))),
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Row(
+                children: [
+                  Image.asset(
+                    widget.browserView.webViewModel.favicon?.url.toString() ??
+                        "",
+                    width: 30,
+                    height: 30,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.public);
+                    },
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                      child: Text(
+                          widget.browserView.webViewModel.title ?? "New tab")),
+                  IconButton(
+                      splashRadius: 10,
+                      onPressed: () {
+                        widget.onClose(widget.browserView);
                       },
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                        child: Text(widget.browserView.webViewModel.title ??
-                            "New tab")),
-                    IconButton(
-                        splashRadius: 10,
-                        onPressed: () {
-                          widget.onClose(widget.browserView);
-                        },
-                        icon: const Icon(
-                          Icons.close,
-                          size: 14,
-                        ))
-                  ],
-                ),
+                      icon: const Icon(
+                        Icons.close,
+                        size: 14,
+                      ))
+                ],
               ),
-              Container(
-                color: kPrimaryColor,
-                height: 150,
-                child: widget.browserView.webViewModel.screenshot != null
-                    ? Image.memory(
-                        widget.browserView.webViewModel.screenshot!,
-                        width: double.infinity,
-                        height: double.infinity,
-                        fit: BoxFit.cover,
-                        alignment: Alignment.topCenter,
-                      )
-                    : Container(
-                        color: Colors.white,
-                        width: double.infinity,
-                        height: double.infinity,
-                        child: const Center(child: Text("New tab"))),
-              ),
-            ],
-          ),
+            ),
+            Container(
+              color: kPrimaryColor,
+              height: 150,
+              child: widget.browserView.webViewModel.screenshot != null
+                  ? Image.memory(
+                      widget.browserView.webViewModel.screenshot!,
+                      width: double.infinity,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
+                    )
+                  : Container(
+                      color: Colors.white,
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: const Center(child: Text("New tab"))),
+            ),
+          ],
         ),
       ),
     );

@@ -10,11 +10,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/config.dart';
-import 'package:wallet_cryptomask/ui/browser/helpers/utils.dart';
-import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
+import 'package:wallet_cryptomask/core/providers/browser_provider/browser_provider.dart';
 import 'package:wallet_cryptomask/ui/browser/widgets/browser_app_bar.dart';
 import 'package:wallet_cryptomask/ui/browser/widgets/browser_tab_view.dart';
 import 'package:wallet_cryptomask/ui/browser/widgets/browser_view.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 import 'package:webview_flutter/webview_flutter.dart' as native;
 
 class BrowserScreen extends StatefulWidget {
@@ -80,7 +80,7 @@ class _BrowserScreenState extends State<BrowserScreen> with ClipboardListener {
     }
 
     tabs.add(BrowserView(
-        webViewModel: WebViewModel(progress: 0, url: WebUri(homepageUrl)),
+        webViewModel: BrowserProvider(progress: 0, url: WebUri(homepageUrl)),
         onUrlSubmit: onUrlSumbit));
 
     selectedTab = tabs.first;
@@ -111,7 +111,7 @@ class _BrowserScreenState extends State<BrowserScreen> with ClipboardListener {
 
     var newTab = BrowserView(
       key: GlobalKey(),
-      webViewModel: WebViewModel(url: WebUri("https://www.google.com")),
+      webViewModel: BrowserProvider(url: WebUri("https://www.google.com")),
       onUrlSubmit: onUrlSumbit,
     );
 
@@ -206,7 +206,7 @@ class _BrowserScreenState extends State<BrowserScreen> with ClipboardListener {
               )),
           appBar: PreferredSize(
               preferredSize: const Size(double.infinity, 57),
-              child: Consumer<WebViewModel>(
+              child: Consumer<BrowserProvider>(
                 builder: (context, value, child) => BrowserUrlBar(
                     onUrlSubmit: onUrlSumbit,
                     webViewModel: value,
@@ -215,7 +215,7 @@ class _BrowserScreenState extends State<BrowserScreen> with ClipboardListener {
                     certified: value.isSecure),
               )),
           body: SafeArea(
-            child: Consumer<WebViewModel>(
+            child: Consumer<BrowserProvider>(
               builder: (context, value, child) => Column(
                 // crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -254,7 +254,7 @@ class _BrowserScreenState extends State<BrowserScreen> with ClipboardListener {
     );
   }
 
-  onUrlSumbit(String value, WebViewModel? webViewController) {
+  onUrlSumbit(String value, BrowserProvider? webViewController) {
     if (value.split(".").length > 1) {
       var url = WebUri(value.trim());
       if (url.scheme.startsWith("http") && !Util.isLocalizedContent(url)) {

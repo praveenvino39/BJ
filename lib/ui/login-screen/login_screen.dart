@@ -22,7 +22,7 @@ import 'package:wallet_cryptomask/ui/screens/onboarding/onboard_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -57,9 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text('Available version: ${update.availableVersionCode}'),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    addHeight(SpacingSize.m),
                     WalletButton(
                         textContent: "Update",
                         onPressed: () {
@@ -93,9 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const Text(
                         "New version of $appName is available on App Store."),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    addHeight(SpacingSize.s),
                     Row(
                       children: [
                         const Text(
@@ -114,18 +110,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         Text(status.storeVersion),
                       ],
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    addHeight(SpacingSize.s),
                     const Text(
                       "What's new :",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(status.releaseNotes ??
                         "Improved performance and stability."),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    addHeight(SpacingSize.m),
                     WalletButton(
                         textContent: "Update",
                         onPressed: () async {
@@ -273,21 +265,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 )),
                           ],
                           title: const Text("Confirmation"),
-                          content: SizedBox(
-                            child: RichText(
-                              text: const TextSpan(
-                                children: [
-                                  TextSpan(
-                                      text:
-                                          'This action will erase all previous wallets and all funds will be lost. Make sure you can restore with your saved 12 word secret phrase and private keys for each wallet before you erase!.'),
-                                  TextSpan(
-                                      text: ' This action is irreversible',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.red))
-                                ],
-                                style: TextStyle(color: Colors.black),
-                              ),
+                          content: RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                    text:
+                                        'This action will erase all previous wallets and all funds will be lost. Make sure you can restore with your saved 12 word secret phrase and private keys for each wallet before you erase!.'),
+                                TextSpan(
+                                    text: ' This action is irreversible',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.red))
+                              ],
+                              style: TextStyle(color: Colors.black),
                             ),
                           ));
                       showDialog(context: context, builder: (context) => alert);
@@ -302,9 +292,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 30,
-              ),
+              addHeight(SpacingSize.l),
             ],
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class ScannerScreen extends StatefulWidget {
   final Function(String address) onQrDecode;
@@ -23,9 +24,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
               "Scan QR Code",
               style: TextStyle(color: Colors.white, fontSize: 16),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            addHeight(SpacingSize.m),
             Container(
               color: Colors.black,
               width: 300,

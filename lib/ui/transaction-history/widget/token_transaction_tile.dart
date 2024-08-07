@@ -10,7 +10,7 @@ import 'package:wallet_cryptomask/core/remote/response-model/moralis_token_trans
 import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class TokenTransactionTile extends StatefulWidget {
@@ -74,16 +74,13 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
             content: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: SizedBox(
-                  // height: MediaQuery.of(context).size.height / 4,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          addHeight(SpacingSize.m),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -126,9 +123,8 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
                               )
                             ],
                           ),
-                          const SizedBox(
-                            height: 15,
-                          ),
+                          addHeight(SpacingSize.s),
+                          addHeight(SpacingSize.xs),
                           const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -136,9 +132,7 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
                               Text("To", style: TextStyle(fontSize: 12))
                             ],
                           ),
-                          const SizedBox(
-                            height: 5,
-                          ),
+                          addHeight(SpacingSize.xs),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -147,9 +141,7 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
                                   AvatarWidget(
                                       radius: 30,
                                       address: widget.data.fromAddress),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
+                                  addWidth(SpacingSize.s),
                                   Text(showEllipse(widget.data.fromAddress),
                                       style: const TextStyle(fontSize: 12)),
                                 ],
@@ -168,18 +160,15 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
                                   AvatarWidget(
                                       radius: 30,
                                       address: widget.data.toAddress),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
+                                  addWidth(SpacingSize.s),
                                   Text(showEllipse(widget.data.toAddress),
                                       style: const TextStyle(fontSize: 12)),
                                 ],
                               )
                             ],
                           ),
-                          const SizedBox(
-                            height: 15,
-                          ),
+                          addHeight(SpacingSize.s),
+                          addHeight(SpacingSize.xs),
                           WalletButton(
                               textSize: 12,
                               localizeKey: 'viewOnExplorer',
@@ -194,9 +183,7 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
                                       title: "Transaction");
                                 }));
                               }),
-                          const SizedBox(
-                            height: 20,
-                          )
+                          addHeight(SpacingSize.m),
                         ]),
                   ),
                 )),
@@ -211,9 +198,7 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
           children: [
             Text(
                 "${DateFormat.yMMMMd().format(widget.date)} at ${widget.date.hour}:${widget.date.minute}"),
-            const SizedBox(
-              height: 8,
-            ),
+            addHeight(SpacingSize.s),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -237,9 +222,7 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
                     color: kPrimaryColor,
                   ),
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
+                addWidth(SpacingSize.s),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,17 +259,13 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
                     "${(Decimal.parse(widget.data.value).toDouble() / pow(10, 18)).toStringAsFixed(5)} ${showEllipse(widget.data.tokenSymbol)}"),
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            addHeight(SpacingSize.s),
             Container(
               width: MediaQuery.of(context).size.width,
               height: 1,
               color: Colors.grey.withAlpha(60),
             ),
-            const SizedBox(
-              height: 20,
-            )
+            addHeight(SpacingSize.m),
           ],
         ),
       ),

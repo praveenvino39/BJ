@@ -18,7 +18,8 @@ import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/home/home_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 import 'package:web3dart/web3dart.dart';
 
 enum TransactionPriority { low, medium, high, custom }
@@ -380,9 +381,7 @@ class _TransactionConfirmationScreenState
                               .dotColor),
                           borderRadius: BorderRadius.circular(10)),
                     ),
-                    const SizedBox(
-                      width: 5,
-                    ),
+                    addWidth(SpacingSize.xs),
                     Text(
                       Provider.of<WalletProvider>(context)
                           .activeNetwork
@@ -427,17 +426,13 @@ class _TransactionConfirmationScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(
-                  height: 20,
-                ),
+                addHeight(SpacingSize.m),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       Text("${AppLocalizations.of(context)!.from}:"),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      addHeight(SpacingSize.s),
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -457,9 +452,7 @@ class _TransactionConfirmationScreenState
                                     .address
                                     .hex,
                               ),
-                              const SizedBox(
-                                width: 10,
-                              ),
+                              addWidth(SpacingSize.m),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -480,17 +473,13 @@ class _TransactionConfirmationScreenState
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                addHeight(SpacingSize.s),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       Text("${AppLocalizations.of(context)!.to}:     "),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      addWidth(SpacingSize.s),
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -505,9 +494,7 @@ class _TransactionConfirmationScreenState
                                 radius: 40,
                                 address: widget.to,
                               ),
-                              const SizedBox(
-                                width: 10,
-                              ),
+                              addWidth(SpacingSize.s),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -534,17 +521,13 @@ class _TransactionConfirmationScreenState
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                addHeight(SpacingSize.s),
                 Container(
                   width: double.infinity,
                   height: 1,
                   color: Colors.grey.withAlpha(60),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
+                addHeight(SpacingSize.m),
                 widget.token != null
                     ? Text(
                         AppLocalizations.of(context)!.amount.toUpperCase(),
@@ -567,9 +550,7 @@ class _TransactionConfirmationScreenState
                         style: const TextStyle(
                             fontSize: 40, fontWeight: FontWeight.normal),
                       ),
-                const SizedBox(
-                  height: 10,
-                ),
+                addHeight(SpacingSize.s),
                 !readyToConfirm
                     ? const SafeArea(
                         child: Center(
@@ -603,9 +584,7 @@ class _TransactionConfirmationScreenState
                                 ),
                               ],
                             ),
-                            const SizedBox(
-                              height: 7,
-                            ),
+                            addHeight(SpacingSize.xs),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -625,20 +604,14 @@ class _TransactionConfirmationScreenState
                                 ),
                               ],
                             ),
-                            const SizedBox(
-                              height: 7,
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            addHeight(SpacingSize.xs),
+                            addHeight(SpacingSize.s),
                             Container(
                               width: double.infinity,
                               height: 1,
                               color: Colors.grey.withAlpha(60),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            addHeight(SpacingSize.s),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -654,9 +627,7 @@ class _TransactionConfirmationScreenState
                                 ),
                               ],
                             ),
-                            const SizedBox(
-                              height: 7,
-                            ),
+                            addHeight(SpacingSize.xs),
                           ],
                         ),
                       ),
@@ -676,9 +647,7 @@ class _TransactionConfirmationScreenState
                             onPressed:
                                 readyToConfirm ? onConfirmAndApprove : null),
                       ),
-                const SizedBox(
-                  height: 20,
-                )
+                addHeight(SpacingSize.m),
               ],
             ),
           ),

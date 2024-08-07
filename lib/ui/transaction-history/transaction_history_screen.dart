@@ -8,7 +8,8 @@ import 'package:wallet_cryptomask/core/remote/response-model/moralis_transaction
 import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/transaction-history/widget/transaction_tile.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TransactionHistoryScreen extends StatefulWidget {
@@ -59,9 +60,7 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                             //     .dotColor,
                             borderRadius: BorderRadius.circular(10)),
                       ),
-                      const SizedBox(
-                        width: 5,
-                      ),
+                      addWidth(SpacingSize.xs),
                       WalletText(
                         '',
                         localizeKey: Provider.of<WalletProvider>(context)

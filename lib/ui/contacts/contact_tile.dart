@@ -11,6 +11,7 @@ import 'package:wallet_cryptomask/ui/contacts/add_contact.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 
 class ContactTile extends StatefulWidget {
   final String name;
@@ -66,9 +67,7 @@ class _ContactTileState extends State<ContactTile> {
       children: [
         Row(
           children: [
-            const SizedBox(
-              width: 10,
-            ),
+            addWidth(SpacingSize.s),
             TextButton(
               onPressed: () {
                 final walletProvider = getWalletProvider(context);
@@ -121,9 +120,7 @@ class _ContactTileState extends State<ContactTile> {
                           "",
                           localizeKey: "deleteWarning",
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
+                        addHeight(SpacingSize.m),
                         Row(
                           children: [
                             SizedBox(

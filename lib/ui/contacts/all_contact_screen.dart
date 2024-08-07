@@ -5,6 +5,7 @@ import 'package:wallet_cryptomask/ui/contacts/add_contact.dart';
 import 'package:wallet_cryptomask/ui/contacts/contact_tile.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 
 import '../../core/model/contact_model.dart';
 
@@ -75,9 +76,7 @@ class _AllContactScreenState extends State<AllContactScreen> {
           height: MediaQuery.of(context).size.height - 80,
           child: Column(
             children: [
-              const SizedBox(
-                height: 20,
-              ),
+              addHeight(SpacingSize.m),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 10),

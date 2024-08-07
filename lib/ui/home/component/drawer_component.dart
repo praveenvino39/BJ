@@ -17,7 +17,7 @@ import 'package:wallet_cryptomask/ui/shared/wallet_button_with_icon.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/transaction-history/transaction_history_screen.dart';
 import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
-import 'package:wallet_cryptomask/utils.dart';
+import 'package:wallet_cryptomask/utils/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 
@@ -115,20 +115,18 @@ class _DrawerComponentState extends State<DrawerComponent> {
               )),
         ],
         title: const Text("Confirmation"),
-        content: SizedBox(
-          child: RichText(
-            text: const TextSpan(
-              children: [
-                TextSpan(
-                    text:
-                        'This action will erase all previous wallets and all funds will be lost. Make sure you can restore with your saved 12 word secret phrase and private keys for each wallet before you erase!.'),
-                TextSpan(
-                    text: ' This action is irreversible',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.red))
-              ],
-              style: TextStyle(color: Colors.black),
-            ),
+        content: RichText(
+          text: const TextSpan(
+            children: [
+              TextSpan(
+                  text:
+                      'This action will erase all previous wallets and all funds will be lost. Make sure you can restore with your saved 12 word secret phrase and private keys for each wallet before you erase!.'),
+              TextSpan(
+                  text: ' This action is irreversible',
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, color: Colors.red))
+            ],
+            style: TextStyle(color: Colors.black),
           ),
         ));
 
@@ -243,34 +241,26 @@ class _DrawerComponentState extends State<DrawerComponent> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  addHeight(SpacingSize.m),
                   Row(
                     children: [
                       const Icon(Icons.wallet),
-                      const SizedBox(
-                        width: 8,
-                      ),
+                      addWidth(SpacingSize.s),
                       Text(AppLocalizations.of(context)!.wallet),
                     ],
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  addHeight(SpacingSize.m),
                   InkWell(
                     onTap: () {
                       context.push(() => const AllContactScreen());
                     },
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.contact_phone,
                         ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        WalletText(
+                        addWidth(SpacingSize.s),
+                        const WalletText(
                           "",
                           localizeKey: "Contact",
                           color: Colors.black,
@@ -278,24 +268,18 @@ class _DrawerComponentState extends State<DrawerComponent> {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  addHeight(SpacingSize.m),
                   InkWell(
                     onTap: onTransactionHistoryHandler,
                     child: Row(
                       children: [
                         const Icon(Icons.menu),
-                        const SizedBox(
-                          width: 8,
-                        ),
+                        addWidth(SpacingSize.s),
                         Text(AppLocalizations.of(context)!.transactionHistory),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  addHeight(SpacingSize.m),
                 ],
               ),
             ),
@@ -304,9 +288,7 @@ class _DrawerComponentState extends State<DrawerComponent> {
               height: 1,
               color: Colors.grey.withAlpha(70),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            addHeight(SpacingSize.s),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: InkWell(
@@ -317,30 +299,22 @@ class _DrawerComponentState extends State<DrawerComponent> {
                     Row(
                       children: [
                         const Icon(Icons.share),
-                        const SizedBox(
-                          width: 8,
-                        ),
+                        addWidth(SpacingSize.s),
                         Text(AppLocalizations.of(context)!.shareMyPubliAdd),
                       ],
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    addHeight(SpacingSize.m),
                     InkWell(
                       onTap: viewOnExplorerHandler,
                       child: Row(
                         children: [
                           const Icon(Icons.remove_red_eye),
-                          const SizedBox(
-                            width: 8,
-                          ),
+                          addWidth(SpacingSize.s),
                           Text(AppLocalizations.of(context)!.viewOnEtherscan),
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    addHeight(SpacingSize.m),
                   ],
                 ),
               ),
@@ -350,9 +324,7 @@ class _DrawerComponentState extends State<DrawerComponent> {
               height: 1,
               color: Colors.grey.withAlpha(70),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            addHeight(SpacingSize.s),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
@@ -363,46 +335,34 @@ class _DrawerComponentState extends State<DrawerComponent> {
                     child: Row(
                       children: [
                         const Icon(Icons.settings_outlined),
-                        const SizedBox(
-                          width: 8,
-                        ),
+                        addWidth(SpacingSize.s),
                         Text(AppLocalizations.of(context)!.settings),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  addHeight(SpacingSize.m),
                   InkWell(
                     onTap: onGetHelpHandler,
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.help_outline_rounded),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        WalletText('', localizeKey: 'getHelp'),
+                        const Icon(Icons.help_outline_rounded),
+                        addWidth(SpacingSize.s),
+                        const WalletText('', localizeKey: 'getHelp'),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  addHeight(SpacingSize.m),
                   InkWell(
                     onTap: onLogoutHandler,
                     child: Row(
                       children: [
                         const Icon(Icons.logout),
-                        const SizedBox(
-                          width: 8,
-                        ),
+                        addWidth(SpacingSize.s),
                         Text(AppLocalizations.of(context)!.logout),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  addHeight(SpacingSize.m),
                   InkWell(
                     onTap: onDeleteWalletHandler,
                     child: Row(
@@ -411,9 +371,7 @@ class _DrawerComponentState extends State<DrawerComponent> {
                           Icons.delete,
                           color: Colors.red,
                         ),
-                        const SizedBox(
-                          width: 8,
-                        ),
+                        addWidth(SpacingSize.s),
                         Text(
                           AppLocalizations.of(context)!.deleteWallet,
                           style: const TextStyle(color: Colors.red),
@@ -421,9 +379,7 @@ class _DrawerComponentState extends State<DrawerComponent> {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 30,
-                  )
+                  addHeight(SpacingSize.l),
                 ],
               ),
             ),

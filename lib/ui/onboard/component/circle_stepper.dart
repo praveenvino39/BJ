@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/utils/spaces.dart';
 
 import '../../../constant.dart';
 
@@ -59,9 +60,7 @@ class _CircleStepperState extends State<CircleStepper> {
                               : Colors.black),
                     )),
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
+                  addHeight(SpacingSize.xs),
                   WalletText(
                     '',
                     localizeKey: 'createPassword',
@@ -100,9 +99,7 @@ class _CircleStepperState extends State<CircleStepper> {
                               : Colors.black),
                     )),
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
+                  addHeight(SpacingSize.xs),
                   WalletText(
                     '',
                     localizeKey: 'secureWallet',
@@ -139,9 +136,7 @@ class _CircleStepperState extends State<CircleStepper> {
                               : Colors.black),
                     )),
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
+                  addHeight(SpacingSize.xs),
                   WalletText(
                     '',
                     localizeKey: 'confirmSeed',

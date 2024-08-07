@@ -45,6 +45,9 @@ Widget addHeight(SpacingSize size) {
 Widget addWidth(SpacingSize size) {
   var spacing = 0.0;
   switch (size) {
+    case SpacingSize.xxs:
+      spacing = 5;
+      break;
     case SpacingSize.xs:
       spacing = 10;
       break;

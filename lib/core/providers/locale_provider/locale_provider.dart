@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 
-part 'locale_state.dart';
-
 class LocaleProvider extends ChangeNotifier {
   String locale = 'en';
   LocaleProvider({required this.locale});

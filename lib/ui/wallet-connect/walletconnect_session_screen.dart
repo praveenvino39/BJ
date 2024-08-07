@@ -5,7 +5,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
+import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/utils.dart';
 import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wallet_cryptomask/core/bloc/contact_provider/contact_provider.dart';
+import 'package:wallet_cryptomask/core/providers/contact_provider/contact_provider.dart';
 import 'package:wallet_cryptomask/ui/contacts/add_contact.dart';
 import 'package:wallet_cryptomask/ui/contacts/contact_tile.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';

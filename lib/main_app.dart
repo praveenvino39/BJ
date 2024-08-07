@@ -10,11 +10,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:routerino/routerino_home.dart';
-import 'package:wallet_cryptomask/core/bloc/contact_provider/contact_provider.dart';
-import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/core/bloc/create_wallet_provider/create_wallet_provider.dart';
-import 'package:wallet_cryptomask/core/locale_provider/cubit/locale_cubit.dart';
+import 'package:wallet_cryptomask/core/providers/contact_provider/contact_provider.dart';
+import 'package:wallet_cryptomask/core/providers/token_provider/token_provider.dart';
+import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
+import 'package:wallet_cryptomask/core/providers/create_wallet_provider/create_wallet_provider.dart';
+import 'package:wallet_cryptomask/core/providers/locale_provider/locale_provider.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/socket/message_engine.dart';
@@ -174,15 +174,16 @@ class _MainAppState extends State<MainApp> {
             double balance =
                 (setting.arguments as dynamic)["balance"] as double;
             return MaterialPageRoute(
-                builder: (context) => TransactionConfirmationScreen(
-                      to: to,
-                      from: from,
-                      value: value,
-                      balance: balance,
-                      token: token,
-                      contractAddress: contractAddress,
-                      collectible: collectible,
-                    ));
+              builder: (context) => TransactionConfirmationScreen(
+                to: to,
+                from: from,
+                value: value,
+                balance: balance,
+                token: token,
+                contractAddress: contractAddress,
+                collectible: collectible,
+              ),
+            );
           }
           if (setting.name == AmountScreen.route) {
             double balance =

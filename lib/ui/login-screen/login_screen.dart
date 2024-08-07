@@ -13,7 +13,7 @@ import 'package:routerino/routerino.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
+import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/deactivated-screen/deactivated_screen.dart';

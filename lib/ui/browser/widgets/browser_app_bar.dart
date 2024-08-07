@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
+import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
 import 'package:wallet_cryptomask/ui/browser/widgets/browser_url_field.dart';
 import 'package:wallet_cryptomask/ui/shared/network_dart.dart';

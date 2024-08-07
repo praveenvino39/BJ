@@ -154,10 +154,8 @@ class _LoginScreenState extends State<LoginScreen> {
           return context.pushAndRemoveUntil(
               removeUntil: bool, builder: () => const DeactivatedScreen());
         }
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          HomeScreen.route,
-          (route) => false,
-        );
+        context.pushAndRemoveUntil(
+            removeUntil: bool, builder: () => const HomeScreen());
       }).catchError((e) {
         walletProvider.hideLoading();
         showErrorSnackBar(

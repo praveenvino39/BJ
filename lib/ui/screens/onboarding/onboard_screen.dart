@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/ui/screens/wallet_setup/wallet_setup_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
@@ -62,7 +63,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                 key: const Key('get-started-button'),
                 localizeKey: 'getStarted',
                 onPressed: () {
-                  Navigator.of(context).pushNamed(WalletSetupScreen.route);
+                  context.push(() => const WalletSetupScreen());
                 },
               ),
               addHeight(SpacingSize.m)

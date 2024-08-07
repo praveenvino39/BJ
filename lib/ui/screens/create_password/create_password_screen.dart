@@ -3,6 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/providers/create_wallet_provider/create_wallet_provider.dart';
@@ -48,10 +49,8 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
   }
 
   learnMoreHandler() {
-    Navigator.of(context).pushNamed(WebViewScreen.router, arguments: {
-      "title": getText(context, key: 'learnMore'),
-      "url": settings.ppUrl
-    });
+    context.push(() => WebViewScreen(
+        url: getText(context, key: 'learnMore'), title: settings.ppUrl));
   }
 
   createPasswordHandler() async {
@@ -97,7 +96,7 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
               context,
               key: 'createWalletGreet',
             ));
-        await Navigator.pushNamed(context, HomeScreen.route);
+        await context.push(() => const HomeScreen());
       } catch (e) {
         setState(() {
           isLoading = false;

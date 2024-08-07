@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
@@ -124,20 +125,21 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                Navigator.of(context)
-                                    .pushNamed(BlockWebView.router, arguments: {
-                                  "title": getWalletProvider(context)
-                                      .activeNetwork
-                                      .networkName,
-                                  "url": viewAddressOnEtherScan(
-                                      getWalletProvider(context).activeNetwork,
-                                      getWalletProvider(context)
-                                          .activeWallet
-                                          .wallet
-                                          .privateKey
-                                          .address
-                                          .hex)
-                                });
+                                context.push(
+                                  () => BlockWebView(
+                                      title: getWalletProvider(context)
+                                          .activeNetwork
+                                          .networkName,
+                                      url: viewAddressOnEtherScan(
+                                          getWalletProvider(context)
+                                              .activeNetwork,
+                                          getWalletProvider(context)
+                                              .activeWallet
+                                              .wallet
+                                              .privateKey
+                                              .address
+                                              .hex)),
+                                );
                               },
                               child: const SafeArea(
                                 child: Text(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/contact_provider/contact_provider.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
@@ -18,7 +19,6 @@ import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
 import 'package:wallet_cryptomask/ui/scan/scanner_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/ui/transaction-confirmation/transaction_confirmation.dart';
 import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 import 'package:wallet_cryptomask/utils/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -80,18 +80,14 @@ class _TransferScreenState extends State<TransferScreen>
   }
 
   onQrPressHandler() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ScannerScreen(onQrDecode: (address) {
+    context.push(() => ScannerScreen(onQrDecode: (address) {
           Navigator.of(context).pop();
 
           _address.text = address;
           setState(() {
             isAddressValid = true;
           });
-        }),
-      ),
-    );
+        }));
   }
 
   onAccountSelectHandler(address) {
@@ -103,32 +99,19 @@ class _TransferScreenState extends State<TransferScreen>
 
   onNextHandler() {
     if (widget.token != null) {
-      Navigator.of(context).pushNamed(AmountScreen.route, arguments: {
-        "balance": double.parse(widget.balance),
-        "to": _address.text,
-        "token": widget.token,
-        "from": Provider.of<WalletProvider>(context, listen: false)
-            .activeWallet
-            .wallet
-            .privateKey
-            .address
-            .hex
-      });
-      return;
+      context.push(
+        () => AmountScreen(
+            balance: double.parse(widget.balance),
+            to: _address.text,
+            token: widget.token!,
+            from: Provider.of<WalletProvider>(context, listen: false)
+                .activeWallet
+                .wallet
+                .privateKey
+                .address
+                .hex),
+      );
     }
-    Navigator.of(context)
-        .pushNamed(TransactionConfirmationScreen.route, arguments: {
-      "to": _address.text,
-      "from": Provider.of<WalletProvider>(context, listen: false)
-          .activeWallet
-          .wallet
-          .privateKey
-          .address
-          .hex,
-      "value": 0.0,
-      "balance": 0.0,
-      "collectible": widget.collectible
-    });
   }
 
   @override
@@ -304,16 +287,18 @@ class _TransferScreenState extends State<TransferScreen>
                                                 const Icon(
                                                   Icons.check_circle,
                                                   color: Colors.green,
+                                                  size: 20,
                                                 ),
-                                                addWidth(SpacingSize.s),
+                                                addWidth(SpacingSize.xs),
                                                 InkWell(
                                                   onTap: onClearTextHandler,
                                                   child: const Icon(
                                                     Icons.close,
                                                     color: Colors.black,
+                                                    size: 20,
                                                   ),
                                                 ),
-                                                addWidth(SpacingSize.s),
+                                                addWidth(SpacingSize.xs),
                                               ],
                                             ),
                                           )
@@ -458,11 +443,9 @@ class _TransferScreenState extends State<TransferScreen>
                 ])),
                 user.isTransactionBlocked
                     ? renderAlert(context, 'contactAdmin', () {
-                        Navigator.of(context).pushNamed(WebViewScreen.router,
-                            arguments: {
-                              "title": getText(context, key: 'about'),
-                              "url": settings.about
-                            });
+                        context.push(() => WebViewScreen(
+                            url: getText(context, key: 'about'),
+                            title: settings.about));
                       }, localizeKey: 'adminBlockYourTransaction')
                     : SafeArea(
                         child: WalletButton(

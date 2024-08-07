@@ -17,16 +17,16 @@ import 'package:wallet_cryptomask/ui/browser/widgets/browser_view.dart';
 import 'package:wallet_cryptomask/utils/utils.dart';
 import 'package:webview_flutter/webview_flutter.dart' as native;
 
-class BrowserScreen extends StatefulWidget {
+class BrowserWidget extends StatefulWidget {
   static const route = "browser_screen";
   int index;
-  BrowserScreen({super.key, required this.index});
+  BrowserWidget({super.key, required this.index});
 
   @override
-  State<BrowserScreen> createState() => _BrowserScreenState();
+  State<BrowserWidget> createState() => _BrowserWidgetState();
 }
 
-class _BrowserScreenState extends State<BrowserScreen> with ClipboardListener {
+class _BrowserWidgetState extends State<BrowserWidget> with ClipboardListener {
   native.WebViewController? webViewController_;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   InAppWebViewController? webViewController;

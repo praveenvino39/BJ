@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/core/providers/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
@@ -45,8 +46,7 @@ class _TokenTabState extends State<TokenTab> {
   }
 
   onTokenPressHandler(Token token) {
-    Navigator.of(context).pushNamed(TokenDashboardScreen.route,
-        arguments: {"token": token.tokenAddress});
+    context.push(() => TokenDashboardScreen(tokenAddress: token.tokenAddress));
   }
 
   @override

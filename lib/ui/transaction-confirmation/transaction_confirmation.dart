@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
@@ -300,10 +301,8 @@ class _TransactionConfirmationScreenState
                 }
                 showPositiveSnackBar(context, "Transaction sumbitted",
                     "Transaction with hash ${showEllipse(txHash)} has been submitted successfully");
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  HomeScreen.route,
-                  (route) => false,
-                );
+                context.pushAndRemoveUntil(
+                    removeUntil: bool, builder: () => const HomeScreen());
               }
             }).catchError((e) {
               showErrorSnackBar(context, "Transaction failed", e.toString());
@@ -336,10 +335,8 @@ class _TransactionConfirmationScreenState
               }
               showPositiveSnackBar(context, "Transaction sumbitted",
                   "Transaction with hash ${showEllipse(txHash)} has been submitted successfully");
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                HomeScreen.route,
-                (route) => false,
-              );
+              context.pushAndRemoveUntil(
+                  removeUntil: bool, builder: () => const HomeScreen());
             }
           }).catchError((e) {
             showErrorSnackBar(context, "Transaction failed", e.toString());

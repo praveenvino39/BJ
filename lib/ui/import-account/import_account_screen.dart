@@ -6,15 +6,15 @@ import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/utils/spaces.dart';
 import 'package:wallet_cryptomask/utils/utils.dart';
 
-class ImportAccount extends StatefulWidget {
+class ImportAccountScreen extends StatefulWidget {
   static const route = "import_account";
-  const ImportAccount({Key? key}) : super(key: key);
+  const ImportAccountScreen({Key? key}) : super(key: key);
 
   @override
-  State<ImportAccount> createState() => _ImportAccountState();
+  State<ImportAccountScreen> createState() => _ImportAccountScreenState();
 }
 
-class _ImportAccountState extends State<ImportAccount> {
+class _ImportAccountScreenState extends State<ImportAccountScreen> {
   final TextEditingController _password = TextEditingController();
   final GlobalKey<FormState> _privateKeyFormKey = GlobalKey();
   final TextEditingController _privateKey = TextEditingController();

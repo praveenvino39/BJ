@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:routerino/routerino.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
@@ -140,8 +141,7 @@ showPasswordInputModal(
                 passwordEditingController.clear();
                 if (inputPassword == password) {
                   await onVerified();
-                  return Navigator.of(context)
-                      .pushNamed(SecuritySettingsScreen.route);
+                  return context.push(() => const SecuritySettingsScreen());
                 }
                 showErrorSnackBar(
                     context, "Invalid", "Passwod is invalid, Please try again");

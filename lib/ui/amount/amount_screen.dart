@@ -6,6 +6,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
@@ -60,15 +61,14 @@ class _AmountScreenState extends State<AmountScreen> {
           'The value cannot have more than ${widget.token.decimal} decimal places.');
       return;
     }
-    Navigator.of(context)
-        .pushNamed(TransactionConfirmationScreen.route, arguments: {
-      "balance": widget.balance,
-      "to": widget.to,
-      "from": widget.from,
-      "value": Decimal.parse(inputAmount.text).toDouble(),
-      "token": selectedToken,
-      "contractAddress": widget.token.tokenAddress
-    });
+    context.push(() => TransactionConfirmationScreen(
+        balance: widget.balance,
+        to: widget.to,
+        from: widget.from,
+        value: Decimal.parse(inputAmount.text).toDouble(),
+        token: selectedToken,
+        contractAddress: widget.token.tokenAddress
+    ));
   }
 
   @override

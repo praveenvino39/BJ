@@ -24,7 +24,6 @@ import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/ui/wallet_connect_widget/connect_sheet.dart';
 import 'package:wallet_cryptomask/ui/wallet_connect_widget/transaction_sheet.dart';
-import 'package:wallet_cryptomask/ui/onboard/component/create-password/bloc/create_wallet_cubit.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:walletconnect_flutter_v2/apis/sign_api/models/proposal_models.dart';
@@ -38,6 +37,26 @@ WalletProvider getWalletProvider(BuildContext context) =>
 
 WalletProvider getLiveWalletProvider(BuildContext context) =>
     Provider.of<WalletProvider>(context);
+
+class CreatePasswordIsolateType {
+  String privateKey;
+  String password;
+  SendPort sendPort;
+  CreatePasswordIsolateType(
+      {required this.privateKey,
+      required this.password,
+      required this.sendPort});
+}
+
+void createWalletWithPasswordIsolate(CreatePasswordIsolateType args) {
+  try {
+    Wallet wallet = Wallet.createNew(
+        EthPrivateKey.fromHex(args.privateKey), args.password, Random());
+    args.sendPort.send(wallet);
+  } catch (e) {
+    args.sendPort.send(e);
+  }
+}
 
 class WalletProvider extends ChangeNotifier {
   bool loading = false;

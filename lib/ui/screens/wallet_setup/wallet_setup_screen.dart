@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/ui/import-account/import_account_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/create_password/create_password_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
@@ -60,14 +62,14 @@ class _WalletSetupScreenState extends State<WalletSetupScreen> {
               WalletButton(
                   localizeKey: 'importUsingSecretRecoveryPhrase',
                   onPressed: () {
-                    Navigator.of(context).pushNamed(ImportAccount.route);
+                    context.push(() => const ImportAccountScreen());
                   }),
               addHeight(SpacingSize.xs),
               WalletButton(
                 localizeKey: 'createANewWallet',
                 type: WalletButtonType.filled,
                 onPressed: () {
-                  Navigator.of(context).pushNamed(CreatePasswordScreen.route);
+                  context.push(() => const CreatePasswordScreen());
                 },
               ),
               addHeight(SpacingSize.xxxl)

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/token_provider/token_provider.dart';
@@ -135,23 +136,21 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                             onTap: () {
                                               final walletProvider =
                                                   getWalletProvider(context);
-                                              Navigator.of(context).pushNamed(
-                                                  BlockWebView.router,
-                                                  arguments: {
-                                                    "title": walletProvider
+                                              context.push(
+                                                () => BlockWebView(
+                                                    title: walletProvider
                                                         .activeNetwork
                                                         .networkName,
-                                                    "url":
-                                                        viewAddressOnEtherScan(
-                                                            walletProvider
-                                                                .activeNetwork,
-                                                            walletProvider
-                                                                .activeWallet
-                                                                .wallet
-                                                                .privateKey
-                                                                .address
-                                                                .hex)
-                                                  });
+                                                    url: viewAddressOnEtherScan(
+                                                        walletProvider
+                                                            .activeNetwork,
+                                                        walletProvider
+                                                            .activeWallet
+                                                            .wallet
+                                                            .privateKey
+                                                            .address
+                                                            .hex)),
+                                              );
                                             },
                                             child: const Text(
                                               "View full history on Explorer",
@@ -227,23 +226,21 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                             onTap: () {
                                               final walletProvider =
                                                   getWalletProvider(context);
-                                              Navigator.of(context).pushNamed(
-                                                  BlockWebView.router,
-                                                  arguments: {
-                                                    "title": walletProvider
+                                              context.push(
+                                                () => BlockWebView(
+                                                    title: walletProvider
                                                         .activeNetwork
                                                         .networkName,
-                                                    "url":
-                                                        viewAddressOnEtherScan(
-                                                            walletProvider
-                                                                .activeNetwork,
-                                                            walletProvider
-                                                                .activeWallet
-                                                                .wallet
-                                                                .privateKey
-                                                                .address
-                                                                .hex)
-                                                  });
+                                                    url: viewAddressOnEtherScan(
+                                                        walletProvider
+                                                            .activeNetwork,
+                                                        walletProvider
+                                                            .activeWallet
+                                                            .wallet
+                                                            .privateKey
+                                                            .address
+                                                            .hex)),
+                                              );
                                             },
                                             child: const Text(
                                               "View full history on Explorer",
@@ -339,12 +336,10 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                   ),
                                   child: IconButton(
                                     onPressed: () => {
-                                      Navigator.of(context).pushNamed(
-                                          TransferScreen.route,
-                                          arguments: {
-                                            "balance": "0",
-                                            "token": token
-                                          })
+                                      context.push(() => TransferScreen(
+                                            balance: "0",
+                                            token: token,
+                                          ))
                                     },
                                     icon: const Icon(
                                       Icons.call_made,

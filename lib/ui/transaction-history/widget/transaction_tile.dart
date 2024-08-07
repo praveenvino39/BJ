@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
@@ -168,15 +169,14 @@ class _TransactionTileState extends State<TransactionTile> {
                               textSize: 12,
                               localizeKey: 'viewOnExplorer',
                               onPressed: () {
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return BlockWebView(
+                                context.push(
+                                  () => BlockWebView(
                                       url: getWalletProvider(context)
                                               .activeNetwork
                                               .transactionViewUrl +
                                           widget.data.hash,
-                                      title: "Transaction");
-                                }));
+                                      title: "Transaction"),
+                                );
                               }),
                           addHeight(SpacingSize.m),
                         ]),

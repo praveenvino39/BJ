@@ -35,7 +35,7 @@ class DrawerComponent extends StatefulWidget {
 class _DrawerComponentState extends State<DrawerComponent> {
   final settings = Get.find<Settings>();
   onTransactionHistoryHandler() {
-    Navigator.of(context).pushNamed(TransactionHistoryScreen.route);
+    context.push(() => const TransactionHistoryScreen());
   }
 
   onSharePublicAddressHandler() {
@@ -48,37 +48,41 @@ class _DrawerComponentState extends State<DrawerComponent> {
   }
 
   viewOnExplorerHandler() {
-    Navigator.of(context).pushNamed(BlockWebView.router, arguments: {
-      "title": Provider.of<WalletProvider>(context, listen: false)
-          .activeNetwork
-          .networkName,
-      "url": viewAddressOnEtherScan(
-        Provider.of<WalletProvider>(context, listen: false).activeNetwork,
-        Provider.of<WalletProvider>(context, listen: false)
-            .activeWallet
-            .wallet
-            .privateKey
-            .address
-            .hex,
-      )
-    });
+    context.push(
+      () => BlockWebView(
+        title: Provider.of<WalletProvider>(context, listen: false)
+            .activeNetwork
+            .networkName,
+        url: viewAddressOnEtherScan(
+          Provider.of<WalletProvider>(context, listen: false).activeNetwork,
+          Provider.of<WalletProvider>(context, listen: false)
+              .activeWallet
+              .wallet
+              .privateKey
+              .address
+              .hex,
+        ),
+      ),
+    );
   }
 
   onSettingsHandler() {
-    Navigator.of(context).pushNamed(SettingsScreen.route);
+    context.push(() => const SettingsScreen());
   }
 
   onGetHelpHandler() {
-    Navigator.of(context).pushNamed(WebViewScreen.router, arguments: {
-      "title": getText(context, key: 'help'),
-      "url": settings.helpUrl
-    });
+    context.push(
+      () => WebViewScreen(
+          url: getText(context, key: 'help'), title: settings.helpUrl),
+    );
   }
 
   onLogoutHandler() {
     Provider.of<WalletProvider>(context, listen: false).logout().then((value) {
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(LoginScreen.route, (route) => false);
+      context.pushAndRemoveUntil(
+        removeUntil: bool,
+        builder: () => const LoginScreen(),
+      );
     });
   }
 
@@ -135,147 +139,181 @@ class _DrawerComponentState extends State<DrawerComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width / 1.25,
-          color: Colors.white,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Material(
-              elevation: 1,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                color: Colors.grey.withAlpha(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    addHeight(SpacingSize.xl),
-                    const WalletText(
-                      '',
-                      localizeKey: 'appName',
-                      textVarient: TextVarient.hero,
-                    ),
-                    addHeight(SpacingSize.s),
-                    AvatarWidget(
-                      radius: 65,
-                      address: Provider.of<WalletProvider>(context)
-                          .activeWallet
-                          .wallet
-                          .privateKey
-                          .address
-                          .hex,
-                    ),
-                    addHeight(SpacingSize.xs),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).pop;
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (context) => const AccountChangeSheet());
-                      },
-                      child: Row(
-                        children: [
-                          WalletText(
-                            '',
-                            localizeKey: Provider.of<WalletProvider>(context)
-                                .getAccountName(),
-                            textVarient: TextVarient.body1,
-                            bold: true,
-                          ),
-                          const Icon(Icons.arrow_drop_down)
-                        ],
-                      ),
-                    ),
-                    WalletText(
-                      '',
-                      localizeKey: Provider.of<WalletProvider>(context)
-                          .getNativeBalanceFormatted(),
-                    ),
-                    addHeight(SpacingSize.xs),
-                    WalletText('',
-                        localizeKey: showEllipse(
-                            Provider.of<WalletProvider>(context)
-                                .activeWallet
-                                .wallet
-                                .privateKey
-                                .address
-                                .hex)),
-                    addHeight(SpacingSize.xs),
-                  ],
-                ),
-              ),
-            ),
-            Material(
-              elevation: 0.5,
-              child: Container(
-                color: Colors.grey.withAlpha(10),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: WalletButtonWithIcon(
-                      icon: const Icon(
-                        Icons.call_made,
-                        size: 15,
-                      ),
-                      textContent: AppLocalizations.of(context)!.send,
-                      onPressed: widget.onSendHandler,
-                    )),
-                    addHeight(SpacingSize.xs),
-                    Expanded(
-                      child: WalletButtonWithIcon(
-                          textContent: AppLocalizations.of(context)!.receive,
-                          onPressed: widget.onReceiveHandler,
-                          icon: const Icon(
-                            Icons.call_received,
-                            size: 15,
-                          )),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width / 1.25,
+      color: Colors.white,
+      child: SingleChildScrollView(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Material(
+            elevation: 1,
+            child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
+              color: Colors.grey.withAlpha(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  addHeight(SpacingSize.m),
+                  addHeight(SpacingSize.xl),
+                  const WalletText(
+                    '',
+                    localizeKey: 'appName',
+                    textVarient: TextVarient.hero,
+                  ),
+                  addHeight(SpacingSize.s),
+                  AvatarWidget(
+                    radius: 65,
+                    address: Provider.of<WalletProvider>(context)
+                        .activeWallet
+                        .wallet
+                        .privateKey
+                        .address
+                        .hex,
+                  ),
+                  addHeight(SpacingSize.xs),
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop;
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context) => const AccountChangeSheet());
+                    },
+                    child: Row(
+                      children: [
+                        WalletText(
+                          '',
+                          localizeKey: Provider.of<WalletProvider>(context)
+                              .getAccountName(),
+                          textVarient: TextVarient.body1,
+                          bold: true,
+                        ),
+                        const Icon(Icons.arrow_drop_down)
+                      ],
+                    ),
+                  ),
+                  WalletText(
+                    '',
+                    localizeKey: Provider.of<WalletProvider>(context)
+                        .getNativeBalanceFormatted(),
+                  ),
+                  addHeight(SpacingSize.xs),
+                  WalletText('',
+                      localizeKey: showEllipse(
+                          Provider.of<WalletProvider>(context)
+                              .activeWallet
+                              .wallet
+                              .privateKey
+                              .address
+                              .hex)),
+                  addHeight(SpacingSize.xs),
+                ],
+              ),
+            ),
+          ),
+          Material(
+            elevation: 0.5,
+            child: Container(
+              color: Colors.grey.withAlpha(10),
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                      child: WalletButtonWithIcon(
+                    icon: const Icon(
+                      Icons.call_made,
+                      size: 15,
+                    ),
+                    textContent: AppLocalizations.of(context)!.send,
+                    onPressed: widget.onSendHandler,
+                  )),
+                  addHeight(SpacingSize.xs),
+                  Expanded(
+                    child: WalletButtonWithIcon(
+                        textContent: AppLocalizations.of(context)!.receive,
+                        onPressed: widget.onReceiveHandler,
+                        icon: const Icon(
+                          Icons.call_received,
+                          size: 15,
+                        )),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                addHeight(SpacingSize.m),
+                Row(
+                  children: [
+                    const Icon(Icons.wallet),
+                    addWidth(SpacingSize.s),
+                    Text(AppLocalizations.of(context)!.wallet),
+                  ],
+                ),
+                addHeight(SpacingSize.m),
+                InkWell(
+                  onTap: () {
+                    context.push(() => const AllContactScreen());
+                  },
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.contact_phone,
+                      ),
+                      addWidth(SpacingSize.s),
+                      const WalletText(
+                        "",
+                        localizeKey: "Contact",
+                        color: Colors.black,
+                      ),
+                    ],
+                  ),
+                ),
+                addHeight(SpacingSize.m),
+                InkWell(
+                  onTap: onTransactionHistoryHandler,
+                  child: Row(
+                    children: [
+                      const Icon(Icons.menu),
+                      addWidth(SpacingSize.s),
+                      Text(AppLocalizations.of(context)!.transactionHistory),
+                    ],
+                  ),
+                ),
+                addHeight(SpacingSize.m),
+              ],
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: 1,
+            color: Colors.grey.withAlpha(70),
+          ),
+          addHeight(SpacingSize.s),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: InkWell(
+              onTap: onSharePublicAddressHandler,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Row(
                     children: [
-                      const Icon(Icons.wallet),
+                      const Icon(Icons.share),
                       addWidth(SpacingSize.s),
-                      Text(AppLocalizations.of(context)!.wallet),
+                      Text(AppLocalizations.of(context)!.shareMyPubliAdd),
                     ],
                   ),
                   addHeight(SpacingSize.m),
                   InkWell(
-                    onTap: () {
-                      context.push(() => const AllContactScreen());
-                    },
+                    onTap: viewOnExplorerHandler,
                     child: Row(
                       children: [
-                        const Icon(
-                          Icons.contact_phone,
-                        ),
+                        const Icon(Icons.remove_red_eye),
                         addWidth(SpacingSize.s),
-                        const WalletText(
-                          "",
-                          localizeKey: "Contact",
-                          color: Colors.black,
-                        ),
-                      ],
-                    ),
-                  ),
-                  addHeight(SpacingSize.m),
-                  InkWell(
-                    onTap: onTransactionHistoryHandler,
-                    child: Row(
-                      children: [
-                        const Icon(Icons.menu),
-                        addWidth(SpacingSize.s),
-                        Text(AppLocalizations.of(context)!.transactionHistory),
+                        Text(AppLocalizations.of(context)!.viewOnEtherscan),
                       ],
                     ),
                   ),
@@ -283,107 +321,73 @@ class _DrawerComponentState extends State<DrawerComponent> {
                 ],
               ),
             ),
-            Container(
-              width: double.infinity,
-              height: 1,
-              color: Colors.grey.withAlpha(70),
-            ),
-            addHeight(SpacingSize.s),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: InkWell(
-                onTap: onSharePublicAddressHandler,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.share),
-                        addWidth(SpacingSize.s),
-                        Text(AppLocalizations.of(context)!.shareMyPubliAdd),
-                      ],
-                    ),
-                    addHeight(SpacingSize.m),
-                    InkWell(
-                      onTap: viewOnExplorerHandler,
-                      child: Row(
-                        children: [
-                          const Icon(Icons.remove_red_eye),
-                          addWidth(SpacingSize.s),
-                          Text(AppLocalizations.of(context)!.viewOnEtherscan),
-                        ],
-                      ),
-                    ),
-                    addHeight(SpacingSize.m),
-                  ],
+          ),
+          Container(
+            width: double.infinity,
+            height: 1,
+            color: Colors.grey.withAlpha(70),
+          ),
+          addHeight(SpacingSize.s),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: onSettingsHandler,
+                  child: Row(
+                    children: [
+                      const Icon(Icons.settings_outlined),
+                      addWidth(SpacingSize.s),
+                      Text(AppLocalizations.of(context)!.settings),
+                    ],
+                  ),
                 ),
-              ),
+                addHeight(SpacingSize.m),
+                InkWell(
+                  onTap: onGetHelpHandler,
+                  child: Row(
+                    children: [
+                      const Icon(Icons.help_outline_rounded),
+                      addWidth(SpacingSize.s),
+                      const WalletText('', localizeKey: 'getHelp'),
+                    ],
+                  ),
+                ),
+                addHeight(SpacingSize.m),
+                InkWell(
+                  onTap: onLogoutHandler,
+                  child: Row(
+                    children: [
+                      const Icon(Icons.logout),
+                      addWidth(SpacingSize.s),
+                      Text(AppLocalizations.of(context)!.logout),
+                    ],
+                  ),
+                ),
+                addHeight(SpacingSize.m),
+                InkWell(
+                  onTap: onDeleteWalletHandler,
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                      addWidth(SpacingSize.s),
+                      Text(
+                        AppLocalizations.of(context)!.deleteWallet,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ],
+                  ),
+                ),
+                addHeight(SpacingSize.l),
+              ],
             ),
-            Container(
-              width: double.infinity,
-              height: 1,
-              color: Colors.grey.withAlpha(70),
-            ),
-            addHeight(SpacingSize.s),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InkWell(
-                    onTap: onSettingsHandler,
-                    child: Row(
-                      children: [
-                        const Icon(Icons.settings_outlined),
-                        addWidth(SpacingSize.s),
-                        Text(AppLocalizations.of(context)!.settings),
-                      ],
-                    ),
-                  ),
-                  addHeight(SpacingSize.m),
-                  InkWell(
-                    onTap: onGetHelpHandler,
-                    child: Row(
-                      children: [
-                        const Icon(Icons.help_outline_rounded),
-                        addWidth(SpacingSize.s),
-                        const WalletText('', localizeKey: 'getHelp'),
-                      ],
-                    ),
-                  ),
-                  addHeight(SpacingSize.m),
-                  InkWell(
-                    onTap: onLogoutHandler,
-                    child: Row(
-                      children: [
-                        const Icon(Icons.logout),
-                        addWidth(SpacingSize.s),
-                        Text(AppLocalizations.of(context)!.logout),
-                      ],
-                    ),
-                  ),
-                  addHeight(SpacingSize.m),
-                  InkWell(
-                    onTap: onDeleteWalletHandler,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.delete,
-                          color: Colors.red,
-                        ),
-                        addWidth(SpacingSize.s),
-                        Text(
-                          AppLocalizations.of(context)!.deleteWallet,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  ),
-                  addHeight(SpacingSize.l),
-                ],
-              ),
-            ),
-          ])),
+          ),
+        ]),
+      ),
     );
   }
 }

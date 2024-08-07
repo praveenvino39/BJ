@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/home/component/avatar_component.dart';
@@ -110,7 +111,7 @@ class _AccountChangeSheetState extends State<AccountChangeSheet> {
             addHeight(SpacingSize.s),
             InkWell(
               onTap: () async {
-                Navigator.of(context).pushNamed(ImportAccount.route);
+                context.push(() => const ImportAccountScreen());
               },
               child: const Text(
                 "Import Account",

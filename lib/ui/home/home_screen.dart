@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/contact_provider/contact_provider.dart';
 import 'package:wallet_cryptomask/core/providers/token_provider/token_provider.dart';
@@ -88,17 +89,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   onSendHandler() {
-    Navigator.of(context).pushNamed(TransferScreen.route, arguments: {
-      "balance": getWalletProvider(context).nativeBalance.toString(),
-      "token": Token(
-          tokenAddress: "",
-          symbol: Provider.of<WalletProvider>(context, listen: false)
-              .activeNetwork
-              .symbol,
-          decimal: 18,
-          balance: 0,
-          balanceInFiat: 0)
-    });
+    context.push(
+      () => TransferScreen(
+        balance: getWalletProvider(context).nativeBalance.toString(),
+        token: Token(
+            tokenAddress: "",
+            symbol: Provider.of<WalletProvider>(context, listen: false)
+                .activeNetwork
+                .symbol,
+            decimal: 18,
+            balance: getWalletProvider(context).nativeBalance,
+            balanceInFiat: double.parse(
+                getWalletProvider(context).balanceInPrefereCurrency)),
+      ),
+    );
   }
 
   onAccountChangeHandler() {
@@ -435,7 +439,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   ),
                                 ),
                               ]),
-                  BrowserScreen(index: index)
+                  BrowserWidget(index: index)
                 ],
               ),
             )),

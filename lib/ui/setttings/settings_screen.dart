@@ -67,7 +67,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               addHeight(SpacingSize.s),
               ListTile(
                 onTap: () {
-                  Navigator.of(context).pushNamed(GeneralSettingsScreen.route);
+                  context.push(() => const GeneralSettingsScreen());
                 },
                 title: Text(AppLocalizations.of(context)!.general),
                 subtitle:
@@ -136,11 +136,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               InkWell(
                   onTap: () {
-                    Navigator.of(context).pushNamed(WebViewScreen.router,
-                        arguments: {
-                          "title": getText(context, key: 'about'),
-                          "url": settings.about
-                        });
+                    context.push(() => WebViewScreen(
+                        url: getText(context, key: 'about'),
+                        title: settings.about));
                   },
                   child: const ListTile(
                       title: WalletText(

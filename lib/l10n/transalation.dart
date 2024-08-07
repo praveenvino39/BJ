@@ -55,15 +55,17 @@ var en = {
   "passwordConfirmPasswordNotMatch": "Password and confirm password not mached",
   "getStarted": "Get Started",
   "currentLanguage": "Current language",
+  "welcomeTo": "Welcome to $appName",
+  "explorerFeature": "Explore Features",
   "trustedByMillion": "Trused by Million",
   "safeReliableSuperfast": "Safe, Reliable and Superfast",
-  "youKeyToExploreWeb3": "Your key to explore Web3",
+  "securityYouCan": "Security You Can Trust",
   "template1":
-      "Here you can write the description of the page,  to explain something...",
+      "Manage, store, and trade your digital assets securely and effortlessly. Let's get started!",
   "template2":
-      "Here you can write the description of the page,  to explain something...",
+      "Discover DApp with our DApp browser, transaction history, and more to enhance your crypto experience.",
   "template3":
-      "Here you can write the description of the page,  to explain something...",
+      "Experience unparalleled security with our on-device storage. Your private keys and sensitive data are stored directly on your device, ensuring that only you have access.",
   "walletSetup": "Wallet setup",
   "importAnExistingWalletOrCreate":
       "Import an existing wallet or create a new one",

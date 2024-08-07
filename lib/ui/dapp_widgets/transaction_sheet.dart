@@ -6,11 +6,9 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
@@ -304,74 +302,60 @@ class _TransactionSheetState extends State<TransactionSheet> {
                           const SizedBox(
                             height: 30,
                           ),
-                          BlocConsumer<WalletCubit, WalletState>(
-                            listener: (context, state) {},
-                            builder: (context, state) {
-                              return state is WalletLoaded
-                                  ? Column(
-                                      children: [
-                                        // Text("Warning: ${state.wallet.privateKey.address.hex.toLowerCase() != transaction?.from.toString() ? "You're sending transaction from different account" : ""}"),
-                                        SizedBox(
-                                            height: 50,
-                                            width: double.infinity,
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: WalletButton(
-                                                      textContent: "Reject",
-                                                      onPressed: () async {
-                                                        widget.onReject();
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      }),
-                                                ),
-                                                state.balanceInNative > 0
-                                                    ? Expanded(
-                                                        child: WalletButton(
-                                                            textContent:
-                                                                "Approve",
-                                                            type:
-                                                                WalletButtonType
-                                                                    .filled,
-                                                            onPressed:
-                                                                () async {
-                                                              var currentState =
-                                                                  Provider.of<
-                                                                          WalletProvider>(
-                                                                      context,
-                                                                      listen:
-                                                                          false);
-                                                              // widget.transaction.gasPrice =
+                          Column(
+                            children: [
+                              // Text("Warning: ${state.wallet.privateKey.address.hex.toLowerCase() != transaction?.from.toString() ? "You're sending transaction from different account" : ""}"),
+                              SizedBox(
+                                  height: 50,
+                                  width: double.infinity,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: WalletButton(
+                                            textContent: "Reject",
+                                            onPressed: () async {
+                                              widget.onReject();
+                                              Navigator.of(context).pop();
+                                            }),
+                                      ),
+                                      getLiveWalletProvider(context)
+                                                  .nativeBalance >
+                                              0
+                                          ? Expanded(
+                                              child: WalletButton(
+                                                  textContent: "Approve",
+                                                  type: WalletButtonType.filled,
+                                                  onPressed: () async {
+                                                    var currentState = Provider
+                                                        .of<WalletProvider>(
+                                                            context,
+                                                            listen: false);
+                                                    // widget.transaction.gasPrice =
 
-                                                              var txhash = await currentState.web3client.sendTransaction(
-                                                                  currentState
-                                                                      .activeWallet
-                                                                      .wallet
-                                                                      .privateKey,
-                                                                  transaction!,
-                                                                  chainId: currentState
-                                                                      .activeNetwork
-                                                                      .chainId);
-                                                              log("DAPP REQUST =====> $txhash");
-                                                              widget.onApprove(
-                                                                  txhash);
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            }),
-                                                      )
-                                                    : Text(
-                                                        AppLocalizations.of(
-                                                                context)!
-                                                            .insufficientFund,
-                                                        style: const TextStyle(
-                                                            color: Colors.red)),
-                                              ],
-                                            )),
-                                      ],
-                                    )
-                                  : const SizedBox();
-                            },
+                                                    var txhash = await currentState
+                                                        .web3client
+                                                        .sendTransaction(
+                                                            currentState
+                                                                .activeWallet
+                                                                .wallet
+                                                                .privateKey,
+                                                            transaction!,
+                                                            chainId: currentState
+                                                                .activeNetwork
+                                                                .chainId);
+                                                    log("DAPP REQUST =====> $txhash");
+                                                    widget.onApprove(txhash);
+                                                    Navigator.of(context).pop();
+                                                  }),
+                                            )
+                                          : Text(
+                                              AppLocalizations.of(context)!
+                                                  .insufficientFund,
+                                              style: const TextStyle(
+                                                  color: Colors.red)),
+                                    ],
+                                  )),
+                            ],
                           ),
                           const SizedBox(
                             height: 30,

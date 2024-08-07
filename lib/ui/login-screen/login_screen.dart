@@ -13,7 +13,6 @@ import 'package:routerino/routerino.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
@@ -257,8 +256,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 )),
                             ElevatedButton(
                                 onPressed: () {
-                                  context
-                                      .read<WalletCubit>()
+                                  getWalletProvider(context)
                                       .eraseWallet()
                                       .then((value) {
                                     context.pushAndRemoveUntil(

@@ -3,12 +3,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/route_manager.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
 
@@ -48,84 +46,78 @@ class _BrowserViewState extends State<BrowserView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<WalletCubit, WalletState>(
-      listener: (context, state) async {
-        if (state is WalletNetworkChanged) {}
-        if (state is WalletAccountChanged) {}
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: InAppWebView(
-              initialSettings: InAppWebViewSettings(
-                  domStorageEnabled: true,
-                  allowFileAccess: true,
-                  useShouldOverrideUrlLoading: true,
-                  allowFileAccessFromFileURLs: true,
-                  allowUniversalAccessFromFileURLs: true),
-              onWebViewCreated: (controller) async {
-                webViewController = controller;
-                widget.webViewModel.webViewController = controller;
-                loadHomepage();
-              },
-              onReceivedHttpError: (controller, request, errorResponse) {
-                log("HTTP ERROR OCCURED ===> ${errorResponse.statusCode}");
-              },
-              shouldOverrideUrlLoading: (controller, navigationAction) async {
-                if (navigationAction.request.url.toString().contains("wc:")) {
-                  handleRequestToWalletConnect(
-                      context, navigationAction.request.url!.uriValue);
-                  return NavigationActionPolicy.CANCEL;
-                }
-                return NavigationActionPolicy.ALLOW;
-              },
-              onReceivedError: (controller, request, error) {},
-              onLoadStart: (controller, url) async {
-                // checkRequestIsWalletConnect(url);
-                var favIcons = await webViewController?.getFavicons();
-                if (favIcons != null && favIcons.isNotEmpty) {
-                  widget.webViewModel.favicon = favIcons[0];
-                }
-                isAttached = false;
-                widget.webViewModel.url = await controller.getUrl();
-                setState(() {
-                  progress = 0.0;
-                  dissableProgressAnimation = false;
-                });
-                progressFactor = MediaQuery.of(context).size.width / 100;
-                if (url != null && url.scheme == "https") {
-                  widget.webViewModel.isSecure = true;
-                } else {
-                  widget.webViewModel.isSecure = false;
-                }
-                widget.webViewModel.webViewController = controller;
-                setState(() {});
-              },
-              onProgressChanged: (controller, progress) async {
-                widget.webViewModel.progress =
-                    double.parse(progress.toString()) * progressFactor;
-                this.progress =
-                    double.parse(progress.toString()) * progressFactor;
-                if (progress == 100) {
-                  widget.webViewModel.title =
-                      await widget.webViewModel.webViewController?.getTitle() ??
-                          "New page";
-                }
-                setState(() {});
-              },
-              onLoadStop: (controller, url) async {
-                log(url.toString());
-              },
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: InAppWebView(
+            initialSettings: InAppWebViewSettings(
+                domStorageEnabled: true,
+                allowFileAccess: true,
+                useShouldOverrideUrlLoading: true,
+                allowFileAccessFromFileURLs: true,
+                allowUniversalAccessFromFileURLs: true),
+            onWebViewCreated: (controller) async {
+              webViewController = controller;
+              widget.webViewModel.webViewController = controller;
+              loadHomepage();
+            },
+            onReceivedHttpError: (controller, request, errorResponse) {
+              log("HTTP ERROR OCCURED ===> ${errorResponse.statusCode}");
+            },
+            shouldOverrideUrlLoading: (controller, navigationAction) async {
+              if (navigationAction.request.url.toString().contains("wc:")) {
+                handleRequestToWalletConnect(
+                    context, navigationAction.request.url!.uriValue);
+                return NavigationActionPolicy.CANCEL;
+              }
+              return NavigationActionPolicy.ALLOW;
+            },
+            onReceivedError: (controller, request, error) {},
+            onLoadStart: (controller, url) async {
+              // checkRequestIsWalletConnect(url);
+              var favIcons = await webViewController?.getFavicons();
+              if (favIcons != null && favIcons.isNotEmpty) {
+                widget.webViewModel.favicon = favIcons[0];
+              }
+              isAttached = false;
+              widget.webViewModel.url = await controller.getUrl();
+              setState(() {
+                progress = 0.0;
+                dissableProgressAnimation = false;
+              });
+              progressFactor = MediaQuery.of(context).size.width / 100;
+              if (url != null && url.scheme == "https") {
+                widget.webViewModel.isSecure = true;
+              } else {
+                widget.webViewModel.isSecure = false;
+              }
+              widget.webViewModel.webViewController = controller;
+              setState(() {});
+            },
+            onProgressChanged: (controller, progress) async {
+              widget.webViewModel.progress =
+                  double.parse(progress.toString()) * progressFactor;
+              this.progress =
+                  double.parse(progress.toString()) * progressFactor;
+              if (progress == 100) {
+                widget.webViewModel.title =
+                    await widget.webViewModel.webViewController?.getTitle() ??
+                        "New page";
+              }
+              setState(() {});
+            },
+            onLoadStop: (controller, url) async {
+              log(url.toString());
+            },
           ),
-          Container(
-            width: progress,
-            height: 2,
-            color: kPrimaryColor,
-          )
-        ],
-      ),
+        ),
+        Container(
+          width: progress,
+          height: 2,
+          color: kPrimaryColor,
+        )
+      ],
     );
   }
 

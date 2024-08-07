@@ -4,10 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/collectible_provider/collectible_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/core/cubit_helper.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/moralis_token_transfer.dart';
@@ -26,15 +24,10 @@ class TokenDashboardScreen extends StatefulWidget {
   static const route = "token_dashboard_screen";
 
   final String tokenAddress;
-  final bool isCollectibles;
   final String? tokenId;
   final bool? isNative;
   const TokenDashboardScreen(
-      {Key? key,
-      required this.tokenAddress,
-      this.isCollectibles = false,
-      this.tokenId,
-      this.isNative})
+      {Key? key, required this.tokenAddress, this.tokenId, this.isNative})
       : super(key: key);
 
   @override
@@ -46,17 +39,9 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
   Collectible? collectible;
   @override
   void initState() {
-    if (widget.isCollectibles) {
-      collectible = Provider.of<CollectibleProvider>(context, listen: false)
-          .collectibles
-          .firstWhere((element) =>
-              element.tokenAddress == widget.tokenAddress &&
-              element.tokenId == widget.tokenId);
-    } else {
-      token = Provider.of<TokenProvider>(context, listen: false)
-          .tokens
-          .firstWhere((element) => element.tokenAddress == widget.tokenAddress);
-    }
+    token = Provider.of<TokenProvider>(context, listen: false)
+        .tokens
+        .firstWhere((element) => element.tokenAddress == widget.tokenAddress);
 
     super.initState();
   }
@@ -150,19 +135,20 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                         child: SafeArea(
                                           child: InkWell(
                                             onTap: () {
-                                              final state =
-                                                  getWalletLoadedState(context);
+                                              final walletProvider =
+                                                  getWalletProvider(context);
                                               Navigator.of(context).pushNamed(
                                                   BlockWebView.router,
                                                   arguments: {
-                                                    "title": state
-                                                        .currentNetwork
+                                                    "title": walletProvider
+                                                        .activeNetwork
                                                         .networkName,
                                                     "url":
                                                         viewAddressOnEtherScan(
-                                                            state
-                                                                .currentNetwork,
-                                                            state
+                                                            walletProvider
+                                                                .activeNetwork,
+                                                            walletProvider
+                                                                .activeWallet
                                                                 .wallet
                                                                 .privateKey
                                                                 .address
@@ -241,19 +227,20 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                         child: SafeArea(
                                           child: InkWell(
                                             onTap: () {
-                                              final state =
-                                                  getWalletLoadedState(context);
+                                              final walletProvider =
+                                                  getWalletProvider(context);
                                               Navigator.of(context).pushNamed(
                                                   BlockWebView.router,
                                                   arguments: {
-                                                    "title": state
-                                                        .currentNetwork
+                                                    "title": walletProvider
+                                                        .activeNetwork
                                                         .networkName,
                                                     "url":
                                                         viewAddressOnEtherScan(
-                                                            state
-                                                                .currentNetwork,
-                                                            state
+                                                            walletProvider
+                                                                .activeNetwork,
+                                                            walletProvider
+                                                                .activeWallet
                                                                 .wallet
                                                                 .privateKey
                                                                 .address
@@ -306,12 +293,7 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                     const AccountChangeSheet());
                           },
                           child: AvatarWidget(
-                            imageUrl: widget.isCollectibles
-                                ? collectible!.imageUrl?.contains("http") !=
-                                        null
-                                    ? collectible!.imageUrl!
-                                    : "https://ipfs.io/ipfs/${collectible?.imageUrl}"
-                                : token?.imageUrl,
+                            imageUrl: token?.imageUrl,
                             radius: 50,
                             address: widget.tokenAddress,
                             iconType: "identicon",
@@ -319,9 +301,7 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                         ),
                         addHeight(SpacingSize.xs),
                         Text(
-                          widget.isCollectibles
-                              ? "${collectible?.name} #${widget.tokenId}"
-                              : "${token?.balance.toStringAsFixed(6)} ${token?.symbol}",
+                          "${token?.balance.toStringAsFixed(6)} ${token?.symbol}",
                           style: const TextStyle(fontSize: 25),
                         ),
                         addHeight(SpacingSize.xs),
@@ -363,25 +343,12 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                   ),
                                   child: IconButton(
                                     onPressed: () => {
-                                      if (widget.isCollectibles)
-                                        {
-                                          Navigator.of(context).pushNamed(
-                                              TransferScreen.route,
-                                              arguments: {
-                                                "balance": "0",
-                                                "token": token,
-                                                "collectible": collectible
-                                              })
-                                        }
-                                      else
-                                        {
-                                          Navigator.of(context).pushNamed(
-                                              TransferScreen.route,
-                                              arguments: {
-                                                "balance": "0",
-                                                "token": token
-                                              })
-                                        }
+                                      Navigator.of(context).pushNamed(
+                                          TransferScreen.route,
+                                          arguments: {
+                                            "balance": "0",
+                                            "token": token
+                                          })
                                     },
                                     icon: const Icon(
                                       Icons.call_made,

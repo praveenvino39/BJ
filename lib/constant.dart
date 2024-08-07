@@ -7,9 +7,6 @@ const Color kPrimaryColor = Color(0xff7b15ef);
 
 const String walletConnectSingleTon = "WalletConnectSingleTon";
 
-// const baseStaticUrl = "http://localhost:3001/";
-// const baseApiUrl = "http://localhost:3001/";
-
 onBoardScreenContent(BuildContext context) {
   return [
     PageViewModel(

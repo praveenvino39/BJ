@@ -5,8 +5,7 @@ import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/browser/model/web_view_model.dart';
 import 'package:wallet_cryptomask/ui/browser/widgets/browser_url_field.dart';
-import 'package:wallet_cryptomask/ui/shared/chain_change_sheet.dart';
-// import 'package:wallet_cryptomask/ui/shared/chain_change_sheet.dart';
+import 'package:wallet_cryptomask/ui/shared/network_dart.dart';
 
 class BrowserUrlBar extends StatefulWidget {
   final Function(String, WebViewModel) onUrlSubmit;

@@ -11,7 +11,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/bloc/wallet-bloc/cubit/wallet_cubit.dart';
 import 'package:wallet_cryptomask/core/bloc/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
@@ -30,15 +29,6 @@ String showEllipse(String string) {
     return "$prefix...$suffix";
   }
   return string;
-}
-
-String getAccountName(WalletLoaded state) {
-  return (state)
-      .availabeWallet
-      .firstWhere((element) =>
-          element.wallet.privateKey.address.hex ==
-          state.wallet.privateKey.address.hex)
-      .accountName;
 }
 
 copyAddressToClipBoard(String address, BuildContext context,
@@ -179,45 +169,6 @@ copyToClipBoard(BuildContext context, String content, String message) {
   ).then((value) {
     showPositiveSnackBar(context, 'Copied', message);
   });
-}
-
-showSuccessSnackbar(BuildContext context, String title, String subtitle) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    content: Row(
-      children: [
-        const SizedBox(
-            width: 25,
-            height: 25,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-            )),
-        const SizedBox(
-          width: 20,
-        ),
-        SizedBox(
-          height: 38,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Text(
-                subtitle,
-                style: const TextStyle(fontSize: 12),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-    duration: const Duration(seconds: 3),
-  ));
 }
 
 showErrorSnackBar(BuildContext context, String errorTitle, String error) {
@@ -378,49 +329,7 @@ bool isValidAddress(String address) {
   return true;
 }
 
-Future<String> getMetadataURL(
-    {required Web3Client web3client,
-    required DeployedContract contract,
-    required String tokenId}) async {
-  var uriTokenFunction = contract.function('tokenURI');
-  var uriResult = await web3client
-      .call(contract: contract, function: uriTokenFunction, params: [
-    BigInt.parse(tokenId),
-  ]);
-  String jsonURI = uriResult[0];
-  final uriData = getSource(jsonURI);
-  return uriData.url;
-}
-
-class UriData {
-  final String url;
-  final MetadataSource metadataSource;
-
-  UriData({required this.url, required this.metadataSource});
-}
-
 enum MetadataSource {
   ipfs,
   http,
-}
-
-UriData getSource(String uri) {
-  RegExp ipfsRegex = RegExp(r'(?<=ipfs:\/\/).*$', multiLine: true);
-  Match? ipfsMatch = ipfsRegex.firstMatch(uri);
-  if (ipfsMatch != null) {
-    String content = ipfsMatch.group(0)!;
-    return UriData(
-        url: "https://ipfs.io/ipfs/$content",
-        metadataSource: MetadataSource.ipfs);
-  }
-
-  RegExp httpRegex = RegExp(r'(?:https?://).*$', multiLine: true);
-  Match? httpMatch = httpRegex.firstMatch(uri);
-  if (httpMatch != null) {
-    String content = httpMatch.group(0)!;
-    return UriData(url: content, metadataSource: MetadataSource.http);
-  }
-
-  return UriData(
-      url: "https://ipfs.io/ipfs/$uri", metadataSource: MetadataSource.ipfs);
 }

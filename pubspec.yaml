@@ -35,7 +35,6 @@ dependencies:
   introduction_screen: ^3.0.1
   flutter_svg: ^2.0.5
   google_fonts: ^6.1.0
-  flutter_bloc: ^8.1.1
   flutter_secure_storage: ^8.1.0
   dio: ^5.4.0
   qr_flutter: ^4.0.0
@@ -87,7 +86,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   coverage: ^1.7.2
-  bloc_test: ^9.1.5
   mockito: ^5.4.4
 
 dependency_overrides:

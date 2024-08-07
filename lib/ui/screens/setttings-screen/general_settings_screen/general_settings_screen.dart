@@ -18,9 +18,9 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
 
   @override
   void initState() {
-    final localeCubit = getLocalProvider(context);
+    final localProvider = getLocalProvider(context);
 
-    localeCubit.getLocale().then((value) {
+    localProvider.getLocale().then((value) {
       setState(() {
         locale = value;
       });

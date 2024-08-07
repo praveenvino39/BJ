@@ -101,7 +101,6 @@ class _BrowserTabState extends State<BrowserTab> with ClipboardListener {
             },
           );
     setState(() {});
-    // log(getBrowserCubit(context).state.toString());
     super.initState();
   }
 

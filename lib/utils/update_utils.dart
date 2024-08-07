@@ -6,7 +6,7 @@ import 'package:new_version/new_version.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
-import 'package:wallet_cryptomask/utils/spaces.dart';
+import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 
 checkForUpdate(BuildContext context) {
   try {

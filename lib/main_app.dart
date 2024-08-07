@@ -1,6 +1,4 @@
-import 'dart:developer';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -15,26 +13,7 @@ import 'package:wallet_cryptomask/core/providers/token_provider/token_provider.d
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/providers/create_wallet_provider/create_wallet_provider.dart';
 import 'package:wallet_cryptomask/core/providers/locale_provider/locale_provider.dart';
-import 'package:wallet_cryptomask/core/model/collectible_model.dart';
-import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/socket/message_engine.dart';
-import 'package:wallet_cryptomask/ui/amount/amount_screen.dart';
-import 'package:wallet_cryptomask/ui/block-web-view/block_web_view.dart';
-import 'package:wallet_cryptomask/ui/deactivated-screen/deactivated_screen.dart';
-import 'package:wallet_cryptomask/ui/home/home_screen.dart';
-import 'package:wallet_cryptomask/ui/import-account/import_account_screen.dart';
-import 'package:wallet_cryptomask/ui/login-screen/login_screen.dart';
-import 'package:wallet_cryptomask/ui/screens/create_password/create_password_screen.dart';
-import 'package:wallet_cryptomask/ui/screens/onboarding/onboard_screen.dart';
-import 'package:wallet_cryptomask/ui/screens/wallet_setup/wallet_setup_screen.dart';
-import 'package:wallet_cryptomask/ui/setttings/general_settings_screen/general_settings_screen.dart';
-import 'package:wallet_cryptomask/ui/setttings/security_settings_screen/security_settings_screen.dart';
-import 'package:wallet_cryptomask/ui/setttings/settings_screen.dart';
-import 'package:wallet_cryptomask/ui/token-dashboard-screen/token_dashboard_screen.dart';
-import 'package:wallet_cryptomask/ui/transaction-confirmation/transaction_confirmation.dart';
-import 'package:wallet_cryptomask/ui/transaction-history/transaction_history_screen.dart';
-import 'package:wallet_cryptomask/ui/transfer/transfer_screen.dart';
-import 'package:wallet_cryptomask/ui/webview/web_view_screen.dart';
 
 import 'constant.dart';
 

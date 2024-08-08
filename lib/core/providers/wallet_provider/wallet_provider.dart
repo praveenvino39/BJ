@@ -607,13 +607,15 @@ class WalletProvider extends ChangeNotifier {
               onWillPop: () async {
                 Completer<bool> completor = Completer<bool>();
                 Get.dialog(SimpleDialog(
-                  title: const Text("Reject Cofirmation"),
+                  title: const WalletText(
+                    localizeKey: 'rejectConfirmation',
+                  ),
                   children: [
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        "Are you surely want to reject this request ?",
-                        textAlign: TextAlign.center,
+                      child: WalletText(
+                        localizeKey: 'rejectRequestConfirmation',
+                        align: TextAlign.center,
                       ),
                     ),
                     Row(
@@ -700,7 +702,9 @@ class WalletProvider extends ChangeNotifier {
       handler: (method, params) {
         Completer signFuture = Completer();
         Get.dialog(AlertDialog(
-          title: const Text("Eth Sign"),
+          title: const WalletText(
+            localizeKey: 'ethSign',
+          ),
           actions: [
             WalletButton(onPressed: () {
               String sign = EthSigUtil.signPersonalTypedData(
@@ -724,7 +728,9 @@ class WalletProvider extends ChangeNotifier {
       handler: (method, params) {
         Completer signFuture = Completer();
         Get.dialog(AlertDialog(
-          title: const Text("Sign Data"),
+          title: const WalletText(
+            localizeKey: 'signData',
+          ),
           content: Text(params[1]),
           actions: [
             WalletButton(
@@ -756,7 +762,9 @@ class WalletProvider extends ChangeNotifier {
       handler: (method, params) {
         Completer signFuture = Completer();
         Get.dialog(AlertDialog(
-          title: const Text("Sign Data"),
+          title: const WalletText(
+            localizeKey: "signData",
+          ),
           content: Text(params[1]),
           actions: [
             WalletButton(
@@ -788,7 +796,9 @@ class WalletProvider extends ChangeNotifier {
       handler: (method, params) {
         Completer signFuture = Completer();
         Get.dialog(AlertDialog(
-          title: const Text("Sign Data"),
+          title: const WalletText(
+            localizeKey: 'signData',
+          ),
           content: Text(params[1]),
           actions: [
             WalletButton(
@@ -821,7 +831,9 @@ class WalletProvider extends ChangeNotifier {
       handler: (method, params) {
         Completer signFuture = Completer();
         Get.dialog(AlertDialog(
-          title: const Text("Sign Data"),
+          title: const WalletText(
+            localizeKey: 'signData',
+          ),
           content: Text(params[1]),
           actions: [
             WalletButton(
@@ -859,7 +871,9 @@ class WalletProvider extends ChangeNotifier {
           content: isHexString(params[1])
               ? Text(String.fromCharCodes(hexToBytes(params[1])))
               : Text(params[1]),
-          title: const Text("Sign Message"),
+          title: const WalletText(
+            localizeKey: 'signMessage',
+          ),
           actions: [
             WalletButton(
                 localizeKey: "approve",
@@ -912,10 +926,12 @@ class WalletProvider extends ChangeNotifier {
               ? Text("${String.fromCharCodes(hexToBytes(params[0]))}/n" +
                   params[1])
               : Text(params[0] + "/n" + params[1]),
-          title: const Text("Personal sign"),
+          title: const WalletText(
+            localizeKey: 'personalSign',
+          ),
           actions: [
             WalletButton(
-                localizeKey: "Approve",
+                localizeKey: "approve",
                 type: WalletButtonType.filled,
                 onPressed: () {
                   final encodedMessage = hexToBytes(params[0]);
@@ -927,7 +943,7 @@ class WalletProvider extends ChangeNotifier {
                   return signFuture.complete(sign);
                 }),
             WalletButton(
-                localizeKey: "Reject",
+                localizeKey: "reject",
                 onPressed: () {
                   Get.back();
                   return signFuture.completeError("User rejected");

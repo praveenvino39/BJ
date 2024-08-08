@@ -415,6 +415,18 @@ var es = {
       "You will be asked to enter password to view your Privatekey",
   "securityNoteSD":
       "You will be asked to enter password to view your Privatekey",
+  "unkownContact": "Unknown address",
+  "somethingWentWrong": "Something went wrong",
+  "rejectConfirmation": "Reject Cofirmation",
+  "rejectRequestConfirmation": "Are you surely want to reject this request ?",
+  "no": "No",
+  "dappIsRequesting": "This Dapp",
+  "ethSign": "Eth Sign",
+  "signData": "Sign Data",
+  "approve": "Approve",
+  "reject": "Reject",
+  "signMessage": "Sign Message",
+  "personalSign": "Personal sign"
 };
 
 String getText(BuildContext context, {required String key}) {

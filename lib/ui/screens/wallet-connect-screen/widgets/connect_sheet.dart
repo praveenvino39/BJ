@@ -3,6 +3,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
@@ -41,6 +42,7 @@ class _ConnectSheetState extends State<ConnectSheet>
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: context.width,
       color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -147,8 +149,7 @@ class _ConnectSheetState extends State<ConnectSheet>
                             .address
                             .hex,
                       ),
-                      addHeight(SpacingSize.m),
-
+                      addWidth(SpacingSize.s),
                       Expanded(
                         child: InkWell(
                           onTap: () {},

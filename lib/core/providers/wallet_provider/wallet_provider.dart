@@ -976,8 +976,12 @@ class WalletProvider extends ChangeNotifier {
       }
       final namespaceExist = chains.contains(getCurrentNamespaceWithChainId());
       if (namespaceExist) {
-        Get.bottomSheet(
-            ConnectSheet(
+        Get.dialog(
+          AlertDialog(
+            insetPadding: const EdgeInsets.all(0),
+            contentPadding: const EdgeInsets.all(0),
+            backgroundColor: Colors.white,
+            content: ConnectSheet(
               imageUrl: args.params.proposer.metadata.icons.isNotEmpty
                   ? args.params.proposer.metadata.icons[0]
                   : "",
@@ -1000,7 +1004,8 @@ class WalletProvider extends ChangeNotifier {
                 );
               },
             ),
-            backgroundColor: Colors.white);
+          ),
+        );
       } else {
         final networks = Core.networks
             .where((e) => chains.contains("${e.nameSpace}:${e.chainId}"))

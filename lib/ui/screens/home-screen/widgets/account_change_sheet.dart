@@ -7,6 +7,7 @@ import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/ui/shared/avatar_widget.dart';
 import 'package:wallet_cryptomask/ui/screens/import-account-screen/import_account_screen.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 
 class AccountChangeSheet extends StatefulWidget {
@@ -97,10 +98,8 @@ class _AccountChangeSheetState extends State<AccountChangeSheet> {
                   ? const Center(
                       child: LinearProgressIndicator(color: kPrimaryColor),
                     )
-                  : const Text(
-                      "Create New Account",
-                      style: TextStyle(color: kPrimaryColor),
-                    ),
+                  : const WalletText(
+                      localizeKey: 'createNewAccount', color: kPrimaryColor),
             ),
             addHeight(SpacingSize.s),
             Container(
@@ -113,10 +112,8 @@ class _AccountChangeSheetState extends State<AccountChangeSheet> {
               onTap: () async {
                 context.push(() => const ImportAccountScreen());
               },
-              child: const Text(
-                "Import Account",
-                style: TextStyle(color: kPrimaryColor),
-              ),
+              child: const WalletText(
+                  localizeKey: 'importAccount', color: kPrimaryColor),
             ),
             addHeight(SpacingSize.s),
             Container(

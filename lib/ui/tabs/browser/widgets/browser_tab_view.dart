@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
 import 'package:wallet_cryptomask/ui/tabs/browser/widgets/browser_view.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 
@@ -56,7 +58,7 @@ class _BrowserTabViewState extends State<BrowserTabView> {
             onPressed: () {
               widget.createNewTab();
             },
-            localizeKey: "Create new Tab",
+            localizeKey: 'createNewTab',
           )
         ],
       ),
@@ -119,8 +121,9 @@ class _TabTileState extends State<TabTile> {
                     width: 10,
                   ),
                   Expanded(
-                      child: Text(
-                          widget.browserView.webViewModel.title ?? "New tab")),
+                      child: WalletText(
+                          localizeKey: widget.browserView.webViewModel.title ??
+                              "New tab")),
                   IconButton(
                       splashRadius: 10,
                       onPressed: () {
@@ -148,7 +151,10 @@ class _TabTileState extends State<TabTile> {
                       color: Colors.white,
                       width: double.infinity,
                       height: double.infinity,
-                      child: const Center(child: Text("New tab"))),
+                      child: const Center(
+                          child: WalletText(
+                        localizeKey: 'newTab',
+                      ))),
             ),
           ],
         ),

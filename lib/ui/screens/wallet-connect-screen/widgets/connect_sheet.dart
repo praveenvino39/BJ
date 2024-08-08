@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/shared/avatar_widget.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
@@ -116,17 +117,16 @@ class _ConnectSheetState extends State<ConnectSheet>
                 addHeight(SpacingSize.xs),
                 const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      "Connect to this site?",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    )),
+                    child: WalletText(
+                        localizeKey: 'connectToThis',
+                        size: 16,
+                        fontWeight: FontWeight.bold)),
                 addHeight(SpacingSize.m),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    "By clicking connect, you allow this dapp to view your public address. This is an important security step to protect your data from potential phishing risks.",
-                    textAlign: TextAlign.center,
+                  child: WalletText(
+                    localizeKey: 'byClicking',
+                    align: TextAlign.center,
                   ),
                 ),
                 addHeight(SpacingSize.s),
@@ -183,7 +183,7 @@ class _ConnectSheetState extends State<ConnectSheet>
                                 width: 1, color: Colors.grey.withAlpha(60))),
                         child: WalletText(
                           localizeKey:
-                              "${widget.requestedNetworks?.length} chains requested",
+                              "${widget.requestedNetworks?.length} ${getText(context, key: 'chainsAreRequried')}",
                         ),
                       )
                     : const SizedBox(),
@@ -195,7 +195,7 @@ class _ConnectSheetState extends State<ConnectSheet>
                       children: [
                         Expanded(
                           child: WalletButton(
-                              localizeKey: "Reject",
+                              localizeKey: "reject",
                               onPressed: () async {
                                 widget.onReject();
                                 Navigator.of(context).pop();
@@ -203,7 +203,7 @@ class _ConnectSheetState extends State<ConnectSheet>
                         ),
                         Expanded(
                           child: WalletButton(
-                              localizeKey: "Approve",
+                              localizeKey: "approve",
                               type: WalletButtonType.filled,
                               onPressed: () async {
                                 Box box = await Hive.openBox("user_preference");

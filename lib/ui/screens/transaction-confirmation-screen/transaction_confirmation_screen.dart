@@ -15,6 +15,7 @@ import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/shared/avatar_widget.dart';
 import 'package:wallet_cryptomask/ui/screens/home-screen/home_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
@@ -232,15 +233,23 @@ class _TransactionConfirmationScreenState
                 .then((txHash) {
               getWalletProvider(context).hideLoading();
               Navigator.of(context).popUntil((route) => route.isFirst);
-              showPositiveSnackBar(context, 'Success',
-                  'Transaction with $txHash is sumbitted to the network');
+              showPositiveSnackBar(
+                context,
+                getText(context, key: 'success'),
+                getTextWithPlaceholder(context,
+                    key: 'txSubmitted', string: txHash ?? ""),
+              );
             }).catchError((e) {
-              showErrorSnackBar(context, "Transaction failed",
-                  'Transaction is failed sumbit to the network');
+              showErrorSnackBar(
+                  context,
+                  getText(context, key: 'transactionFailed1'),
+                  getText(context, key: 'transactionFailedMessage'));
             });
           }).catchError((e) {
-            showErrorSnackBar(context, "Transaction failed",
-                'Transaction is failed sumbit to the network');
+            showErrorSnackBar(
+                context,
+                getText(context, key: 'transactionFailed1'),
+                getText(context, key: 'transactionFailedMessage'));
           });
         } else {
           walletProvider
@@ -249,11 +258,18 @@ class _TransactionConfirmationScreenState
               .then((txHash) {
             getWalletProvider(context).hideLoading();
             Navigator.of(context).popUntil((route) => route.isFirst);
-            showPositiveSnackBar(context, 'Success',
-                'Transaction with $txHash is sumbitted to the network');
+            showPositiveSnackBar(
+              context,
+              getText(context, key: 'success'),
+              getTextWithPlaceholder(context,
+                  key: 'txSubmitted', string: txHash ?? ""),
+            );
           }).catchError((e) {
-            showErrorSnackBar(context, "Transaction failed",
-                'Transaction is failed sumbit to the network');
+            showErrorSnackBar(
+              context,
+              getText(context, key: 'transactionFailed1'),
+              getText(context, key: 'transactionFailedMessage'),
+            );
           });
         }
       } else {
@@ -299,16 +315,22 @@ class _TransactionConfirmationScreenState
                 if (kDebugMode) {
                   print(txHash);
                 }
-                showPositiveSnackBar(context, "Transaction sumbitted",
-                    "Transaction with hash ${showEllipse(txHash)} has been submitted successfully");
+                showPositiveSnackBar(
+                  context,
+                  getText(context, key: 'success'),
+                  getTextWithPlaceholder(context,
+                      key: 'txSubmitted', string: txHash),
+                );
                 context.pushAndRemoveUntil(
                     removeUntil: bool, builder: () => const HomeScreen());
               }
             }).catchError((e) {
-              showErrorSnackBar(context, "Transaction failed", e.toString());
+              showErrorSnackBar(context,
+                  getText(context, key: 'transactionFailed1'), e.toString());
             });
           }).catchError((e) {
-            showErrorSnackBar(context, "Transaction failed", e.toString());
+            showErrorSnackBar(context,
+                getText(context, key: 'transactionFailed1'), e.toString());
           });
         } else {
           // Transaction Token
@@ -333,18 +355,24 @@ class _TransactionConfirmationScreenState
               if (kDebugMode) {
                 print(txHash);
               }
-              showPositiveSnackBar(context, "Transaction sumbitted",
-                  "Transaction with hash ${showEllipse(txHash)} has been submitted successfully");
+              showPositiveSnackBar(
+                context,
+                getText(context, key: 'success'),
+                getTextWithPlaceholder(context,
+                    key: 'txSubmitted', string: txHash),
+              );
               context.pushAndRemoveUntil(
                   removeUntil: bool, builder: () => const HomeScreen());
             }
           }).catchError((e) {
-            showErrorSnackBar(context, "Transaction failed", e.toString());
+            showErrorSnackBar(context,
+                getText(context, key: 'transactionFailed1'), e.toString());
           });
         }
       }
     } catch (e) {
-      showErrorSnackBar(context, "Failed", e.toString());
+      showErrorSnackBar(
+          context, getText(context, key: 'transactionFailed1'), e.toString());
     }
   }
 
@@ -361,11 +389,11 @@ class _TransactionConfirmationScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text("Confirm transaction",
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w200,
-                        color: Colors.black)),
+                const WalletText(
+                    localizeKey: 'confirmTransaction',
+                    size: 16,
+                    fontWeight: FontWeight.w200,
+                    color: Colors.black),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -428,7 +456,9 @@ class _TransactionConfirmationScreenState
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
-                      Text("${AppLocalizations.of(context)!.from}:"),
+                      const WalletText(
+                        localizeKey: 'from',
+                      ),
                       addHeight(SpacingSize.s),
                       Expanded(
                         child: Container(
@@ -586,7 +616,7 @@ class _TransactionConfirmationScreenState
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const WalletText(
-                                  localizeKey: 'Platform fee',
+                                  localizeKey: 'platformFee',
                                   fontWeight: FontWeight.bold,
                                 ),
                                 Text(

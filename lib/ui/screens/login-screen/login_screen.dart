@@ -56,8 +56,8 @@ class _LoginScreenState extends State<LoginScreen> {
             removeUntil: bool, builder: () => const HomeScreen());
       }).catchError((e) {
         walletProvider.hideLoading();
-        showErrorSnackBar(
-            context, 'Error', getText(context, key: 'passwordIncorrect'));
+        showErrorSnackBar(context, getText(context, key: 'error'),
+            getText(context, key: 'passwordIncorrect'));
         return e;
       });
     }
@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                   return WalletButton(
                       type: WalletButtonType.outline,
-                      localizeKey: 'Open Wallet',
+                      localizeKey: 'openWallet',
                       onPressed: openWalletHandler);
                 },
               ),
@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     backgroundColor: MaterialStateProperty.all(
                                         kPrimaryColor)),
                                 child: const WalletText(
-                                  localizeKey: "Cancel",
+                                  localizeKey: "cancel",
                                 )),
                             ElevatedButton(
                                 onPressed: () {
@@ -152,23 +152,25 @@ class _LoginScreenState extends State<LoginScreen> {
                                     backgroundColor:
                                         MaterialStateProperty.all(Colors.red)),
                                 child: const WalletText(
-                                  localizeKey: "Erase and Continue",
+                                  localizeKey: 'eraseAndContinue',
                                 )),
                           ],
-                          title: const Text("Confirmation"),
+                          title: const WalletText(
+                            localizeKey: 'confirmation',
+                          ),
                           content: RichText(
-                            text: const TextSpan(
+                            text: TextSpan(
                               children: [
                                 TextSpan(
                                     text:
-                                        'This action will erase all previous wallets and all funds will be lost. Make sure you can restore with your saved 12 word secret phrase and private keys for each wallet before you erase!.'),
+                                        getText(context, key: 'eraseWarning')),
                                 TextSpan(
-                                    text: ' This action is irreversible',
-                                    style: TextStyle(
+                                    text: getText(context, key: 'irreversible'),
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.red))
                               ],
-                              style: TextStyle(color: Colors.black),
+                              style: const TextStyle(color: Colors.black),
                             ),
                           ));
                       showDialog(context: context, builder: (context) => alert);

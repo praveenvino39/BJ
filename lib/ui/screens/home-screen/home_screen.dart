@@ -14,6 +14,7 @@ import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/core/socket/message_engine.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/shared/custom_icon_button.dart';
 import 'package:wallet_cryptomask/ui/tabs/browser/browser_tab.dart';
 import 'package:wallet_cryptomask/ui/screens/home-screen/widgets/account_change_sheet.dart';
@@ -67,8 +68,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   onAddressTapHandler() {
     getWalletProvider(context).copyPublicAddress().then((value) {
-      showPositiveSnackBar(
-          context, 'Success', 'Public address copied to clipboard');
+      showPositiveSnackBar(context, getText(context, key: 'success'),
+          getText(context, key: 'addressCopied'));
     });
   }
 
@@ -133,13 +134,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 unselectedItemColor: Colors.grey,
                 selectedFontSize: 12,
                 unselectedFontSize: 12,
-                items: const [
-                  BottomNavigationBarItem(
+                items: [
+                  const BottomNavigationBarItem(
                     icon: Icon(Icons.wallet),
-                    label: "Wallet",
+                    label: "wallet",
                   ),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.public), label: "Dapp Browser"),
+                      icon: const Icon(Icons.public),
+                      label: getText(context, key: 'dappBrowser')),
                 ],
               ),
               backgroundColor: Colors.white,

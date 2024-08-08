@@ -101,10 +101,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   context.push(() => const WalletConnectSessionScreen());
                 },
                 title: const WalletText(
-                  localizeKey: 'WalletConnect',
+                  localizeKey: 'walletConnect',
                 ),
                 subtitle: const WalletText(
-                  localizeKey: 'Manage WalletConnect session',
+                  localizeKey: 'manageWCSession',
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios),
               ),
@@ -118,10 +118,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   context.push(() => const ChatScreen());
                 },
                 title: const WalletText(
-                  localizeKey: 'Contact us',
+                  localizeKey: 'contactUs',
                 ),
                 subtitle: const WalletText(
-                  localizeKey: 'Send a message to us',
+                  localizeKey: 'sendMessage',
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios),
               ),

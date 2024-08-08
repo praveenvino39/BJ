@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,7 +7,9 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:new_version/new_version.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet_cryptomask/config.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 
 checkForUpdate(BuildContext context) {
@@ -19,11 +23,14 @@ checkForUpdate(BuildContext context) {
             builder: (context) => PopScope(
               canPop: false,
               child: AlertDialog(
-                title: const Text("Update available"),
+                title: const WalletText(
+                  localizeKey: 'updateAvailable',
+                ),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Available version: ${update.availableVersionCode}'),
+                    Text(
+                        '${getText(context, key: 'availableVersions')}: ${update.availableVersionCode}'),
                     addHeight(SpacingSize.m),
                     WalletButton(
                         localizeKey: 'update',
@@ -52,29 +59,29 @@ checkForUpdate(BuildContext context) {
             builder: (context) => PopScope(
               canPop: false,
               child: AlertDialog(
-                title: const Text("Update available"),
+                title: const WalletText(
+                  localizeKey: 'updateAvailable',
+                ),
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                        "New version of $appName is available on App Store."),
+                    Text(getTextWithPlaceholder(context,
+                        key: 'newVersions', string: appName)),
                     addHeight(SpacingSize.s),
                     Row(
                       children: [
-                        const Text(
-                          'Current version: ',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        const WalletText(
+                            localizeKey: 'currentVersion',
+                            fontWeight: FontWeight.bold),
                         Expanded(child: Text(status.localVersion)),
                       ],
                     ),
                     Row(
                       children: [
-                        const Text(
-                          'Available version: ',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        const WalletText(
+                            localizeKey: 'availableVersions',
+                            fontWeight: FontWeight.bold),
                         Expanded(child: Text(status.storeVersion)),
                       ],
                     ),
@@ -84,7 +91,7 @@ checkForUpdate(BuildContext context) {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(status.releaseNotes ??
-                        "Improved performance and stability."),
+                        getText(context, key: 'improvePerformance')),
                     addHeight(SpacingSize.m),
                     WalletButton(
                         localizeKey: 'update',
@@ -94,7 +101,7 @@ checkForUpdate(BuildContext context) {
                             Uri.parse(status.appStoreLink),
                             mode: LaunchMode.externalApplication,
                           )) {
-                            throw 'Could not launch ${status.appStoreLink}';
+                            throw '${getText(context, key: 'couldNot')} ${status.appStoreLink}';
                           }
                         })
                   ],

@@ -8,9 +8,11 @@ import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/moralis_token_transfer.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/screens/block-web-view-screen/block_web_view.dart';
 import 'package:wallet_cryptomask/ui/shared/avatar_widget.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 
@@ -52,12 +54,12 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
                               .hex
                               .toLowerCase()
                       ? Text(
-                          "Sent ${widget.data.tokenSymbol}",
+                          "${getText(context, key: 'send')} ${widget.data.tokenSymbol}",
                           style: const TextStyle(fontSize: 16),
                           overflow: TextOverflow.ellipsis,
                         )
                       : Text(
-                          "Receive ${widget.data.tokenSymbol}",
+                          "${getText(context, key: 'receive')} ${widget.data.tokenSymbol}",
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(fontSize: 16),
                         ),
@@ -88,14 +90,12 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
                               const Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("Status",
-                                      style: TextStyle(fontSize: 12)),
-                                  Text(
-                                    "Confirmed",
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700),
+                                  WalletText(localizeKey: 'status', size: 12),
+                                  WalletText(
+                                    localizeKey: 'confirmed',
+                                    color: Colors.green,
+                                    size: 12,
+                                    fontWeight: FontWeight.w700,
                                   )
                                 ],
                               ),
@@ -105,8 +105,8 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      const Text("Copy Tranaction ID",
-                                          style: TextStyle(fontSize: 12)),
+                                      const WalletText(
+                                          localizeKey: 'copyTxId', size: 12),
                                       IconButton(
                                           splashRadius: 15,
                                           onPressed: () {
@@ -129,8 +129,8 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
                           const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("From", style: TextStyle(fontSize: 12)),
-                              Text("To", style: TextStyle(fontSize: 12))
+                              WalletText(localizeKey: 'from', size: 12),
+                              WalletText(localizeKey: 'to', size: 12)
                             ],
                           ),
                           addHeight(SpacingSize.xs),
@@ -180,7 +180,8 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
                                               .activeNetwork
                                               .transactionViewUrl +
                                           widget.data.transactionHash,
-                                      title: "Transaction"),
+                                      title:
+                                          getText(context, key: 'transaction')),
                                 );
                               }),
                           addHeight(SpacingSize.m),
@@ -236,21 +237,20 @@ class _TokenTransactionTileState extends State<TokenTransactionTile> {
                                   .hex
                                   .toLowerCase()
                           ? Text(
-                              "Sent${widget.data.tokenSymbol}",
+                              "${getText(context, key: 'send')} ${widget.data.tokenSymbol}",
                               style: const TextStyle(fontSize: 16),
                               overflow: TextOverflow.ellipsis,
                             )
                           : Text(
-                              "Receive ${widget.data.tokenSymbol}",
+                              "${getText(context, key: 'receive')} ${widget.data.tokenSymbol}",
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(fontSize: 16),
                             ),
-                      const Text(
-                        "Confirmed",
-                        style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700),
+                      const WalletText(
+                        localizeKey: 'confirmed',
+                        color: Colors.green,
+                        size: 12,
+                        fontWeight: FontWeight.w700,
                       )
                     ],
                   ),

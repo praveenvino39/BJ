@@ -126,11 +126,11 @@ class _TransferScreenState extends State<TransferScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text("${AppLocalizations.of(context)!.send} to",
-                    style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w200,
-                        color: Colors.black)),
+                const WalletText(
+                    localizeKey: 'to',
+                    size: 16,
+                    fontWeight: FontWeight.w200,
+                    color: Colors.black),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -191,7 +191,7 @@ class _TransferScreenState extends State<TransferScreen>
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
-                      Text("${AppLocalizations.of(context)!.from}:"),
+                      const WalletText(localizeKey: 'from'),
                       addWidth(SpacingSize.s),
                       Expanded(
                         child: Container(
@@ -244,7 +244,7 @@ class _TransferScreenState extends State<TransferScreen>
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
-                      Text("${AppLocalizations.of(context)!.to}:"),
+                      const WalletText(localizeKey: 'to'),
                       addWidth(SpacingSize.s),
                       Expanded(
                         child: Row(
@@ -332,10 +332,10 @@ class _TransferScreenState extends State<TransferScreen>
                 TabBar(
                   tabs: [
                     Tab(
-                      text: getText(context, key: 'My Contacts'),
+                      text: getText(context, key: 'myContacts'),
                     ),
                     Tab(
-                      text: getText(context, key: 'My Accounts'),
+                      text: getText(context, key: 'myAccount'),
                     ),
                     Tab(
                       text: getText(context, key: 'recent'),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:routerino/routerino.dart';
@@ -18,6 +17,7 @@ import 'package:wallet_cryptomask/ui/screens/home-screen/widgets/receive_sheet.d
 import 'package:wallet_cryptomask/ui/screens/transaction-history-screen/widget/token_transaction_tile.dart';
 import 'package:wallet_cryptomask/ui/screens/transaction-history-screen/widget/transaction_tile.dart';
 import 'package:wallet_cryptomask/ui/screens/transfer-screen/transfer_screen.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 
@@ -152,11 +152,9 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                                             .hex)),
                                               );
                                             },
-                                            child: const Text(
-                                              "View full history on Explorer",
-                                              style: TextStyle(
-                                                  color: kPrimaryColor),
-                                            ),
+                                            child: const WalletText(
+                                                localizeKey: 'viewFullHistory',
+                                                color: kPrimaryColor),
                                           ),
                                         ),
                                       )
@@ -164,11 +162,10 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                   ),
                                 )
                               : const Center(
-                                  child: Text(
-                                    "You have no transactions!",
-                                    style: TextStyle(
-                                        fontSize: 18, color: Colors.grey),
-                                  ),
+                                  child: WalletText(
+                                      localizeKey: 'noTransaction',
+                                      size: 18,
+                                      color: Colors.grey),
                                 );
                         } else {
                           return const Center(
@@ -242,11 +239,9 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                                             .hex)),
                                               );
                                             },
-                                            child: const Text(
-                                              "View full history on Explorer",
-                                              style: TextStyle(
-                                                  color: kPrimaryColor),
-                                            ),
+                                            child: const WalletText(
+                                                localizeKey: 'viewFullHistory',
+                                                color: kPrimaryColor),
                                           ),
                                         ),
                                       )
@@ -254,11 +249,10 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                   ),
                                 )
                               : const Center(
-                                  child: Text(
-                                    "You have no transactions!",
-                                    style: TextStyle(
-                                        fontSize: 18, color: Colors.grey),
-                                  ),
+                                  child: WalletText(
+                                      localizeKey: 'noTransaction',
+                                      size: 18,
+                                      color: Colors.grey),
                                 );
                         } else {
                           return const Center(
@@ -319,10 +313,8 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                     onPressed: onReceiveClick,
                                   ),
                                 ),
-                                Text(
-                                  AppLocalizations.of(context)!.receive,
-                                  style: const TextStyle(fontSize: 12),
-                                )
+                                const WalletText(
+                                    localizeKey: 'receive', size: 12)
                               ],
                             ),
                             addWidth(SpacingSize.l),
@@ -348,10 +340,7 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
                                     ),
                                   ),
                                 ),
-                                Text(
-                                  AppLocalizations.of(context)!.send,
-                                  style: const TextStyle(fontSize: 12),
-                                )
+                                const WalletText(localizeKey: 'send', size: 12)
                               ],
                             ),
                           ],

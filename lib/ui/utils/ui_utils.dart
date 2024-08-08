@@ -41,10 +41,10 @@ copyAddressToClipBoard(String address, BuildContext context,
   ).then((value) {
     showPositiveSnackBar(
         context,
-        'Copied',
+        getText(context, key: 'copied'),
         isPk
-            ? "Privatekey copied to clipboard"
-            : "Public address copied to clipboard");
+            ? getText(context, key: 'pkCopied')
+            : getText(context, key: 'addCopied'));
   });
 }
 
@@ -140,8 +140,8 @@ showPasswordInputModal(
                   await onVerified();
                   return context.push(() => const SecuritySettingsScreen());
                 }
-                showErrorSnackBar(
-                    context, "Invalid", "Passwod is invalid, Please try again");
+                showErrorSnackBar(context, getText(context, key: 'invalid'),
+                    getText(context, key: 'passwordIsInvalid'));
               },
               localizeKey: 'verify',
             )
@@ -161,7 +161,7 @@ copyToClipBoard(BuildContext context, String content, String message) {
   Clipboard.setData(
     ClipboardData(text: content),
   ).then((value) {
-    showPositiveSnackBar(context, 'Copied', message);
+    showPositiveSnackBar(context, getText(context, key: 'copied'), message);
   });
 }
 

@@ -112,23 +112,23 @@ class _DrawerComponentState extends State<DrawerComponent> {
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.red)),
               child: const WalletText(
-                localizeKey: "Erase and continue",
+                localizeKey: 'eraseAndContinue',
                 color: Colors.white,
               )),
         ],
-        title: const Text("Confirmation"),
+        title: const WalletText(
+          localizeKey: 'confirmation',
+        ),
         content: RichText(
-          text: const TextSpan(
+          text: TextSpan(
             children: [
+              TextSpan(text: getText(context, key: 'eraseWarning')),
               TextSpan(
-                  text:
-                      'This action will erase all previous wallets and all funds will be lost. Make sure you can restore with your saved 12 word secret phrase and private keys for each wallet before you erase!.'),
-              TextSpan(
-                  text: ' This action is irreversible',
-                  style:
-                      TextStyle(fontWeight: FontWeight.bold, color: Colors.red))
+                  text: getText(context, key: 'irreversible'),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.red))
             ],
-            style: TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black),
           ),
         ));
 
@@ -259,7 +259,7 @@ class _DrawerComponentState extends State<DrawerComponent> {
                       ),
                       addWidth(SpacingSize.s),
                       const WalletText(
-                        localizeKey: "Contact",
+                        localizeKey: "contact",
                         color: Colors.black,
                       ),
                     ],

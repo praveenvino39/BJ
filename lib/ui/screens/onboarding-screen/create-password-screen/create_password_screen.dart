@@ -60,8 +60,8 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     if (_formKey.currentState?.validate() == true) {
       if (!isTermsAccepted) {
-        showErrorSnackBar(
-            context, 'Invalid', getText(context, key: 'accepTermsWarning'));
+        showErrorSnackBar(context, getText(context, key: 'invalid'),
+            getText(context, key: 'accepTermsWarning'));
         setState(() {
           isLoading = false;
         });
@@ -70,7 +70,7 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
       if (passwordEditingControl.text != confirmPasswordEditingControl.text) {
         showErrorSnackBar(
             context,
-            'Invalid',
+            getText(context, key: 'invalid'),
             getText(
               context,
               key: 'passwordConfirmPasswordNotMatch',
@@ -91,7 +91,7 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
         });
         showPositiveSnackBar(
             context,
-            'Success',
+            getText(context, key: 'success'),
             getText(
               context,
               key: 'createWalletGreet',
@@ -101,7 +101,8 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
         setState(() {
           isLoading = false;
         });
-        showErrorSnackBar(context, "Error", e.toString());
+        showErrorSnackBar(
+            context, getText(context, key: 'error'), e.toString());
       }
     }
   }

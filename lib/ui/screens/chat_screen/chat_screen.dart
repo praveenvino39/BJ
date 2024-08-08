@@ -15,6 +15,7 @@ import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/core/socket/message_engine.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 
@@ -60,13 +61,15 @@ class _ChatScreenState extends State<ChatScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog.adaptive(
-        title: const Text("Confirmation"),
+        title: const WalletText(
+          localizeKey: 'confirmation',
+        ),
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              "Do yo want to send a file to admin ?",
+            const WalletText(
+              localizeKey: 'fileSendAdminDialog',
             ),
             addHeight(SpacingSize.m),
             Container(

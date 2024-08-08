@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/browser_provider/browser_provider.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 
 class BrowserUrlField extends StatefulWidget {
@@ -116,7 +117,7 @@ class _BrowserUrlFieldState extends State<BrowserUrlField>
                         : const SizedBox(),
                     focusedBorder: outlineBorder,
                     enabledBorder: outlineBorder,
-                    hintText: "Search or type a web address",
+                    hintText: getText(context, key: 'searchOrType'),
                     hintStyle:
                         const TextStyle(color: Colors.black54, fontSize: 12.0),
                   ),

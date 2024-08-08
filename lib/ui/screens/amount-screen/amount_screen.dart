@@ -10,8 +10,10 @@ import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/screens/transaction-confirmation-screen/transaction_confirmation_screen.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 
@@ -57,8 +59,11 @@ class _AmountScreenState extends State<AmountScreen> {
     final decimalIndex = valueString.indexOf('.');
     if (decimalIndex != -1 &&
         valueString.length - decimalIndex - 1 > widget.token.decimal) {
-      showErrorSnackBar(context, "Invalid input",
-          'The value cannot have more than ${widget.token.decimal} decimal places.');
+      showErrorSnackBar(
+          context,
+          getText(context, key: 'invalidInput'),
+          getTextWithPlaceholder(context,
+              key: 'key', string: widget.token.decimal.toString()));
       return;
     }
     context.push(() => TransactionConfirmationScreen(
@@ -205,10 +210,8 @@ class _AmountScreenState extends State<AmountScreen> {
                   ),
                 )
               : const SafeArea(
-                  child: Text(
-                    "Insufficient fund",
-                    style: TextStyle(color: Colors.red),
-                  ),
+                  child: WalletText(
+                      localizeKey: 'insufficientFund', color: Colors.red),
                 ),
           addHeight(SpacingSize.s),
         ],

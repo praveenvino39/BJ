@@ -116,7 +116,7 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
                   Text(
                     urlController.text.toString().contains(
                             "file:///android_asset/flutter_assets/assets/html/homepage.html")
-                        ? "home.egon.wallet"
+                        ? "http://www.google.com"
                         : Uri.parse(urlController.text).authority,
                     overflow: TextOverflow.fade,
                     style: const TextStyle(fontSize: 13, color: Colors.black),

@@ -8,9 +8,11 @@ import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/moralis_transaction_response.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/screens/block-web-view-screen/block_web_view.dart';
 import 'package:wallet_cryptomask/ui/shared/avatar_widget.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 
@@ -52,11 +54,11 @@ class _TransactionTileState extends State<TransactionTile> {
                               .hex
                               .toLowerCase()
                       ? Text(
-                          "Sent ${getWalletProvider(context).activeNetwork.symbol}",
+                          "${getText(context, key: 'send')} ${getWalletProvider(context).activeNetwork.symbol}",
                           style: const TextStyle(fontSize: 16),
                         )
                       : Text(
-                          "Receive ${getWalletProvider(context).activeNetwork.symbol}",
+                          "${getText(context, key: 'receive')} ${getWalletProvider(context).activeNetwork.symbol}",
                           style: const TextStyle(fontSize: 16),
                         ),
                 ),
@@ -86,15 +88,12 @@ class _TransactionTileState extends State<TransactionTile> {
                               const Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("Status",
-                                      style: TextStyle(fontSize: 12)),
-                                  Text(
-                                    "Confirmed",
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700),
-                                  )
+                                  WalletText(localizeKey: 'status', size: 12),
+                                  WalletText(
+                                      localizeKey: 'confirmed',
+                                      color: Colors.green,
+                                      size: 12,
+                                      fontWeight: FontWeight.w700)
                                 ],
                               ),
                               Column(
@@ -103,8 +102,8 @@ class _TransactionTileState extends State<TransactionTile> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      const Text("Copy Tranaction ID",
-                                          style: TextStyle(fontSize: 12)),
+                                      const WalletText(
+                                          localizeKey: 'copyTxId', size: 12),
                                       IconButton(
                                           splashRadius: 15,
                                           onPressed: () {
@@ -126,8 +125,8 @@ class _TransactionTileState extends State<TransactionTile> {
                           const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("From", style: TextStyle(fontSize: 12)),
-                              Text("To", style: TextStyle(fontSize: 12))
+                              WalletText(localizeKey: 'from', size: 12),
+                              WalletText(localizeKey: 'to', size: 12)
                             ],
                           ),
                           addHeight(SpacingSize.xs),
@@ -175,7 +174,8 @@ class _TransactionTileState extends State<TransactionTile> {
                                               .activeNetwork
                                               .transactionViewUrl +
                                           widget.data.hash,
-                                      title: "Transaction"),
+                                      title:
+                                          getText(context, key: 'transaction')),
                                 );
                               }),
                           addHeight(SpacingSize.m),
@@ -231,20 +231,18 @@ class _TransactionTileState extends State<TransactionTile> {
                                   .hex
                                   .toLowerCase()
                           ? Text(
-                              "Sent ${getWalletProvider(context).activeNetwork.symbol}",
+                              "${getText(context, key: 'send')} ${getWalletProvider(context).activeNetwork.symbol}",
                               style: const TextStyle(fontSize: 16),
                             )
                           : Text(
-                              "Receive ${getWalletProvider(context).activeNetwork.symbol}",
+                              "${getText(context, key: 'receive')} ${getWalletProvider(context).activeNetwork.symbol}",
                               style: const TextStyle(fontSize: 16),
                             ),
-                      const Text(
-                        "Confirmed",
-                        style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700),
-                      )
+                      const WalletText(
+                          localizeKey: 'confirmed',
+                          color: Colors.green,
+                          size: 12,
+                          fontWeight: FontWeight.w700)
                     ],
                   ),
                 ),

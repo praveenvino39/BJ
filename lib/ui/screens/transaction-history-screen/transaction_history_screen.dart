@@ -44,11 +44,11 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
             child: Center(
               child: Column(
                 children: [
-                  const Text("Transaction history",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w200,
-                          color: Colors.black)),
+                  const WalletText(
+                      localizeKey: 'transactionHistory',
+                      size: 16,
+                      fontWeight: FontWeight.w200,
+                      color: Colors.black),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -141,10 +141,9 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                                 );
                               },
                               child: const SafeArea(
-                                child: Text(
-                                  "View full history on Explorer",
-                                  style: TextStyle(color: kPrimaryColor),
-                                ),
+                                child: WalletText(
+                                    localizeKey: 'viewFullHistory',
+                                    color: kPrimaryColor),
                               ),
                             ),
                           )

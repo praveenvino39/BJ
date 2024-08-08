@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wallet_cryptomask/core/providers/contact_provider/contact_provider.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/screens/contacts-screen/widgets/add_contact.dart';
 import 'package:wallet_cryptomask/ui/screens/contacts-screen/widgets/contact_tile.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
@@ -106,7 +107,7 @@ class _AllContactScreenState extends State<AllContactScreen> {
                             horizontal: 16, vertical: 10),
                         child: Row(
                           children: [
-                            Text("Sort by $sort"),
+                            Text("${getText(context, key: 'sortBy')} $sort"),
                           ],
                         ),
                       ),

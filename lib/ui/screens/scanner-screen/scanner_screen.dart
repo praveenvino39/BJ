@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 
 class ScannerScreen extends StatefulWidget {
@@ -20,9 +21,10 @@ class _ScannerScreenState extends State<ScannerScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Scan QR Code",
-              style: TextStyle(color: Colors.white, fontSize: 16),
+            const WalletText(
+              localizeKey: 'scanQrCode',
+              color: Colors.white,
+              size: 16,
             ),
             addHeight(SpacingSize.m),
             Container(

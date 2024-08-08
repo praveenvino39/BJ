@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
@@ -44,7 +45,7 @@ class _WalletConnectSessionScreenState
         elevation: 0,
         centerTitle: true,
         title: const WalletText(
-          localizeKey: 'WalletConnect Sessions',
+          localizeKey: 'wcSessions',
           size: 16,
           fontWeight: FontWeight.w700,
         ),
@@ -61,9 +62,9 @@ class _WalletConnectSessionScreenState
             onPressed: () {
               showConfirmationDialog(
                 context: context,
-                question: 'Do you want to end session with all dapps?',
-                primaryCtaText: 'End all',
-                secondaryCtaText: 'Cancel',
+                question: getText(context, key: 'wcEndDialog'),
+                primaryCtaText: getText(context, key: 'endAll'),
+                secondaryCtaText: getText(context, key: 'cancel'),
                 secondaryOnPress: () => Get.back(),
                 primaryOnPress: () async {
                   try {
@@ -109,10 +110,12 @@ class _WalletConnectSessionScreenState
                             onPressed: () {
                               showConfirmationDialog(
                                 context: context,
-                                question:
-                                    'Do you want to end session with ${sessions[index].peer.metadata.name}?',
-                                primaryCtaText: 'End',
-                                secondaryCtaText: 'Cancel',
+                                question: getTextWithPlaceholder(context,
+                                    key: 'endOne',
+                                    string: sessions[index].peer.metadata.name),
+                                primaryCtaText: getText(context, key: 'end'),
+                                secondaryCtaText:
+                                    getText(context, key: 'cancel'),
                                 secondaryOnPress: () => Get.back(),
                                 primaryOnPress: () async {
                                   try {
@@ -167,8 +170,10 @@ class _WalletConnectSessionScreenState
                   );
                 },
               )
-            : const Center(
-                child: Text("No WalletConnect session found"),
+            : Center(
+                child: WalletText(
+                  localizeKey: getText(context, key: 'noWC'),
+                ),
               ),
       ),
     );

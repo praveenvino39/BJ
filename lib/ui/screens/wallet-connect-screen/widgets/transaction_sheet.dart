@@ -11,7 +11,9 @@ import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/providers/browser_provider/browser_provider.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
@@ -136,7 +138,9 @@ class _TransactionSheetState extends State<TransactionSheet> {
 
                           const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: Text("is requesting a transaction")),
+                              child: WalletText(
+                                localizeKey: 'isRequesting',
+                              )),
                           addHeight(SpacingSize.m),
 
                           Container(
@@ -218,15 +222,11 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                 const Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Estimated gas fee",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      "Site suggested",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
+                                    WalletText(
+                                        localizeKey: 'estimateGas',
+                                        fontWeight: FontWeight.bold),
+                                    WalletText(
+                                        localizeKey: 'siteSuggested', size: 12),
                                   ],
                                 ),
                                 const Spacer(),
@@ -239,7 +239,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     Text(
-                                      "Max fee: ${widget.transaction["gas"] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0] : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${widget.transaction['gas'] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4) : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}",
+                                      "${getText(context, key: 'maxFee')}: ${widget.transaction["gas"] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0] : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${widget.transaction['gas'] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4) : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}",
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                   ],
@@ -260,15 +260,11 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                 const Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Total",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      "Amount + gas fee",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
+                                    WalletText(
+                                        localizeKey: 'total',
+                                        fontWeight: FontWeight.bold),
+                                    WalletText(
+                                        localizeKey: 'amountWithFee', size: 12),
                                   ],
                                 ),
                                 const Spacer(),
@@ -281,7 +277,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     Text(
-                                      "Max fee: ${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} + ${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
+                                      "${getText(context, key: 'maxFee')}: ${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} + ${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                   ],
@@ -293,7 +289,6 @@ class _TransactionSheetState extends State<TransactionSheet> {
 
                           Column(
                             children: [
-                              // Text("Warning: ${state.wallet.privateKey.address.hex.toLowerCase() != transaction?.from.toString() ? "You're sending transaction from different account" : ""}"),
                               SizedBox(
                                   height: 50,
                                   width: double.infinity,
@@ -301,7 +296,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                     children: [
                                       Expanded(
                                         child: WalletButton(
-                                            localizeKey: "Reject",
+                                            localizeKey: "reject",
                                             onPressed: () async {
                                               widget.onReject();
                                               Navigator.of(context).pop();
@@ -312,7 +307,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                               0
                                           ? Expanded(
                                               child: WalletButton(
-                                                  localizeKey: "Approve",
+                                                  localizeKey: "approve",
                                                   type: WalletButtonType.filled,
                                                   onPressed: () async {
                                                     var currentState = Provider
@@ -398,7 +393,9 @@ class _TransactionSheetState extends State<TransactionSheet> {
 
                         const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Text("is requesting a transaction")),
+                            child: WalletText(
+                              localizeKey: 'isRequesting',
+                            )),
                         addHeight(SpacingSize.m),
 
                         Container(
@@ -473,15 +470,11 @@ class _TransactionSheetState extends State<TransactionSheet> {
                               const Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Estimated gas fee",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    "Site suggested",
-                                    style: TextStyle(fontSize: 12),
-                                  ),
+                                  WalletText(
+                                      localizeKey: "estimateGas",
+                                      fontWeight: FontWeight.bold),
+                                  WalletText(
+                                      localizeKey: 'siteSuggested', size: 12),
                                 ],
                               ),
                               const Spacer(),
@@ -494,7 +487,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    "Max fee: ${widget.transaction["gas"] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0] : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${widget.transaction['gas'] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4) : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}",
+                                    "${getText(context, key: 'maxFee')}: ${widget.transaction["gas"] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0] : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${widget.transaction['gas'] != null ? EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"]).getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4) : gasPrice.getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}",
                                     style: const TextStyle(fontSize: 12),
                                   ),
                                 ],
@@ -513,15 +506,11 @@ class _TransactionSheetState extends State<TransactionSheet> {
                               const Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Total",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    "Amount + gas fee",
-                                    style: TextStyle(fontSize: 12),
-                                  ),
+                                  WalletText(
+                                      localizeKey: 'total',
+                                      fontWeight: FontWeight.bold),
+                                  WalletText(
+                                      localizeKey: 'amountWithFee', size: 12),
                                 ],
                               ),
                               const Spacer(),
@@ -534,7 +523,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    "Max fee: ${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} + ${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
+                                    "${getText(context, key: 'maxFee')}: ${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.wei, widget.transaction["value"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} + ${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[0]}.${EtherAmount.fromUnitAndValue(EtherUnit.gwei, widget.transaction["gas"] ?? "0").getValueInUnit(EtherUnit.ether).toStringAsFixed(18).split(".")[1].substring(0, 4)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
                                     style: const TextStyle(fontSize: 12),
                                   ),
                                 ],
@@ -554,7 +543,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                         children: [
                                           Expanded(
                                             child: WalletButton(
-                                                localizeKey: "Reject",
+                                                localizeKey: "reject",
                                                 onPressed: () async {
                                                   widget.onReject();
                                                   Navigator.of(context).pop();
@@ -562,14 +551,13 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                           ),
                                           Expanded(
                                             child: WalletButton(
-                                                localizeKey: "Approve",
+                                                localizeKey: "approve",
                                                 type: WalletButtonType.filled,
                                                 onPressed: () async {
                                                   var currentState = Provider
                                                       .of<WalletProvider>(
                                                           context,
                                                           listen: false);
-                                                  // widget.transaction.gasPrice =
 
                                                   var txhash = await currentState
                                                       .web3client

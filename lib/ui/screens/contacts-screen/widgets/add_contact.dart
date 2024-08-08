@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/contact_provider/contact_provider.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
@@ -62,16 +63,16 @@ class _AddContactState extends State<AddContact> {
             children: [
               WalletText(
                 localizeKey:
-                    widget.mode == "CREATE" ? "Add Contact" : "Update Contact",
+                    widget.mode == "CREATE" ? 'addContact' : 'updateContact',
                 size: 22,
               ),
               addHeight(SpacingSize.m),
               WalletTextField(
-                labelLocalizeKey: "Name",
+                labelLocalizeKey: "name",
                 textFieldType: TextFieldType.input,
                 validator: ((value) {
                   if (value!.isEmpty) {
-                    return "not empty";
+                    return getText(context, key: 'notEmpty');
                   }
                   return null;
                 }),

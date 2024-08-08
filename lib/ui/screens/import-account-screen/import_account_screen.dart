@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 
@@ -28,7 +31,7 @@ class _ImportAccountScreenState extends State<ImportAccountScreen> {
             .then((value) {
           Navigator.of(context).pop();
         }).catchError((e) {
-          showErrorSnackBar(context, 'Error', e);
+          showErrorSnackBar(context, getText(context, key: 'error'), e);
         });
         return;
       }
@@ -37,7 +40,7 @@ class _ImportAccountScreenState extends State<ImportAccountScreen> {
           .then((value) {
         Navigator.of(context).pop();
       }).catchError((e) {
-        showErrorSnackBar(context, 'Error', e);
+        showErrorSnackBar(context, getText(context, key: 'error'), e);
       });
     }
   }
@@ -59,12 +62,10 @@ class _ImportAccountScreenState extends State<ImportAccountScreen> {
         title: const Padding(
           padding: EdgeInsets.fromLTRB(10, 10, 70, 10),
           child: Center(
-            child: Text(
-              "Import account",
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w300,
-              ),
+            child: WalletText(
+              localizeKey: 'importAccount',
+              color: Colors.black,
+              fontWeight: FontWeight.w300,
             ),
           ),
         ),
@@ -78,35 +79,32 @@ class _ImportAccountScreenState extends State<ImportAccountScreen> {
             addHeight(SpacingSize.l),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text("Privatekey"),
+              child: WalletText(
+                localizeKey: 'privateKey',
+              ),
             ),
             addHeight(SpacingSize.s),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: TextFormField(
-                controller: _privateKey,
+              child: WalletTextField(
+                textFieldType: TextFieldType.input,
+                labelLocalizeKey: 'enterPrivateKey',
+                textEditingController: _privateKey,
                 validator: (String? string) {
                   if (string!.isEmpty) {
-                    return "Privakey shouldn't be empty";
+                    return getText(context, key: 'privateKeyNotEmpty');
                   }
                   return null;
                 },
-                decoration: const InputDecoration(
-                    hintText: "Enter Privatekey",
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: kPrimaryColor)),
-                    errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: kPrimaryColor)),
-                    border: OutlineInputBorder(borderSide: BorderSide())),
               ),
             ),
             addHeight(SpacingSize.m),
             Provider.of<WalletProvider>(context).wallets.isEmpty
                 ? const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text("Password"),
+                    child: WalletText(
+                      localizeKey: 'password',
+                    ),
                   )
                 : const SizedBox(),
             Provider.of<WalletProvider>(context).wallets.isEmpty
@@ -115,26 +113,19 @@ class _ImportAccountScreenState extends State<ImportAccountScreen> {
             Provider.of<WalletProvider>(context).wallets.isEmpty
                 ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextFormField(
-                      controller: _password,
+                    child: WalletTextField(
+                      textFieldType: TextFieldType.input,
+                      textEditingController: _password,
                       validator: (String? string) {
                         if (string!.isEmpty) {
-                          return "Password shouldn't be empty";
+                          return getText(context, key: 'passwordNotEmpty');
                         }
                         if (string.length < 8) {
-                          return "Password atleast contain 8 character";
+                          return getText(context, key: 'passwordAtleast');
                         }
                         return null;
                       },
-                      decoration: const InputDecoration(
-                          hintText: "Enter new password",
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: kPrimaryColor)),
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: kPrimaryColor)),
-                          border: OutlineInputBorder(borderSide: BorderSide())),
+                      labelLocalizeKey: 'enterNewPassword',
                     ),
                   )
                 : const SizedBox(),

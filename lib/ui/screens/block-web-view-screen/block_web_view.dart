@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/l10n/transalation.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 
 class BlockWebView extends StatefulWidget {
@@ -46,12 +48,12 @@ class _BlockWebViewState extends State<BlockWebView> {
               ))
         ],
         title: Center(
-          child: Text(
-            widget.isTransaction
-                ? "Transaction History"
-                : "${widget.title} Explorer",
-            style: const TextStyle(color: kPrimaryColor, fontSize: 16),
-          ),
+          child: WalletText(
+              localizeKey: widget.isTransaction
+                  ? 'transactionHistory'
+                  : "${widget.title} ${getText(context, key: 'explorer')}",
+              color: kPrimaryColor,
+              size: 16),
         ),
       ),
       body: InAppWebView(

@@ -586,7 +586,6 @@ class _TransactionConfirmationScreenState
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const WalletText(
-                                  "",
                                   localizeKey: 'Platform fee',
                                   fontWeight: FontWeight.bold,
                                 ),

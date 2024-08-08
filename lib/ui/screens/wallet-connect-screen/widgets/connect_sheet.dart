@@ -182,7 +182,6 @@ class _ConnectSheetState extends State<ConnectSheet>
                             border: Border.all(
                                 width: 1, color: Colors.grey.withAlpha(60))),
                         child: WalletText(
-                          "",
                           localizeKey:
                               "${widget.requestedNetworks?.length} chains requested",
                         ),
@@ -196,7 +195,6 @@ class _ConnectSheetState extends State<ConnectSheet>
                       children: [
                         Expanded(
                           child: WalletButton(
-                              textContent: "",
                               localizeKey: "Reject",
                               onPressed: () async {
                                 widget.onReject();
@@ -205,7 +203,6 @@ class _ConnectSheetState extends State<ConnectSheet>
                         ),
                         Expanded(
                           child: WalletButton(
-                              textContent: "",
                               localizeKey: "Approve",
                               type: WalletButtonType.filled,
                               onPressed: () async {

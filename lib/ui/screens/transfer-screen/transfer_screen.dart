@@ -411,7 +411,6 @@ class _TransferScreenState extends State<TransferScreen>
                           children: [
                             addHeight(SpacingSize.xxxl),
                             const WalletText(
-                              '',
                               localizeKey: 'noRecent',
                             )
                           ],

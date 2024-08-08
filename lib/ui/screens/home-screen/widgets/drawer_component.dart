@@ -96,7 +96,6 @@ class _DrawerComponentState extends State<DrawerComponent> {
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(kPrimaryColor)),
             child: const WalletText(
-              '',
               localizeKey: 'cancel',
               color: Colors.white,
             ),
@@ -113,7 +112,6 @@ class _DrawerComponentState extends State<DrawerComponent> {
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.red)),
               child: const WalletText(
-                '',
                 localizeKey: "Erase and continue",
                 color: Colors.white,
               )),
@@ -155,7 +153,6 @@ class _DrawerComponentState extends State<DrawerComponent> {
                 children: [
                   addHeight(SpacingSize.xl),
                   const WalletText(
-                    '',
                     localizeKey: 'appName',
                     textVarient: TextVarient.hero,
                   ),
@@ -180,7 +177,6 @@ class _DrawerComponentState extends State<DrawerComponent> {
                     child: Row(
                       children: [
                         WalletText(
-                          '',
                           localizeKey: Provider.of<WalletProvider>(context)
                               .getAccountName(),
                           textVarient: TextVarient.body1,
@@ -191,12 +187,11 @@ class _DrawerComponentState extends State<DrawerComponent> {
                     ),
                   ),
                   WalletText(
-                    '',
                     localizeKey: Provider.of<WalletProvider>(context)
                         .getNativeBalanceFormatted(),
                   ),
                   addHeight(SpacingSize.xs),
-                  WalletText('',
+                  WalletText(
                       localizeKey: showEllipse(
                           Provider.of<WalletProvider>(context)
                               .activeWallet
@@ -264,7 +259,6 @@ class _DrawerComponentState extends State<DrawerComponent> {
                       ),
                       addWidth(SpacingSize.s),
                       const WalletText(
-                        "",
                         localizeKey: "Contact",
                         color: Colors.black,
                       ),
@@ -350,7 +344,7 @@ class _DrawerComponentState extends State<DrawerComponent> {
                     children: [
                       const Icon(Icons.help_outline_rounded),
                       addWidth(SpacingSize.s),
-                      const WalletText('', localizeKey: 'getHelp'),
+                      const WalletText(localizeKey: 'getHelp'),
                     ],
                   ),
                 ),

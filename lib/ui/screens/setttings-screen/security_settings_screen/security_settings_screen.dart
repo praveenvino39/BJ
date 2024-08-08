@@ -77,12 +77,12 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const WalletText('',
+                        const WalletText(
                             localizeKey: 'showPrivateKey',
                             size: 16,
                             fontWeight: FontWeight.bold),
                         addHeight(SpacingSize.xs),
-                        WalletText('',
+                        WalletText(
                             localizeKey: bytesToHex(getWalletProvider(context)
                                 .activeWallet
                                 .wallet
@@ -106,13 +106,12 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const WalletText(
-                                '',
                                 localizeKey: 'showSeedphrase',
                                 size: 16.0,
                                 fontWeight: FontWeight.bold,
                               ),
                               addHeight(SpacingSize.xs),
-                              WalletText('', localizeKey: snapshot.data),
+                              WalletText(localizeKey: snapshot.data),
                               addHeight(SpacingSize.xs),
                             ],
                           ),

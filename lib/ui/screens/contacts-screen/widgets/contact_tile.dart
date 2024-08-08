@@ -103,7 +103,6 @@ class _ContactTileState extends State<ContactTile> {
                   backgroundColor:
                       MaterialStateProperty.all(Colors.transparent)),
               child: const WalletText(
-                "",
                 localizeKey: 'update',
               ),
             ),
@@ -117,7 +116,6 @@ class _ContactTileState extends State<ContactTile> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const WalletText(
-                          "",
                           localizeKey: "deleteWarning",
                         ),
                         addHeight(SpacingSize.m),
@@ -129,7 +127,6 @@ class _ContactTileState extends State<ContactTile> {
                               child: WalletButton(
                                 textSize: 14.0,
                                 localizeKey: 'cancel',
-                                textContent: '',
                                 onPressed: () {
                                   Get.back();
                                 },
@@ -141,7 +138,6 @@ class _ContactTileState extends State<ContactTile> {
                               width: 130,
                               child: WalletButton(
                                 textSize: 14.0,
-                                textContent: "",
                                 localizeKey: 'delete',
                                 onPressed: () {
                                   getContactProvider(context).deleteContacts(
@@ -150,7 +146,6 @@ class _ContactTileState extends State<ContactTile> {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(const SnackBar(
                                           content: WalletText(
-                                            "",
                                             localizeKey: 'contactExist',
                                           ),
                                           backgroundColor: kPrimaryColor,
@@ -174,7 +169,6 @@ class _ContactTileState extends State<ContactTile> {
                   backgroundColor:
                       MaterialStateProperty.all(Colors.transparent)),
               child: const WalletText(
-                "",
                 localizeKey: 'delete',
               ),
             ),

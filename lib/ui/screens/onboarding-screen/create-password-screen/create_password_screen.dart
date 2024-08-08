@@ -111,7 +111,6 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const WalletText(
-          "",
           localizeKey: "appName",
           textVarient: TextVarient.hero,
         ),
@@ -125,14 +124,12 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
               children: [
                 addHeight(SpacingSize.m),
                 const WalletText(
-                  '',
                   key: Key('create-password-text'),
                   localizeKey: "createPassword",
                   textVarient: TextVarient.subHeading,
                 ),
                 addHeight(SpacingSize.s),
                 const WalletText(
-                  '',
                   center: true,
                   localizeKey: "thisPasswordWill",
                   textVarient: TextVarient.body1,

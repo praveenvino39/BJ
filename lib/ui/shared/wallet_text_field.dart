@@ -44,7 +44,6 @@ class _WalletTextFieldState extends State<WalletTextField> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             WalletText(
-              "",
               localizeKey: widget.labelLocalizeKey,
               textVarient: TextVarient.body2,
             ),
@@ -56,7 +55,6 @@ class _WalletTextFieldState extends State<WalletTextField> {
                       });
                     },
                     child: const WalletText(
-                      "",
                       localizeKey: "show",
                       textVarient: TextVarient.body2,
                     ))

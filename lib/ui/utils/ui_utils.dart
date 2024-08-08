@@ -66,7 +66,6 @@ showConfirmationDialog({
           mainAxisSize: MainAxisSize.min,
           children: [
             WalletText(
-              "",
               localizeKey: question,
             ),
             addHeight(SpacingSize.m),
@@ -76,7 +75,6 @@ showConfirmationDialog({
                   child: WalletButton(
                     textSize: 14.0,
                     localizeKey: secondaryCtaText,
-                    textContent: '',
                     onPressed: secondaryOnPress,
                     type: WalletButtonType.outline,
                   ),
@@ -84,7 +82,6 @@ showConfirmationDialog({
                 Expanded(
                   child: WalletButton(
                     textSize: 14.0,
-                    textContent: "",
                     localizeKey: primaryCtaText,
                     onPressed: primaryOnPress,
                     type: WalletButtonType.filled,

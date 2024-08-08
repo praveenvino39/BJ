@@ -63,7 +63,6 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                       ),
                       addWidth(SpacingSize.xs),
                       WalletText(
-                        '',
                         localizeKey: Provider.of<WalletProvider>(context)
                             .getAccountName(),
                         textVarient: TextVarient.body3,

@@ -42,7 +42,6 @@ class _DeactivatedScreenState extends State<DeactivatedScreen> {
           children: [
             const Center(
               child: WalletText(
-                '',
                 align: TextAlign.center,
                 localizeKey: 'yourAccountDeactivated',
               ),

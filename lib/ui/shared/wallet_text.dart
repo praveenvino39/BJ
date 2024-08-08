@@ -14,7 +14,6 @@ enum TextVarient {
 }
 
 class WalletText extends StatelessWidget {
-  final String? textContent;
   final double? size;
   final FontWeight? fontWeight;
   final TextVarient? textVarient;
@@ -29,7 +28,7 @@ class WalletText extends StatelessWidget {
   final bool? bold;
   final bool? underline;
 
-  const WalletText(this.textContent,
+  const WalletText(
       {super.key,
       this.size,
       this.fontWeight,

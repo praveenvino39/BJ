@@ -26,7 +26,7 @@ checkForUpdate(BuildContext context) {
                     Text('Available version: ${update.availableVersionCode}'),
                     addHeight(SpacingSize.m),
                     WalletButton(
-                        textContent: "Update",
+                        localizeKey: 'update',
                         onPressed: () {
                           InAppUpdate.performImmediateUpdate()
                               // ignore: invalid_return_type_for_catch_error
@@ -87,7 +87,7 @@ checkForUpdate(BuildContext context) {
                         "Improved performance and stability."),
                     addHeight(SpacingSize.m),
                     WalletButton(
-                        textContent: "Update",
+                        localizeKey: 'update',
                         onPressed: () async {
                           debugPrint(status.appStoreLink);
                           if (!await launchUrl(

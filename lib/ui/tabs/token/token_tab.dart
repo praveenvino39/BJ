@@ -93,7 +93,6 @@ class _TokenTabState extends State<TokenTab> {
               )
             : const Center(
                 child: WalletText(
-                  '',
                   localizeKey: 'youDontHaveToken',
                 ),
               ),

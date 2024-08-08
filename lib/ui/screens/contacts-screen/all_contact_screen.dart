@@ -47,7 +47,6 @@ class _AllContactScreenState extends State<AllContactScreen> {
           elevation: 0,
           centerTitle: true,
           title: const WalletText(
-            "",
             localizeKey: "contacts",
             size: 16,
             fontWeight: FontWeight.w700,
@@ -132,7 +131,6 @@ class _AllContactScreenState extends State<AllContactScreen> {
                         })
                     : const Center(
                         child: WalletText(
-                          "",
                           localizeKey: 'noContactAndNew',
                         ),
                       ),

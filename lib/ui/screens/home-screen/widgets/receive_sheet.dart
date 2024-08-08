@@ -47,14 +47,14 @@ class _ReceiveSheetState extends State<ReceiveSheet> {
                 height: 4,
               ),
               addHeight(SpacingSize.s),
-              const WalletText('', localizeKey: 'receive'),
+              const WalletText(localizeKey: 'receive'),
               QrImageView(
                 data: widget.address,
                 version: QrVersions.auto,
                 size: 200.0,
               ),
               addHeight(SpacingSize.xs),
-              const WalletText('', localizeKey: 'scanAddressto'),
+              const WalletText(localizeKey: 'scanAddressto'),
               addHeight(SpacingSize.s),
               const Expanded(child: SizedBox()),
               Container(
@@ -69,7 +69,7 @@ class _ReceiveSheetState extends State<ReceiveSheet> {
                     addWidth(SpacingSize.s),
                     Expanded(
                         flex: 1,
-                        child: WalletText('',
+                        child: WalletText(
                             localizeKey: showEllipse(widget.address))),
                     addHeight(SpacingSize.xs),
                     Expanded(

@@ -44,7 +44,6 @@ class _WalletConnectSessionScreenState
         elevation: 0,
         centerTitle: true,
         title: const WalletText(
-          "",
           localizeKey: 'WalletConnect Sessions',
           size: 16,
           fontWeight: FontWeight.w700,

@@ -619,17 +619,15 @@ class WalletProvider extends ChangeNotifier {
                     Row(
                       children: [
                         Expanded(
-                          child: WalletButton(
-                              textContent: "Yes, Reject",
-                              onPressed: () {
-                                Get.back();
-                                onReject();
-                                completor.complete(false);
-                              }),
+                          child: WalletButton(onPressed: () {
+                            Get.back();
+                            onReject();
+                            completor.complete(false);
+                          }),
                         ),
                         Expanded(
                           child: WalletButton(
-                              textContent: "No",
+                              localizeKey: "no",
                               onPressed: () {
                                 Get.back();
                                 completor.complete(false);
@@ -704,17 +702,14 @@ class WalletProvider extends ChangeNotifier {
         Get.dialog(AlertDialog(
           title: const Text("Eth Sign"),
           actions: [
-            WalletButton(
-                textContent: "Approve",
-                onPressed: () {
-                  String sign = EthSigUtil.signPersonalTypedData(
-                      jsonData: params[1],
-                      version: TypedDataVersion.V4,
-                      privateKeyInBytes:
-                          activeWallet.wallet.privateKey.privateKey);
-                  Get.back();
-                  return signFuture.complete(sign);
-                })
+            WalletButton(onPressed: () {
+              String sign = EthSigUtil.signPersonalTypedData(
+                  jsonData: params[1],
+                  version: TypedDataVersion.V4,
+                  privateKeyInBytes: activeWallet.wallet.privateKey.privateKey);
+              Get.back();
+              return signFuture.complete(sign);
+            })
           ],
         ));
         return signFuture.future;
@@ -733,7 +728,6 @@ class WalletProvider extends ChangeNotifier {
           content: Text(params[1]),
           actions: [
             WalletButton(
-                textContent: "Approve",
                 localizeKey: "approve",
                 type: WalletButtonType.filled,
                 onPressed: () {
@@ -746,7 +740,6 @@ class WalletProvider extends ChangeNotifier {
                   return signFuture.complete(sign);
                 }),
             WalletButton(
-                textContent: "Reject",
                 localizeKey: "reject",
                 onPressed: () {
                   Get.back();
@@ -767,7 +760,6 @@ class WalletProvider extends ChangeNotifier {
           content: Text(params[1]),
           actions: [
             WalletButton(
-                textContent: "Approve",
                 localizeKey: "approve",
                 type: WalletButtonType.filled,
                 onPressed: () {
@@ -780,7 +772,6 @@ class WalletProvider extends ChangeNotifier {
                   return signFuture.complete(sign);
                 }),
             WalletButton(
-                textContent: "Reject",
                 localizeKey: "reject",
                 onPressed: () {
                   Get.back();
@@ -802,7 +793,6 @@ class WalletProvider extends ChangeNotifier {
           actions: [
             WalletButton(
                 type: WalletButtonType.filled,
-                textContent: "Approve",
                 localizeKey: "approve",
                 onPressed: () {
                   String sign = EthSigUtil.signTypedData(
@@ -815,7 +805,6 @@ class WalletProvider extends ChangeNotifier {
                 }),
             WalletButton(
                 type: WalletButtonType.filled,
-                textContent: "Reject",
                 localizeKey: "reject",
                 onPressed: () {
                   Get.back();
@@ -836,7 +825,6 @@ class WalletProvider extends ChangeNotifier {
           content: Text(params[1]),
           actions: [
             WalletButton(
-                textContent: "Approve",
                 localizeKey: "approve",
                 type: WalletButtonType.filled,
                 onPressed: () {
@@ -849,7 +837,6 @@ class WalletProvider extends ChangeNotifier {
                   return signFuture.complete(sign);
                 }),
             WalletButton(
-                textContent: "Reject",
                 localizeKey: "reject",
                 onPressed: () {
                   Get.back();
@@ -875,7 +862,6 @@ class WalletProvider extends ChangeNotifier {
           title: const Text("Sign Message"),
           actions: [
             WalletButton(
-                textContent: "Approve",
                 localizeKey: "approve",
                 type: WalletButtonType.filled,
                 onPressed: () {
@@ -890,7 +876,6 @@ class WalletProvider extends ChangeNotifier {
                 }),
             WalletButton(
                 localizeKey: 'reject',
-                textContent: "Reject",
                 onPressed: () {
                   Get.back();
                   return signFuture.complete(null);
@@ -1016,12 +1001,11 @@ class WalletProvider extends ChangeNotifier {
             borderRadius: 0,
             margin: const EdgeInsets.all(0),
             titleText: const WalletText(
-              "",
               localizeKey: "error",
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
-            messageText: WalletText("",
+            messageText: WalletText(
                 localizeKey: networks.isNotEmpty
                     ? "Please switch network to ${networks[0].networkName}"
                     : "Unsupported network",

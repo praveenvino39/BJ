@@ -10,7 +10,6 @@ enum WalletButtonType { outline, filled }
 enum WalletButtonSize { small, medium, large }
 
 class WalletButton extends StatefulWidget {
-  final String? textContent;
   final Function()? onPressed;
   final WalletButtonType type;
   final String? localizeKey;
@@ -19,7 +18,6 @@ class WalletButton extends StatefulWidget {
   final WalletButtonSize buttonSize;
   const WalletButton(
       {Key? key,
-      this.textContent,
       required this.onPressed,
       this.textSize = 14,
       this.buttonSize = WalletButtonSize.medium,

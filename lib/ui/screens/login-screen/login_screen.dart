@@ -78,7 +78,6 @@ class _LoginScreenState extends State<LoginScreen> {
               const Expanded(child: SizedBox()),
               const Center(
                 child: WalletText(
-                  '',
                   localizeKey: 'appName',
                   textVarient: TextVarient.hero,
                 ),
@@ -88,7 +87,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   WalletText(
-                    '',
                     localizeKey: 'welcomeBack',
                     textVarient: TextVarient.hero,
                   ),
@@ -120,7 +118,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const Expanded(child: SizedBox()),
               const WalletText(
-                '',
                 center: true,
                 localizeKey: 'cantLogin',
               ),
@@ -139,7 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     backgroundColor: MaterialStateProperty.all(
                                         kPrimaryColor)),
                                 child: const WalletText(
-                                  "",
                                   localizeKey: "Cancel",
                                 )),
                             ElevatedButton(
@@ -156,7 +152,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     backgroundColor:
                                         MaterialStateProperty.all(Colors.red)),
                                 child: const WalletText(
-                                  "",
                                   localizeKey: "Erase and Continue",
                                 )),
                           ],
@@ -179,7 +174,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       showDialog(context: context, builder: (context) => alert);
                     },
                     child: const WalletText(
-                      '',
                       localizeKey: 'resetWallet',
                       bold: true,
                       underline: true,

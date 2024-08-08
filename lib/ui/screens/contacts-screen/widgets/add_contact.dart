@@ -61,7 +61,6 @@ class _AddContactState extends State<AddContact> {
             mainAxisSize: MainAxisSize.min,
             children: [
               WalletText(
-                "",
                 localizeKey:
                     widget.mode == "CREATE" ? "Add Contact" : "Update Contact",
                 size: 22,
@@ -96,7 +95,6 @@ class _AddContactState extends State<AddContact> {
               ),
               addHeight(SpacingSize.s),
               WalletButton(
-                textContent: widget.mode == "CREATE" ? "Add" : "Update",
                 localizeKey: widget.mode == "CREATE" ? "add" : "update",
                 onPressed: () {
                   bool isValid = _formkey.currentState?.validate() ?? false;
@@ -111,7 +109,6 @@ class _AddContactState extends State<AddContact> {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
                             content: WalletText(
-                              "",
                               localizeKey: 'contactExist',
                             ),
                             backgroundColor: kPrimaryColor,

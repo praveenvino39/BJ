@@ -34,7 +34,6 @@ class _WalletSetupScreenState extends State<WalletSetupScreen> {
         shadowColor: Colors.transparent,
         backgroundColor: Colors.transparent,
         title: const WalletText(
-          "",
           localizeKey: 'appName',
           textVarient: TextVarient.hero,
         ),
@@ -47,13 +46,11 @@ class _WalletSetupScreenState extends State<WalletSetupScreen> {
             children: [
               addHeight(SpacingSize.xl),
               const WalletText(
-                '',
                 localizeKey: 'walletSetup',
                 textVarient: TextVarient.heading,
               ),
               addHeight(SpacingSize.s),
               const WalletText(
-                '',
                 localizeKey: 'importAnExistingWalletOrCreate',
                 textVarient: TextVarient.body2,
               ),

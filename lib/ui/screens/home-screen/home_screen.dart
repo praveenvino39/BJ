@@ -161,7 +161,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     children: [
                                       const Expanded(
                                         child: WalletText(
-                                          '',
                                           localizeKey: "networks",
                                         ),
                                       ),
@@ -217,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                                 .circular(10)),
                                                   ),
                                                   addWidth(SpacingSize.s),
-                                                  WalletText('',
+                                                  WalletText(
                                                       localizeKey: Core
                                                           .networks[index]
                                                           .networkName),
@@ -233,7 +232,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const WalletText(
-                                '',
                                 localizeKey: 'appName',
                                 fontWeight: FontWeight.w200,
                               ),
@@ -252,7 +250,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   ),
                                   addWidth(SpacingSize.xs),
                                   WalletText(
-                                    '',
                                     localizeKey: getLiveWalletProvider(context)
                                         .activeNetwork
                                         .networkName,
@@ -368,7 +365,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                   ),
                                                   addHeight(SpacingSize.xs),
                                                   WalletText(
-                                                    '',
                                                     localizeKey:
                                                         getLiveWalletProvider(
                                                                 context)
@@ -386,7 +382,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                           ),
                                         ),
                                         addHeight(SpacingSize.xs),
-                                        WalletText('',
+                                        WalletText(
                                             onTap: onAddressTapHandler,
                                             textVarient: TextVarient.body1,
                                             localizeKey: showEllipse(
@@ -398,7 +394,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                     .hex)),
                                         addHeight(SpacingSize.xs),
                                         WalletText(
-                                          '',
                                           localizeKey:
                                               getLiveWalletProvider(context)
                                                   .getNativeBalanceFormatted(),
@@ -406,7 +401,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         ),
                                         addHeight(SpacingSize.xs),
                                         WalletText(
-                                          '',
                                           localizeKey: getLiveWalletProvider(
                                                   context)
                                               .getPreferedBalanceFormatted(),

@@ -39,7 +39,6 @@ class _OnboardScreenState extends State<OnboardScreen> {
                 child: Column(
                   children: [
                     WalletText(
-                      '',
                       key: Key('app-name-text'),
                       localizeKey: 'appName',
                       textVarient: TextVarient.hero,

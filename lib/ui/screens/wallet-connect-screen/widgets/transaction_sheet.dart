@@ -301,7 +301,7 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                     children: [
                                       Expanded(
                                         child: WalletButton(
-                                            textContent: "Reject",
+                                            localizeKey: "Reject",
                                             onPressed: () async {
                                               widget.onReject();
                                               Navigator.of(context).pop();
@@ -312,14 +312,13 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                               0
                                           ? Expanded(
                                               child: WalletButton(
-                                                  textContent: "Approve",
+                                                  localizeKey: "Approve",
                                                   type: WalletButtonType.filled,
                                                   onPressed: () async {
                                                     var currentState = Provider
                                                         .of<WalletProvider>(
                                                             context,
                                                             listen: false);
-                                                    // widget.transaction.gasPrice =
 
                                                     var txhash = await currentState
                                                         .web3client
@@ -555,7 +554,6 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                         children: [
                                           Expanded(
                                             child: WalletButton(
-                                                textContent: "Reject",
                                                 localizeKey: "Reject",
                                                 onPressed: () async {
                                                   widget.onReject();
@@ -564,7 +562,6 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                           ),
                                           Expanded(
                                             child: WalletButton(
-                                                textContent: "Approve",
                                                 localizeKey: "Approve",
                                                 type: WalletButtonType.filled,
                                                 onPressed: () async {

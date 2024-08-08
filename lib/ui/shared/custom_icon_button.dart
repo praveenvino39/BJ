@@ -32,7 +32,6 @@ class CustomIconButton extends StatelessWidget {
           ),
         ),
         WalletText(
-          '',
           localizeKey: localizeKey,
           textVarient: TextVarient.body3,
         )

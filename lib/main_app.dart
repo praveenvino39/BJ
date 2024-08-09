@@ -1,6 +1,5 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
@@ -9,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:routerino/routerino_home.dart';
 import 'package:wallet_cryptomask/core/providers/contact_provider/contact_provider.dart';
+import 'package:wallet_cryptomask/core/providers/network_provider/network_provider.dart';
 import 'package:wallet_cryptomask/core/providers/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/providers/create_wallet_provider/create_wallet_provider.dart';
@@ -36,6 +36,8 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   String locale = "";
   final fss = const FlutterSecureStorage();
+  final networkProvider =
+      NetworkProvider(infuraKey: dotenv.env['INFURAKEY'] ?? "");
 
   @override
   void initState() {
@@ -49,6 +51,7 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (ctx) => networkProvider),
         ChangeNotifierProvider(
           create: (context) => MessageEngine(messages: []),
         ),
@@ -63,7 +66,8 @@ class _MainAppState extends State<MainApp> {
               TokenProvider(userPreference: widget.userPreferenceBox),
         ),
         ChangeNotifierProvider(
-          create: (ctx) => WalletProvider(fss, widget.userPreferenceBox),
+          create: (ctx) => WalletProvider(
+              fss, widget.userPreferenceBox, networkProvider.networks),
         ),
         ChangeNotifierProvider(
           create: (ctx) => LocaleProvider(locale: widget.locale),
@@ -72,11 +76,10 @@ class _MainAppState extends State<MainApp> {
       child: GetMaterialApp(
         locale: Locale.fromSubtags(languageCode: locale),
         localizationsDelegates: const [
-          AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate
         ],
-        supportedLocales: AppLocalizations.supportedLocales,
+        supportedLocales: LocaleProvider.supportedLocales,
         debugShowCheckedModeBanner: false,
         theme: ThemeData().copyWith(
             primaryColor: kPrimaryColor,

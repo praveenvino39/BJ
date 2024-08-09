@@ -21,7 +21,6 @@ import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/screens/web-view-screen/web_view_screen.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 
 import '../contacts-screen/widgets/contact_tile.dart';
@@ -171,10 +170,8 @@ class _TransferScreenState extends State<TransferScreen>
                 overlayColor: MaterialStateColor.resolveWith(
                     (states) => kPrimaryColor.withAlpha(30)),
               ),
-              child: Text(
-                AppLocalizations.of(context)!.cancel,
-                style: const TextStyle(color: kPrimaryColor),
-              ),
+              child:
+                  const WalletText(localizeKey: 'cancel', color: kPrimaryColor),
             )
           ]),
       body: SizedBox(
@@ -226,7 +223,7 @@ class _TransferScreenState extends State<TransferScreen>
                                         style: const TextStyle(fontSize: 16),
                                       ),
                                       Text(
-                                          "${AppLocalizations.of(context)!.balance}: ${Provider.of<WalletProvider>(context).getNativeBalanceFormatted()}"),
+                                          "${getText(context, key: 'balance')}: ${Provider.of<WalletProvider>(context).getNativeBalanceFormatted()}"),
                                     ],
                                   ),
                                 ),
@@ -261,19 +258,19 @@ class _TransferScreenState extends State<TransferScreen>
                                 },
                                 validator: (String? string) {
                                   if (string?.isEmpty == true) {
-                                    return AppLocalizations.of(context)!
-                                        .thisFieldNotEmpty;
+                                    return getText(context,
+                                        key: 'thisFieldNotEmpty');
                                   }
                                   if (string!.length != 42) {
-                                    return AppLocalizations.of(context)!
-                                        .passwordMustContain;
+                                    return getText(context,
+                                        key: 'passwordMustContain');
                                   }
                                   return null;
                                 },
                                 cursorColor: kPrimaryColor,
                                 decoration: InputDecoration(
-                                    hintText: AppLocalizations.of(context)!
-                                        .searchPublicAddress,
+                                    hintText: getText(context,
+                                        key: 'searchPublicAddress'),
                                     hintStyle: const TextStyle(fontSize: 12),
                                     contentPadding: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 20),

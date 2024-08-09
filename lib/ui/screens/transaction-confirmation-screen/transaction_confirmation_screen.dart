@@ -6,7 +6,6 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
@@ -436,10 +435,8 @@ class _TransactionConfirmationScreenState
                 overlayColor: MaterialStateColor.resolveWith(
                     (states) => kPrimaryColor.withAlpha(30)),
               ),
-              child: Text(
-                AppLocalizations.of(context)!.cancel,
-                style: const TextStyle(color: kPrimaryColor),
-              ),
+              child:
+                  const WalletText(localizeKey: 'cancel', color: kPrimaryColor),
             )
           ]),
       body: SizedBox(
@@ -489,7 +486,7 @@ class _TransactionConfirmationScreenState
                                       style: const TextStyle(fontSize: 16),
                                     ),
                                     Text(
-                                        "${AppLocalizations.of(context)!.balance}: ${getWalletProvider(context).nativeBalance.toStringAsFixed(4)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}"),
+                                        "${getText(context, key: 'balance')}: ${getWalletProvider(context).nativeBalance.toStringAsFixed(4)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}"),
                                   ],
                                 ),
                               )
@@ -505,7 +502,7 @@ class _TransactionConfirmationScreenState
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
-                      Text("${AppLocalizations.of(context)!.to}:     "),
+                      Text("${getText(context, key: 'to')}:     "),
                       addWidth(SpacingSize.s),
                       Expanded(
                         child: Container(
@@ -556,11 +553,11 @@ class _TransactionConfirmationScreenState
                 ),
                 addHeight(SpacingSize.m),
                 widget.token != null
-                    ? Text(
-                        AppLocalizations.of(context)!.amount.toUpperCase(),
-                        style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w100),
-                      )
+                    ? WalletText(
+                        localizeKey:
+                            getText(context, key: 'amount').toUpperCase(),
+                        size: 14,
+                        fontWeight: FontWeight.w100)
                     : Text(
                         "${widget.collectible?.name}",
                         style: const TextStyle(
@@ -597,11 +594,9 @@ class _TransactionConfirmationScreenState
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  AppLocalizations.of(context)!.estimatedGasFee,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
+                                const WalletText(
+                                    localizeKey: 'estimatedGasFee',
+                                    fontWeight: FontWeight.bold),
                                 Text(
                                   "${estimatedGasInWei?.getValueInUnit(EtherUnit.ether).toDouble().toStringAsFixed(15)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
                                   style: const TextStyle(
@@ -641,11 +636,9 @@ class _TransactionConfirmationScreenState
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  AppLocalizations.of(context)!.total,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
+                                const WalletText(
+                                    localizeKey: 'total',
+                                    fontWeight: FontWeight.bold),
                                 Text(
                                   "${widget.token != null && widget.token != Provider.of<WalletProvider>(context).activeNetwork.currency ? '${widget.value + platformFeeForToken} ${selectedToken?.symbol} + ' : ''} ${totalAmount.toStringAsFixed(6)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
                                   style: const TextStyle(

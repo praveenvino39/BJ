@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/core/providers/locale_provider/locale_provider.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 
 class GeneralSettingsScreen extends StatefulWidget {
@@ -14,21 +14,6 @@ class GeneralSettingsScreen extends StatefulWidget {
 }
 
 class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
-  String locale = "en";
-
-  @override
-  void initState() {
-    final localProvider = getLocalProvider(context);
-
-    localProvider.getLocale().then((value) {
-      setState(() {
-        locale = value;
-      });
-    });
-
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,18 +28,16 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
         ),
         shadowColor: Colors.transparent,
         backgroundColor: Colors.transparent,
-        title: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 70, 10),
+        title: const Padding(
+          padding: EdgeInsets.fromLTRB(10, 10, 70, 10),
           child: SizedBox(
             width: double.infinity,
             child: Center(
-              child: Text(
-                AppLocalizations.of(context)!.general,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w300,
-                  fontSize: 16,
-                ),
+              child: WalletText(
+                localizeKey: 'general',
+                color: Colors.black,
+                fontWeight: FontWeight.w300,
+                size: 16,
               ),
             ),
           ),
@@ -66,12 +49,14 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             addHeight(SpacingSize.m),
-            Text(
-              AppLocalizations.of(context)!.currentLanguage,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+            const WalletText(
+                localizeKey: 'currentLanguage',
+                size: 16,
+                fontWeight: FontWeight.bold),
             addHeight(SpacingSize.xs),
-            Text(AppLocalizations.of(context)!.languageDescription),
+            const WalletText(
+              localizeKey: 'languageDescription',
+            ),
             addHeight(SpacingSize.xs),
             DropdownButtonHideUnderline(
                 child: Container(
@@ -81,8 +66,8 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   border: Border.all(width: 1, color: kPrimaryColor)),
               child: DropdownButton<String>(
                   isExpanded: true,
-                  value: locale,
-                  items: AppLocalizations.supportedLocales
+                  value: getLiveLocalProvider(context).locale,
+                  items: LocaleProvider.supportedLocales
                       .map<DropdownMenuItem<String>>(
                           (e) => DropdownMenuItem<String>(
                                 value: e.languageCode,
@@ -92,9 +77,6 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   onChanged: (value) {
                     Get.updateLocale(Locale(value ?? "en"));
                     getLocalProvider(context).changeLocale(value ?? "en");
-                    setState(() {
-                      locale = value!;
-                    });
                   }),
             ))
           ],

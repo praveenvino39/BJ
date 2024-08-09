@@ -6,7 +6,6 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
@@ -331,11 +330,9 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                                     Navigator.of(context).pop();
                                                   }),
                                             )
-                                          : Text(
-                                              AppLocalizations.of(context)!
-                                                  .insufficientFund,
-                                              style: const TextStyle(
-                                                  color: Colors.red)),
+                                          : const WalletText(
+                                              localizeKey: 'insufficientFund',
+                                              color: Colors.red),
                                     ],
                                   )),
                             ],
@@ -580,9 +577,9 @@ class _TransactionSheetState extends State<TransactionSheet> {
                                       )),
                                 ],
                               )
-                            : Text(
-                                AppLocalizations.of(context)!.insufficientFund,
-                                style: const TextStyle(color: Colors.red)),
+                            : const WalletText(
+                                localizeKey: 'insufficientFund',
+                                color: Colors.red),
                         addHeight(SpacingSize.l),
                       ],
                     )

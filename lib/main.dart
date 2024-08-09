@@ -4,12 +4,12 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:wallet_cryptomask/main_app.dart';
-import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/contact_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
@@ -19,9 +19,8 @@ import 'package:wallet_cryptomask/ui/screens/onboarding-screen/onboard_screen.da
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (kDebugMode) {
-    Core.networks.removeWhere((element) => element.chainId == 11155111);
-  }
+
+  await dotenv.load(fileName: '.env');
 
   await loadAppSettings();
 

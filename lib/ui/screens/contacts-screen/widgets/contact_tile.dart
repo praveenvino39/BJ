@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
@@ -86,7 +85,9 @@ class _ContactTileState extends State<ContactTile> {
                   foregroundColor: MaterialStateProperty.all(kPrimaryColor),
                   backgroundColor:
                       MaterialStateProperty.all(Colors.transparent)),
-              child: Text(AppLocalizations.of(context)!.send),
+              child: const WalletText(
+                localizeKey: 'send',
+              ),
             ),
             TextButton(
               onPressed: () {

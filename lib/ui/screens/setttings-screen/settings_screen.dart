@@ -7,7 +7,6 @@ import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/screens/setttings-screen/general_settings_screen/general_settings_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/screens/chat_screen/chat_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/wallet-connect-screen/walletconnect_session_screen.dart';
@@ -41,18 +40,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         shadowColor: Colors.transparent,
         backgroundColor: Colors.transparent,
-        title: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 70, 10),
+        title: const Padding(
+          padding: EdgeInsets.fromLTRB(10, 10, 70, 10),
           child: SizedBox(
             width: double.infinity,
             child: Center(
-              child: Text(
-                AppLocalizations.of(context)!.settings,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w300,
-                  fontSize: 16,
-                ),
+              child: WalletText(
+                localizeKey: 'settings',
+                color: Colors.black,
+                fontWeight: FontWeight.w300,
+                size: 16,
               ),
             ),
           ),
@@ -69,9 +66,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onTap: () {
                   context.push(() => const GeneralSettingsScreen());
                 },
-                title: Text(AppLocalizations.of(context)!.general),
-                subtitle:
-                    Text(AppLocalizations.of(context)!.generalDescription),
+                title: const WalletText(
+                  localizeKey: 'general',
+                ),
+                subtitle: const WalletText(
+                  localizeKey: 'generalDescription',
+                ),
                 trailing: const Icon(Icons.arrow_forward_ios),
               ),
               Container(
@@ -86,9 +86,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     () {},
                   );
                 },
-                title: Text(AppLocalizations.of(context)!.security),
-                subtitle:
-                    Text(AppLocalizations.of(context)!.securityDescription),
+                title: const WalletText(
+                  localizeKey: 'security',
+                ),
+                subtitle: const WalletText(
+                  localizeKey: 'securityDescription',
+                ),
                 trailing: const Icon(Icons.arrow_forward_ios),
               ),
               Container(

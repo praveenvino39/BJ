@@ -11,7 +11,6 @@ import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/screens/transaction-history-screen/widget/transaction_tile.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TransactionHistoryScreen extends StatefulWidget {
   static const route = "transaction_history_screen";
@@ -150,12 +149,11 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                         ],
                       ),
                     )
-                  : Center(
-                      child: Text(
-                        AppLocalizations.of(context)!.youHaveNoTransaction,
-                        style:
-                            const TextStyle(fontSize: 18, color: Colors.grey),
-                      ),
+                  : const Center(
+                      child: WalletText(
+                          localizeKey: 'youHaveNoTransaction',
+                          size: 18,
+                          color: Colors.grey),
                     );
             } else {
               return const Center(

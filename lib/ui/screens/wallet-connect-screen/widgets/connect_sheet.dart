@@ -2,7 +2,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
@@ -162,7 +161,7 @@ class _ConnectSheetState extends State<ConnectSheet>
                                 style: const TextStyle(fontSize: 16),
                               ),
                               Text(
-                                  "${AppLocalizations.of(context)!.balance}: ${Provider.of<WalletProvider>(context).activeWallet.balance} ${Provider.of<WalletProvider>(context).activeNetwork.currency}"),
+                                  "${getText(context, key: 'balance')}: ${Provider.of<WalletProvider>(context).activeWallet.balance} ${Provider.of<WalletProvider>(context).activeNetwork.currency}"),
                             ],
                           ),
                         ),

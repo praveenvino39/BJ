@@ -18,7 +18,6 @@ import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/screens/transaction-history-screen/transaction_history_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/web-view-screen/web_view_screen.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 
 class DrawerComponent extends StatefulWidget {
@@ -217,13 +216,13 @@ class _DrawerComponentState extends State<DrawerComponent> {
                       Icons.call_made,
                       size: 15,
                     ),
-                    textContent: AppLocalizations.of(context)!.send,
+                    textContent: getText(context, key: 'send'),
                     onPressed: widget.onSendHandler,
                   )),
                   addHeight(SpacingSize.xs),
                   Expanded(
                     child: WalletButtonWithIcon(
-                        textContent: AppLocalizations.of(context)!.receive,
+                        textContent: getText(context, key: 'receive'),
                         onPressed: widget.onReceiveHandler,
                         icon: const Icon(
                           Icons.call_received,
@@ -244,7 +243,9 @@ class _DrawerComponentState extends State<DrawerComponent> {
                   children: [
                     const Icon(Icons.wallet),
                     addWidth(SpacingSize.s),
-                    Text(AppLocalizations.of(context)!.wallet),
+                    const WalletText(
+                      localizeKey: 'wallet',
+                    ),
                   ],
                 ),
                 addHeight(SpacingSize.m),
@@ -272,7 +273,9 @@ class _DrawerComponentState extends State<DrawerComponent> {
                     children: [
                       const Icon(Icons.menu),
                       addWidth(SpacingSize.s),
-                      Text(AppLocalizations.of(context)!.transactionHistory),
+                      const WalletText(
+                        localizeKey: 'transactionHistory',
+                      ),
                     ],
                   ),
                 ),
@@ -297,7 +300,9 @@ class _DrawerComponentState extends State<DrawerComponent> {
                     children: [
                       const Icon(Icons.share),
                       addWidth(SpacingSize.s),
-                      Text(AppLocalizations.of(context)!.shareMyPubliAdd),
+                      const WalletText(
+                        localizeKey: 'shareMyPubliAdd',
+                      ),
                     ],
                   ),
                   addHeight(SpacingSize.m),
@@ -307,7 +312,9 @@ class _DrawerComponentState extends State<DrawerComponent> {
                       children: [
                         const Icon(Icons.remove_red_eye),
                         addWidth(SpacingSize.s),
-                        Text(AppLocalizations.of(context)!.viewOnEtherscan),
+                        const WalletText(
+                          localizeKey: 'viewOnEtherscan',
+                        ),
                       ],
                     ),
                   ),
@@ -333,7 +340,9 @@ class _DrawerComponentState extends State<DrawerComponent> {
                     children: [
                       const Icon(Icons.settings_outlined),
                       addWidth(SpacingSize.s),
-                      Text(AppLocalizations.of(context)!.settings),
+                      const WalletText(
+                        localizeKey: 'settings',
+                      ),
                     ],
                   ),
                 ),
@@ -355,7 +364,9 @@ class _DrawerComponentState extends State<DrawerComponent> {
                     children: [
                       const Icon(Icons.logout),
                       addWidth(SpacingSize.s),
-                      Text(AppLocalizations.of(context)!.logout),
+                      const WalletText(
+                        localizeKey: 'logout',
+                      ),
                     ],
                   ),
                 ),
@@ -369,10 +380,8 @@ class _DrawerComponentState extends State<DrawerComponent> {
                         color: Colors.red,
                       ),
                       addWidth(SpacingSize.s),
-                      Text(
-                        AppLocalizations.of(context)!.deleteWallet,
-                        style: const TextStyle(color: Colors.red),
-                      ),
+                      const WalletText(
+                          localizeKey: 'deleteWallet', color: Colors.red),
                     ],
                   ),
                 ),

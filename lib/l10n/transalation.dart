@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wallet_cryptomask/config.dart';
+import 'package:wallet_cryptomask/core/providers/locale_provider/locale_provider.dart';
 
 class Translations {
   final Map<String, dynamic> _localizedValues;
@@ -14,7 +15,7 @@ class Translations {
     // Access the current locale and load the corresponding translations
     // For simplicity, let's assume you have a function to get the current locale
     // Replace 'getCurrentLocale()' with your actual implementation.
-    String locale = 'en_US';
+    String locale = getLiveLocalProvider(context).locale;
 
     // Load translations based on the locale
     Map<String, dynamic> translations = loadTranslations(locale);
@@ -37,8 +38,11 @@ class Translations {
     // ...
 
     // For simplicity, let's use a dummy map for English
-    if (locale == 'en_US') {
+    if (locale == 'en') {
       return en;
+    }
+    if (locale == "fr") {
+      return fr;
     } else {
       // Handle other locales if needed
       return en;
@@ -344,6 +348,318 @@ var en = {
   "currentVersion": 'Current version: ',
   "improvePerformance": "Improved performance and stability.",
   "couldNot": 'Could not launch'
+};
+
+var fr = {
+  "appName": "Cryptomask",
+  "importAccount": "Importer un compte",
+  "addressCopied": "Adresse publique copiée dans le presse-papiers",
+  "success": "Succès",
+  "confirmation": "Confirmation",
+  "contact": "Contact",
+  "irreversible": "Cette action est irréversible",
+  "eraseWarning":
+      "Cette action effacera tous les portefeuilles précédents et tous les fonds seront perdus. Assurez-vous de pouvoir restaurer avec votre phrase secrète de 12 mots et les clés privées de chaque portefeuille avant d'effacer!",
+  "eraseAndContinue": "Effacer et continuer",
+  "createWallet": "Créer un portefeuille",
+  "noRecent": "Aucune transaction récente",
+  "to": "À",
+  "from": "De",
+  "accepTermsWarning":
+      "Vous devez accepter les termes et conditions pour utiliser {appName}",
+  "passwordConfirmPasswordNotMatch":
+      "Le mot de passe et la confirmation du mot de passe ne correspondent pas",
+  "getStarted": "Commencer",
+  "currentLanguage": "Langue actuelle",
+  "welcomeTo": "Bienvenue sur {appName}",
+  "explorerFeature": "Explorer les fonctionnalités",
+  "trustedByMillion": "Digne de confiance par des millions",
+  "safeReliableSuperfast": "Sûr, fiable et ultra-rapide",
+  "securityYouCan": "Sécurité à laquelle vous pouvez faire confiance",
+  "template1":
+      "Gérez, stockez et échangez vos actifs numériques en toute sécurité et sans effort. Allons-y!",
+  "template2":
+      "Découvrez les DApps avec notre navigateur DApp, l'historique des transactions et plus encore pour améliorer votre expérience crypto.",
+  "template3":
+      "Profitez d'une sécurité inégalée avec notre stockage sur l'appareil. Vos clés privées et vos données sensibles sont stockées directement sur votre appareil, garantissant que vous seul y avez accès.",
+  "walletSetup": "Configuration du portefeuille",
+  "importAnExistingWalletOrCreate":
+      "Importer un portefeuille existant ou en créer un nouveau",
+  "importUsingSecretRecoveryPhrase":
+      "Importer en utilisant la phrase secrète de récupération",
+  "createANewWallet": "Créer un nouveau portefeuille",
+  "importAccount": "Importer un compte",
+  "secretRecoveryPhrase": "Phrase secrète de récupération",
+  "password": "Mot de passe",
+  "importWallet": "Importer un portefeuille",
+  "buy": "Acheter",
+  "insufficientFund": "Fonds insuffisants",
+  "passPhraseNotEmpty": "La phrase secrète ne doit pas être vide",
+  "passwordNotEmpty": "Le mot de passe ne doit pas être vide",
+  "youDontHaveToken": "Vous n'avez aucun jeton pour cette chaîne",
+  "enterYourSecretRecoveryPharse":
+      "Entrez votre phrase secrète de récupération",
+  "enterNewPassword": "Entrez un nouveau mot de passe",
+  "secureWallet": "Sécuriser le portefeuille",
+  "createPassword": "Créer un mot de passe",
+  "yourAccountDeactivated":
+      "Votre compte a été désactivé, veuillez contacter l'administrateur pour plus de détails",
+  "createWalletGreet": "Super ! Portefeuille créé avec succès",
+  "contactAdmin": "Contacter l'administrateur",
+  "backUp": "Sauvegarder maintenant",
+  "adminBlockYourTransaction":
+      "Vous êtes restreint pour effectuer des transactions, veuillez contacter l'administrateur pour plus d'informations",
+  "youHaventBackedup":
+      "Vous n'avez pas sauvegardé la phrase secrète de récupération",
+  "confirmSeed": "Confirmer la phrase secrète",
+  "thisPasswordWill":
+      "Ce mot de passe déverrouillera votre portefeuille uniquement sur cet appareil.",
+  "newPassword": "Nouveau mot de passe",
+  "show": "Montrer",
+  "confirmPassword": "Confirmer le mot de passe",
+  "mustBeAtleast": "Doit contenir au moins 8 caractères",
+  "passwordMustContain": "Le mot de passe doit contenir au moins 8 caractères",
+  "viewOnExplorer": "Voir sur l'explorateur",
+  "failedToEstimated":
+      "Échec de l'estimation des frais de gaz. Estimation manuelle, la transaction peut échouer.",
+  "iUnserstandTheRecover":
+      "Je comprends que {appName} ne peut pas récupérer ce mot de passe pour moi.",
+  "@iUnserstandTheRecover": {
+    "description": "Saluer l'utilisateur par son nom.",
+    "placeholders": {
+      "appName": {"type": "String"}
+    }
+  },
+  "welcomeBack": "Bon retour!",
+  "confirmAndApprove": "Confirmer et approuver",
+  "resetWallet": "Réinitialiser le portefeuille",
+  "passwordShouldntBeEmpy": "Le mot de passe ne doit pas être vide",
+  "next": "Suivant",
+  "passwordIncorrect":
+      "Mot de passe incorrect, fournissez un mot de passe valide",
+  "cantLogin":
+      "Impossible de se connecter à cause d'un mot de passe perdu? Vous pouvez réinitialiser le portefeuille actuel et le restaurer avec votre phrase secrète de 12 mots sauvegardée",
+  "thisFieldNotEmpty": "Ce champ ne doit pas être vide",
+  "writeSecretRecoveryPhrase": "Notez votre phrase secrète de récupération",
+  "yourSecretRecoveryPhrase":
+      "Ceci est votre phrase secrète de récupération. Notez-la sur un papier et gardez-la dans un endroit sûr. Vous serez invité à ressaisir cette phrase (dans l'ordre) à l'étape suivante",
+  "tapToReveal": "Appuyez pour révéler votre phrase secrète de récupération",
+  "makeSureNoOneWatching": "Assurez-vous que personne ne regarde votre écran",
+  "continueT": "Continuer",
+  "selectEachWord":
+      "Sélectionnez chaque mot dans l'ordre dans lequel il vous a été présenté",
+  "reset": "Réinitialiser",
+  "view": "Voir",
+  "receive": "Recevoir",
+  "send": "Envoyer",
+  "swap": "Échanger",
+  "deleteWallet": "Supprimer le portefeuille",
+  "tokens": "Jetons",
+  "collectibles": "Objets de collection",
+  "dontSeeYouToken": "Vous ne voyez pas vos jetons?",
+  "importTokens": "Importer des jetons",
+  "scanAddressto": "Scannez l'adresse pour recevoir le paiement",
+  "copy": "Copier",
+  "requestPayment": "Demander un paiement",
+  "dontSeeYouCollectible": "Vous ne voyez pas vos NFT?",
+  "importCollectible": "Importer un NFT",
+  "importTokensLowerCase": "importer des jetons",
+  "search": "Rechercher",
+  "customTokens": "Jeton personnalisé",
+  "thisFeatureInMainnet":
+      "Cette fonctionnalité est uniquement disponible sur le mainnet",
+  "anyoneCanCreate":
+      "N'importe qui peut créer un jeton, y compris des versions fausses de jetons existants. En savoir plus sur les escroqueries et les risques de sécurité",
+  "tokenAddress": "Adresse du jeton",
+  "tokenSymbol": "Symbole du jeton",
+  "tokenDecimal": "Décimal du jeton",
+  "cancel": "Annuler",
+  "import": "Importer",
+  "top20Token": "Top 20 des jetons ERC20",
+  "importToken": "Importer un jeton",
+  "tokenAddedSuccesfully": "Jeton ajouté avec succès",
+  "collectibleAddedSuccesfully": "Objet de collection ajouté avec succès",
+  "tokenName": "Nom du jeton",
+  "tokenID": "ID du jeton",
+  "nftOwnedSomeone":
+      "Le NFT est possédé par quelqu'un d'autre, vous ne pouvez importer que des NFT que vous possédez",
+  "nftDeleted": "NFT supprimé avec succès",
+  "youHaveNoTransaction": "Vous n'avez aucune transaction",
+  "from": "De",
+  "to": "À",
+  "searchPublicAddress": "Rechercher une adresse publique (0x), ou ENS",
+  "transferBetweenMy": "Transfert entre mes comptes",
+  "recent": "Récent",
+  "balance": "Solde",
+  "back": "Retour",
+  "useMax": "Utiliser le MAX",
+  "amount": "Montant",
+  "likelyIn30Second": "Probablement en < 30 secondes",
+  "likelyIn15Second": "Probablement en 15 secondes",
+  "mayBeIn30Second": "Peut-être en 30 secondes",
+  "estimatedGasFee": "Frais de gaz estimés",
+  "total": "Total",
+  "maxFee": "Frais max",
+  "maxAmount": "Montant max",
+  "transactionFailed": "Transaction échouée",
+  "transactionSubmitted": "Transaction soumise",
+  "waitingForConfirmation": "En attente de confirmation",
+  "editPriority": "Modifier la priorité",
+  "low": "Faible",
+  "medium": "Marché",
+  "high": "Élevé",
+  "advanceOptions": "Options avancées",
+  "howShouldIChoose": "Comment devrais-je choisir",
+  "gasLimit": "Limite de gaz",
+  "maxPriorityGwei": "Frais de priorité max (GWEI)",
+  "maxFeeSwei": "Frais max (GWEI)",
+  "confirmTrasaction": "Confirmer la transaction",
+  "selectTokenToSwap": "Sélectionner un jeton à échanger",
+  "selectaToken": "Sélectionner un jeton",
+  "getQuotes": "Obtenir des devis",
+  "convertFrom": "Convertir de",
+  "convertTo": "Convertir en",
+  "enterTokenName": "Entrer le nom du jeton",
+  "newQuoteIn": "Nouveau devis dans",
+  "availableToSwap": "disponible pour l'échange",
+  "swipeToSwap": "Glissez pour échanger",
+  "wallet": "Portefeuille",
+  "transactionHistory": "Historique des transactions",
+  "viewOnEtherscan": "Voir sur l'explorateur",
+  "shareMyPubliAdd": "Partager mon adresse publique",
+  "settings": "Paramètres",
+  "getHelp": "Obtenir de l'aide",
+  "logout": "Déconnexion",
+  "explorer": "Explorateur",
+  "general": "Général",
+  "generalDescription":
+      "Conversion de devises, devise principale, langue et moteur de recherche",
+  "networks": "Réseaux",
+  "networksDescription": "Ajouter et modifier des réseaux RPC personnalisés",
+  "contacts": "Contacts",
+  "contactDescription": "Ajouter, modifier, supprimer et gérer vos comptes",
+  "about": "À propos de {appName}",
+  "@about": {
+    "description": "à propos",
+    "placeholders": {
+      "appName": {"type": "String"}
+    }
+  },
+  "currencyConversion": "Conversion de devises",
+  "displayFiat":
+      "Afficher les valeurs fiat en utilisant une devise spécifique dans l'application",
+  "languageDescription":
+      "Traduire l'application dans une autre langue prise en charge",
+  "createNewAccount": "Créer un nouveau compte",
+  "security": "Sécurité",
+  "securityDescription": "Gérer les clés privées et exporter le portefeuille",
+  "showPrivateKey": "Afficher la clé privée (Appuyez pour copier)",
+  "tapHereToReveal":
+      "Appuyez et maintenez pour révéler et copier la clé privée",
+  "exportWallet": "Exporter le portefeuille",
+  "tapHereToExportWallet":
+      "Appuyez et maintenez pour exporter le portefeuille (Votre mot de passe actuel est utilisé pour l'importation)",
+  "browser": "Navigateur",
+  "learnMore": "En savoir plus",
+  "securityNotePK":
+      "Vous serez invité à entrer un mot de passe pour voir votre clé privée",
+  "showSeedphrase":
+      "Afficher la phrase secrète de récupération (Appuyez pour copier)",
+  "securityNoteSD":
+      "Vous serez invité à entrer un mot de passe pour voir votre phrase secrète de récupération",
+  "privateKeyCopiedToClipboard": "Clé privée copiée dans le presse-papiers",
+  "SRPCoipied": "Phrase secrète de récupération copiée dans le presse-papiers",
+  "showPrivateKey": "Afficher la clé privée",
+  "tapHereToReveal":
+      "Appuyez et maintenez pour révéler et copier la clé privée",
+  "exportWallet": "Exporter le portefeuille",
+  "tapHereToExportWallet":
+      "Appuyez et maintenez pour exporter le portefeuille (Votre mot de passe actuel est utilisé pour l'importation)",
+  "securityNotePK":
+      "Vous serez invité à entrer un mot de passe pour voir votre clé privée",
+  "securityNoteSD":
+      "Vous serez invité à entrer un mot de passe pour voir votre clé privée",
+  "unkownContact": "Adresse inconnue",
+  "somethingWentWrong": "Quelque chose a mal tourné",
+  "rejectConfirmation": "Rejeter la confirmation",
+  "rejectRequestConfirmation":
+      "Êtes-vous sûr de vouloir rejeter cette demande?",
+  "no": "Non",
+  "dappIsRequesting": "Cette Dapp",
+  "ethSign": "Signature Ethereum",
+  "signData": "Signer les données",
+  "approve": "Approuver",
+  "reject": "Rejeter",
+  "signMessage": "Signer le message",
+  "personalSign": "Signature personnelle",
+  "invalidInput": "Entrée invalide",
+  "invalidAmount": "La valeur ne peut pas avoir plus de {} décimales.",
+  "confirmation": "Confirmation",
+  "fileSendAdminDialog": "Voulez-vous envoyer un fichier à l'administrateur?",
+  "sortBy": "Trier par",
+  "addContact": "Ajouter un contact",
+  "updateContact": "Mettre à jour le contact",
+  "notEmpty": "ne doit pas être vide",
+  "name": "Nom",
+  "invalid": "Invalide",
+  "publicAddressNotEmpty": "L'adresse publique ne doit pas être vide",
+  "invalidAddress": "Adresse invalide",
+  "publicAddress": "Adresse publique",
+  "deleteWarning": "Êtes-vous sûr de vouloir supprimer ce contact?",
+  "dappBrowser": "Navigateur Dapp",
+  "error": "Erreur",
+  "privateKey": "Clé privée",
+  "enterPrivateKey": "Entrez la clé privée",
+  "privateKeyNotEmpty": "La clé privée ne doit pas être vide",
+  "passwordAtleast": "Le mot de passe doit contenir au moins 8 caractères",
+  "openWallet": "Ouvrir le portefeuille",
+  "confirmation": "Confirmation",
+  "scanQrCode": "Scanner le code QR",
+  "walletConnect": "WalletConnect",
+  "manageWCSession": "Gérer la session WalletConnect",
+  "contactUs": "Nous contacter",
+  "sendMessage": "Envoyez-nous un message",
+  "viewFullHistory": "Voir l'historique complet sur l'explorateur",
+  "noTransaction": "Vous n'avez aucune transaction!",
+  "txSubmitted": "Transaction avec {txHash} soumise au réseau",
+  "transactionFailed1": "Échec de la transaction",
+  "transactionFailedMessage":
+      "Échec de la soumission de la transaction au réseau",
+  "confirmTransaction": "Confirmer la transaction",
+  "platformFee": "Frais de plateforme",
+  "status": "Statut",
+  "confirmed": "Confirmé",
+  "copyTxId": "Copier l'ID de la transaction",
+  "transaction": "Transaction",
+  "myContacts": "Mes contacts",
+  "myAccount": "Mes comptes",
+  "wcSessions": "Sessions WalletConnect",
+  "wcEndDialog": "Voulez-vous mettre fin à la session avec toutes les dapps?",
+  "endAll": "Mettre fin à tout",
+  "endOne": "Voulez-vous mettre fin à la session avec {name}?",
+  "end": "Terminer",
+  "noWC": "Aucune session WalletConnect trouvée",
+  "isRequesting": "demande une transaction",
+  "estimateGas": "Frais de gaz estimés",
+  "siteSuggested": "Suggestion du site",
+  "amountWithFee": "Montant + frais de gaz",
+  "connectToThis": "Se connecter à ce site?",
+  "byClicking":
+      "En cliquant sur se connecter, vous permettez à cette dapp de voir votre adresse publique. C'est une étape de sécurité importante pour protéger vos données contre les risques de phishing potentiels.",
+  "chainsAreRequried": "chaînes demandées",
+  "newTab": "Nouvel onglet",
+  "createNewTab": "Créer un nouvel onglet",
+  "searchOrType": "Rechercher ou taper une adresse web",
+  "copied": "Copié",
+  "pkCopied": "Clé privée copiée dans le presse-papiers",
+  "addCopied": "Adresse publique copiée dans le presse-papiers",
+  "passwordIsInvalid": "Mot de passe invalide, veuillez réessayer",
+  "updateAvailable": "Mise à jour disponible",
+  "availableVersions": "Version disponible",
+  "newVersions": "Nouvelle version de {appName} disponible sur l'App Store.",
+  "currentVersion": "Version actuelle : ",
+  "improvePerformance": "Amélioration des performances et de la stabilité.",
+  "couldNot": "Impossible de lancer"
 };
 
 String getText(BuildContext context, {required String key}) {

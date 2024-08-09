@@ -5,6 +5,11 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
 class LocaleProvider extends ChangeNotifier {
+  static final supportedLocales = [
+    const Locale('en', 'US'),
+    const Locale('es', 'ES'),
+    const Locale('fr', 'FR'),
+  ];
   String locale = 'en';
   LocaleProvider({required this.locale});
 
@@ -24,3 +29,5 @@ class LocaleProvider extends ChangeNotifier {
 }
 
 getLocalProvider(BuildContext context) => context.read<LocaleProvider>();
+LocaleProvider getLiveLocalProvider(BuildContext context) =>
+    Provider.of<LocaleProvider>(context);

@@ -7,9 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/contact_provider/contact_provider.dart';
+import 'package:wallet_cryptomask/core/providers/network_provider/network_provider.dart';
 import 'package:wallet_cryptomask/core/providers/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
@@ -182,7 +182,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     child: ListView.builder(
                                         scrollDirection: Axis.vertical,
                                         shrinkWrap: true,
-                                        itemCount: Core.networks.length,
+                                        itemCount:
+                                            getLiveNetworkProvider(context)
+                                                .networks
+                                                .length,
                                         itemBuilder: (context, index) =>
                                             ListTile(
                                               tileColor: Colors.transparent,
@@ -200,8 +203,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                                     context)
                                                                 .nativeBalance,
                                                         address: address,
-                                                        network: Core
-                                                            .networks[index]);
+                                                        network:
+                                                            getLiveNetworkProvider(
+                                                                        context)
+                                                                    .networks[
+                                                                index]);
                                                 Navigator.of(context).pop();
                                               },
                                               title: Row(
@@ -210,18 +216,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                     width: 7,
                                                     height: 7,
                                                     decoration: BoxDecoration(
-                                                        color: Core
-                                                            .networks[index]
-                                                            .dotColor,
+                                                        color:
+                                                            getLiveNetworkProvider(
+                                                                    context)
+                                                                .networks[index]
+                                                                .dotColor,
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10)),
                                                   ),
                                                   addWidth(SpacingSize.s),
                                                   WalletText(
-                                                      localizeKey: Core
-                                                          .networks[index]
-                                                          .networkName),
+                                                      localizeKey:
+                                                          getLiveNetworkProvider(
+                                                                  context)
+                                                              .networks[index]
+                                                              .networkName),
                                                 ],
                                               ),
                                             )),

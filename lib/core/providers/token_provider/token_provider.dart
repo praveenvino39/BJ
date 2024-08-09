@@ -8,7 +8,6 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/utils/eth-utils/erc20.dart';
-import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
@@ -97,31 +96,6 @@ class TokenProvider extends ChangeNotifier {
     } catch (e) {
       return [];
     }
-  }
-
-  Future<void> addToken(
-      {required double nativeBalance,
-      required String address,
-      required Network network,
-      required Token token}) async {
-    String tokenStoragekey =
-        getTokenStorageKey(address: address, network: network);
-    List<dynamic> tokens = userPreference.get(tokenStoragekey) ?? [];
-    if (tokens.contains(token)) {
-      return;
-    }
-    var tokenBalance = await getTokenBalance(token, address, network);
-    token.balance = tokenBalance.toDouble();
-    tokens.add(token);
-    for (var tokenObj in Core.tokenList) {
-      if ((tokenObj as dynamic)["symbol"].toString().toLowerCase() ==
-          token.symbol.toLowerCase()) {
-        token.coinGeckoID = (tokenObj as dynamic)["id"];
-        break;
-      }
-    }
-    await userPreference.put(tokenStoragekey, tokens);
-    loadToken(nativeBalance: nativeBalance, address: address, network: network);
   }
 
   Future<List<String>> getTokenInfo(

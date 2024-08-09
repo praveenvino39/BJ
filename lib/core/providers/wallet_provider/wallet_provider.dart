@@ -16,7 +16,6 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet_cryptomask/core/core.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/core/model/wallet_model.dart';
 import 'package:wallet_cryptomask/core/model/wc_ethereum_transaction.dart';
@@ -59,6 +58,7 @@ void createWalletWithPasswordIsolate(CreatePasswordIsolateType args) {
 }
 
 class WalletProvider extends ChangeNotifier {
+  final List<Network> networks;
   bool loading = false;
   bool switchingChain = false;
   FlutterSecureStorage fss;
@@ -74,7 +74,7 @@ class WalletProvider extends ChangeNotifier {
   double nativeBalance = 0.0;
   wc.Web3Wallet? web3Wallet;
 
-  WalletProvider(this.fss, this.userPreference);
+  WalletProvider(this.fss, this.userPreference, this.networks);
 
   showLoading() {
     loading = true;
@@ -98,10 +98,10 @@ class WalletProvider extends ChangeNotifier {
 
   Network getNetwork(String networkName) {
     try {
-      return Core.networks
+      return networks
           .firstWhere((element) => element.networkName == networkName);
     } catch (e) {
-      return Core.networks[0];
+      return networks[0];
     }
   }
 
@@ -189,7 +189,7 @@ class WalletProvider extends ChangeNotifier {
   }
 
   Future<void> changeNetwork(int index) async {
-    final network = Core.networks[index];
+    final network = networks[index];
     await userPreference.put("NETWORK", network.networkName);
     initWeb3Client(network);
     emitChainChanged(network.chainId.toString(), network.nameSpace);
@@ -197,7 +197,7 @@ class WalletProvider extends ChangeNotifier {
 
   Future<void> changeNetworkWithChainId(int chainId, String topic) async {
     final network =
-        Core.networks.firstWhereOrNull((chain) => chain.chainId == chainId);
+        networks.firstWhereOrNull((chain) => chain.chainId == chainId);
     initWeb3Client(network!);
   }
 
@@ -211,7 +211,7 @@ class WalletProvider extends ChangeNotifier {
   //       nameSpace: activeNetwork.nameSpace,
   //       preference: userPreference,
   //       privateKey: activeWallet.wallet.privateKey,
-  //       networks: Core.networks);
+  //       networks: networks);
   //   GetIt.I.registerSingleton<WC2Service>(web3service,
   //       instanceName: walletConnectSingleTon);
   //   web3service.create();
@@ -257,8 +257,8 @@ class WalletProvider extends ChangeNotifier {
     if (walletString == null) {
       throw Exception("Something went wrong");
     }
-    String activeNetwork = userPreference.get("NETWORK",
-        defaultValue: Core.networks[0].networkName);
+    String activeNetwork =
+        userPreference.get("NETWORK", defaultValue: networks[0].networkName);
 
     activeAccountIndex = userPreference.get("ACCOUNT", defaultValue: 0);
     defaultCurrency = userPreference.get("CURRENCY", defaultValue: "usd");
@@ -526,8 +526,7 @@ class WalletProvider extends ChangeNotifier {
   }
 
   bool isSupported(int chainId) {
-    return Core.networks
-            .firstWhereOrNull((network) => network.chainId == chainId) !=
+    return networks.firstWhereOrNull((network) => network.chainId == chainId) !=
         null;
   }
 
@@ -577,7 +576,7 @@ class WalletProvider extends ChangeNotifier {
     //       chainId: "${network.nameSpace}:${network.chainId}", method: method);
     // }
 
-    for (var network in Core.networks) {
+    for (var network in networks) {
       initHandlers("eip155", network.chainId.toString());
     }
   }
@@ -1008,7 +1007,8 @@ class WalletProvider extends ChangeNotifier {
           ),
         );
       } else {
-        final networks = Core.networks
+        final networks = this
+            .networks
             .where((e) => chains.contains("${e.nameSpace}:${e.chainId}"))
             .toList();
         Get.snackbar("", "",
@@ -1099,7 +1099,7 @@ class WalletProvider extends ChangeNotifier {
 
   Network? getNetworkFromRequiredChain(String chainIdInEIP) {
     try {
-      return Core.networks.firstWhere((Network network) =>
+      return networks.firstWhere((Network network) =>
           "${network.nameSpace}:${network.chainId}" == chainIdInEIP);
     } catch (e) {
       return null;

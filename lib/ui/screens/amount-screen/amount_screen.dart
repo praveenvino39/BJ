@@ -4,7 +4,6 @@ import 'dart:developer';
 
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
@@ -130,11 +129,11 @@ class _AmountScreenState extends State<AmountScreen> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(AppLocalizations.of(context)!.amount,
-                  style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w200,
-                      color: Colors.black)),
+              const WalletText(
+                  localizeKey: 'amount',
+                  size: 16,
+                  fontWeight: FontWeight.w200,
+                  color: Colors.black),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -168,10 +167,8 @@ class _AmountScreenState extends State<AmountScreen> {
                     (states) => kPrimaryColor.withAlpha(30)),
               ),
               onPressed: onCancelHandler,
-              child: Text(
-                AppLocalizations.of(context)!.cancel,
-                style: const TextStyle(color: kPrimaryColor),
-              ),
+              child:
+                  const WalletText(localizeKey: 'cancel', color: kPrimaryColor),
             )
           ]),
       body: Column(
@@ -198,7 +195,7 @@ class _AmountScreenState extends State<AmountScreen> {
           ),
           addHeight(SpacingSize.m),
           Text(
-              "${AppLocalizations.of(context)!.balance}: ${selectedToken != Provider.of<WalletProvider>(context).activeNetwork.symbol ? selectedTokenObj!.balance.toString() + selectedToken : Provider.of<WalletProvider>(context).getNativeBalanceFormatted()}"),
+              "${getText(context, key: 'balance')}: ${selectedToken != Provider.of<WalletProvider>(context).activeNetwork.symbol ? selectedTokenObj!.balance.toString() + selectedToken : Provider.of<WalletProvider>(context).getNativeBalanceFormatted()}"),
           addHeight(SpacingSize.m),
           const Expanded(child: SizedBox()),
           isValidAmount

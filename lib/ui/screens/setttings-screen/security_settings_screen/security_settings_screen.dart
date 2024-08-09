@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
@@ -36,18 +35,16 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
         ),
         shadowColor: Colors.transparent,
         backgroundColor: Colors.transparent,
-        title: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 70, 10),
+        title: const Padding(
+          padding: EdgeInsets.fromLTRB(10, 10, 70, 10),
           child: SizedBox(
             width: double.infinity,
             child: Center(
-              child: Text(
-                AppLocalizations.of(context)!.security,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w300,
-                  fontSize: 16,
-                ),
+              child: WalletText(
+                localizeKey: 'security',
+                color: Colors.black,
+                fontWeight: FontWeight.w300,
+                size: 16,
               ),
             ),
           ),

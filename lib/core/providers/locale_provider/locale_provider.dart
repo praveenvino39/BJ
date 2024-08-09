@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 class LocaleProvider extends ChangeNotifier {
   static final supportedLocales = [
     const Locale('en', 'US'),
-    const Locale('es', 'ES'),
     const Locale('fr', 'FR'),
   ];
   String locale = 'en';

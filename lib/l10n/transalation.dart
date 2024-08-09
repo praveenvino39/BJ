@@ -36,7 +36,7 @@ class Translations {
 }
 
 var en = {
-  "appName": "Cryptomask",
+  "appName": appName,
   "importAccount": "Import Account",
   "addressCopied": "Public address copied to clipboard",
   "success": "Success",
@@ -323,7 +323,7 @@ var en = {
 };
 
 var fr = {
-  "appName": "Cryptomask",
+  "appName": appName,
   "importAccount": "Importer un compte",
   "addressCopied": "Adresse publique copiée dans le presse-papiers",
   "success": "Succès",

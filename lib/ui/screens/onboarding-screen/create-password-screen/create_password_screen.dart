@@ -112,6 +112,7 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const WalletText(
           localizeKey: "appName",
           textVarient: TextVarient.hero,

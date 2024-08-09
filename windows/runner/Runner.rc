@@ -92,7 +92,7 @@ BEGIN
             VALUE "CompanyName", "com.cryptodev.wallet" "\0"
             VALUE "FileDescription", "Phimask" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "Phimask" "\0"
+            VALUE "InternalName", "com.cryptomask.dev" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.cryptodev.wallet. All rights reserved." "\0"
             VALUE "OriginalFilename", "wallet.exe" "\0"
             VALUE "ProductName", "Phimask" "\0"

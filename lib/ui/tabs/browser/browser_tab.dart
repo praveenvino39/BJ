@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/core/providers/browser_provider/browser_provider.dart';
 import 'package:wallet_cryptomask/ui/tabs/browser/widgets/browser_app_bar.dart';
 import 'package:wallet_cryptomask/ui/tabs/browser/widgets/browser_tab_view.dart';

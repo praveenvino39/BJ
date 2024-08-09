@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/route_manager.dart';
-import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/providers/browser_provider/browser_provider.dart';

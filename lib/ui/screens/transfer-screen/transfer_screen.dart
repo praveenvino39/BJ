@@ -20,7 +20,6 @@ import 'package:wallet_cryptomask/ui/shared/avatar_widget.dart';
 import 'package:wallet_cryptomask/ui/screens/scanner-screen/scanner_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/ui/screens/web-view-screen/web_view_screen.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 

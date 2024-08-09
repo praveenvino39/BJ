@@ -10,7 +10,6 @@ import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
-import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
 
 class WalletConnectSessionScreen extends StatefulWidget {

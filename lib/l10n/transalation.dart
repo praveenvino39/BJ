@@ -158,6 +158,7 @@ var en = {
   "collectibleAddedSuccesfully": "Collectible added successfully",
   "tokenName": "Token name",
   "tokenID": "Token ID",
+  "clearBrowserStorage": "Clear browser storage",
   "nftOwnedSomeone":
       "NFT is owned by someone, You can only import NFT that you owned",
   "nftDeleted": "NFT deleted successfully",
@@ -364,6 +365,7 @@ var fr = {
   "importWallet": "Importer un portefeuille",
   "buy": "Acheter",
   "insufficientFund": "Fonds insuffisants",
+  "clearBrowserStorage": "Effacer le stockage du navigateur",
   "passPhraseNotEmpty": "La phrase secrète ne doit pas être vide",
   "passwordNotEmpty": "Le mot de passe ne doit pas être vide",
   "youDontHaveToken": "Vous n'avez aucun jeton pour cette chaîne",

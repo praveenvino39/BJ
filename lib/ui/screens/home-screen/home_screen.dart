@@ -182,10 +182,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     child: ListView.builder(
                                         scrollDirection: Axis.vertical,
                                         shrinkWrap: true,
-                                        itemCount:
-                                            getLiveNetworkProvider(context)
-                                                .networks
-                                                .length,
+                                        itemCount: getNetworkProvider(context)
+                                            .networks
+                                            .length,
                                         itemBuilder: (context, index) =>
                                             ListTile(
                                               tileColor: Colors.transparent,
@@ -204,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                                 .nativeBalance,
                                                         address: address,
                                                         network:
-                                                            getLiveNetworkProvider(
+                                                            getNetworkProvider(
                                                                         context)
                                                                     .networks[
                                                                 index]);
@@ -217,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                     height: 7,
                                                     decoration: BoxDecoration(
                                                         color:
-                                                            getLiveNetworkProvider(
+                                                            getNetworkProvider(
                                                                     context)
                                                                 .networks[index]
                                                                 .dotColor,
@@ -228,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                   addWidth(SpacingSize.s),
                                                   WalletText(
                                                       localizeKey:
-                                                          getLiveNetworkProvider(
+                                                          getNetworkProvider(
                                                                   context)
                                                               .networks[index]
                                                               .networkName),

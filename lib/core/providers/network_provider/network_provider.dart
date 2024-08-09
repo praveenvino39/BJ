@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 
 NetworkProvider getNetworkProvider(BuildContext context) =>
-    Provider.of<NetworkProvider>(context);
+    Provider.of<NetworkProvider>(context, listen: false);
+
 NetworkProvider getLiveNetworkProvider(BuildContext context) =>
     Provider.of<NetworkProvider>(context);
 
@@ -52,22 +53,6 @@ class NetworkProvider extends ChangeNotifier {
           transactionViewUrl: "https://polygonscan.com/tx/",
           dotColor: const Color(0xff8247e5),
           etherscanApiBaseUrl: "https://api.polygonscan.com/"),
-      Network(
-          priceId: "",
-          nameSpace: "eip155",
-          networkName: "Ethereum Sepolia",
-          url: "https://rpc-sepolia.rockx.com",
-          symbol: "ETH",
-          currency: "ETH",
-          logo: "assets/images/ETH.png",
-          chainId: 11155111,
-          apiKey: "R4UWZSAHBDVC95DACN4E7XVHMUXQ8ETI5B",
-          wrappedTokenAddress: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
-          isMainnet: true,
-          addressViewUrl: "https://sepolia.etherscan.io/address/",
-          transactionViewUrl: "https://sepolia.etherscan.io/tx/",
-          dotColor: Colors.yellow,
-          etherscanApiBaseUrl: "https://api-sepolia.etherscan.io/"),
     ];
   }
 }

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/providers/browser_provider/browser_provider.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/tabs/browser/widgets/browser_url_field.dart';
 import 'package:wallet_cryptomask/ui/shared/network_dart.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
@@ -61,10 +62,104 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
       backgroundColor: Colors.white,
       centerTitle: true,
       automaticallyImplyLeading: false,
-      actions: [
-        if (kDebugMode)
-          IconButton(
-              onPressed: () {
+      title: _buildSearchTextField(),
+    );
+  }
+
+  Widget _buildSearchTextField() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Icon(
+          Icons.more_vert,
+          color: Colors.transparent,
+        ),
+        addWidth(SpacingSize.xs),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => BrowserUrlField(
+                    onUrlSubmit: widget.onUrlSubmit,
+                    webViewModel: widget.webViewModel,
+                    certified: widget.certified,
+                    url: widget.url),
+              ));
+            },
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 7),
+                    decoration: BoxDecoration(
+                        color: kPrimaryColor.withAlpha(30),
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.lock,
+                          size: 14,
+                          color: Colors.green,
+                        ),
+                        const SizedBox(
+                          width: 3,
+                        ),
+                        Text(
+                          urlController.text.toString().contains(
+                                  "file:///android_asset/flutter_assets/assets/html/homepage.html")
+                              ? "http://www.google.com"
+                              : Uri.parse(urlController.text).authority,
+                          overflow: TextOverflow.fade,
+                          style: const TextStyle(
+                              fontSize: 13, color: Colors.black),
+                        ),
+                        const Icon(
+                          Icons.lock,
+                          size: 14,
+                          color: Colors.transparent,
+                        ),
+                        const SizedBox(
+                          width: 3,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 2,
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      NetworkDot(
+                        color:
+                            getWalletProvider(context).activeNetwork.dotColor,
+                        radius: 10,
+                      ),
+                      addWidth(SpacingSize.xxs),
+                      Text(
+                        getWalletProvider(context).activeNetwork.networkName,
+                        style:
+                            const TextStyle(fontSize: 12, color: Colors.black),
+                        textAlign: TextAlign.center,
+                      ),
+                      addWidth(SpacingSize.xxs),
+                      const NetworkDot(
+                        color: Colors.transparent,
+                        radius: 10,
+                      ),
+                    ],
+                  ),
+                ]),
+          ),
+        ),
+        addWidth(SpacingSize.xs),
+        PopupMenuButton(
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              onTap: () {
                 context
                     .read<BrowserProvider>()
                     .webViewController
@@ -72,90 +167,17 @@ class _BrowserUrlBarState extends State<BrowserUrlBar> {
                     .localStorage
                     .clear();
               },
-              icon: const Icon(
-                Icons.clear,
-                color: Colors.red,
-              ))
-      ],
-      title: _buildSearchTextField(),
-    );
-  }
-
-  Widget _buildSearchTextField() {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => BrowserUrlField(
-              onUrlSubmit: widget.onUrlSubmit,
-              webViewModel: widget.webViewModel,
-              certified: widget.certified,
-              url: widget.url),
-        ));
-      },
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 7),
-              decoration: BoxDecoration(
-                  color: kPrimaryColor.withAlpha(30),
-                  borderRadius: BorderRadius.circular(5)),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.lock,
-                    size: 14,
-                    color: Colors.green,
-                  ),
-                  const SizedBox(
-                    width: 3,
-                  ),
-                  Text(
-                    urlController.text.toString().contains(
-                            "file:///android_asset/flutter_assets/assets/html/homepage.html")
-                        ? "http://www.google.com"
-                        : Uri.parse(urlController.text).authority,
-                    overflow: TextOverflow.fade,
-                    style: const TextStyle(fontSize: 13, color: Colors.black),
-                  ),
-                  const Icon(
-                    Icons.lock,
-                    size: 14,
-                    color: Colors.transparent,
-                  ),
-                  const SizedBox(
-                    width: 3,
-                  ),
-                ],
+              child: const WalletText(
+                localizeKey: 'clearBrowserStorage',
               ),
-            ),
-            const SizedBox(
-              height: 2,
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                NetworkDot(
-                  color: getWalletProvider(context).activeNetwork.dotColor,
-                  radius: 10,
-                ),
-                addWidth(SpacingSize.xxs),
-                Text(
-                  getWalletProvider(context).activeNetwork.networkName,
-                  style: const TextStyle(fontSize: 12, color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
-                addWidth(SpacingSize.xxs),
-                const NetworkDot(
-                  color: Colors.transparent,
-                  radius: 10,
-                ),
-              ],
-            ),
-          ]),
+            )
+          ],
+          child: const Icon(
+            Icons.more_vert,
+            color: Colors.red,
+          ),
+        )
+      ],
     );
   }
 }

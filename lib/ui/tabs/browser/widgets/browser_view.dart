@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/route_manager.dart';
 import 'package:wallet_cryptomask/config.dart';
@@ -122,8 +123,9 @@ class _BrowserViewState extends State<BrowserView> {
   }
 
   void loadHomepage() async {
-    widget.webViewModel.webViewController
-        ?.loadUrl(urlRequest: URLRequest(url: WebUri(homepageUrl)));
+    widget.webViewModel.webViewController?.loadUrl(
+        urlRequest:
+            URLRequest(url: WebUri(dotenv.env['BROWSER_HOMEPAGE'] ?? "")));
   }
 }
 

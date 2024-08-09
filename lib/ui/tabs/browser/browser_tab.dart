@@ -7,6 +7,7 @@ import 'package:clipboard_watcher/clipboard_watcher.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/config.dart';
@@ -34,14 +35,14 @@ class _BrowserTabState extends State<BrowserTab> with ClipboardListener {
   double progressFactor = 0;
   bool? certified;
   PullToRefreshController? pullToRefreshController;
-  WebUri homePage = WebUri(homepageUrl);
+  WebUri homePage = WebUri(dotenv.env['BROWSER_HOMEPAGE'] ?? "");
   bool showHomeButton = false;
   bool showBrowser = true;
   List<BrowserView> tabs = [];
   Widget? selectedTab;
   int homeIndex = 0;
   int selectedIndex = 0;
-  String currentPage = homepageUrl;
+  String currentPage = dotenv.env['BROWSER_HOMEPAGE'] ?? "";
 
   OutlineInputBorder outlineBorder = const OutlineInputBorder(
     borderSide: BorderSide(color: Colors.transparent, width: 0.0),
@@ -80,7 +81,8 @@ class _BrowserTabState extends State<BrowserTab> with ClipboardListener {
     }
 
     tabs.add(BrowserView(
-        webViewModel: BrowserProvider(progress: 0, url: WebUri(homepageUrl)),
+        webViewModel: BrowserProvider(
+            progress: 0, url: WebUri(dotenv.env['BROWSER_HOMEPAGE'] ?? "")),
         onUrlSubmit: onUrlSumbit));
 
     selectedTab = tabs.first;

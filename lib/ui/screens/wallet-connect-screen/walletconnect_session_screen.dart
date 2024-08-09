@@ -59,40 +59,27 @@ class _WalletConnectSessionScreenState
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              showConfirmationDialog(
-                context: context,
-                question: getText(context, key: 'wcEndDialog'),
-                primaryCtaText: getText(context, key: 'endAll'),
-                secondaryCtaText: getText(context, key: 'cancel'),
-                secondaryOnPress: () => Get.back(),
-                primaryOnPress: () async {
-                  try {
-                    for (var session in sessions) {
-                      await getWalletProvider(context)
-                          .web3Wallet
-                          ?.disconnectSession(
-                            topic: session.topic,
-                            reason: Errors.getSdkError(
-                              Errors.USER_DISCONNECTED,
-                            ),
-                          );
-                      await getWalletProvider(context)
-                          .web3Wallet
-                          ?.sessions
-                          .delete(
-                            session.topic,
-                          );
-                    }
-                  } catch (e) {
-                    log(e.toString());
-                  }
-                  setState(() {
-                    sessions.clear();
-                  });
-                  Get.back();
-                },
-              );
+            onPressed: () async {
+              try {
+                for (var session in sessions) {
+                  await getWalletProvider(context)
+                      .web3Wallet
+                      ?.disconnectSession(
+                        topic: session.topic,
+                        reason: Errors.getSdkError(
+                          Errors.USER_DISCONNECTED,
+                        ),
+                      );
+                  await getWalletProvider(context).web3Wallet?.sessions.delete(
+                        session.topic,
+                      );
+                }
+              } catch (e) {
+                log(e.toString());
+              }
+              setState(() {
+                sessions.clear();
+              });
             },
             icon: const Icon(Icons.clear_all),
           ),
@@ -108,40 +95,27 @@ class _WalletConnectSessionScreenState
                       ListTile(
                         trailing: IconButton(
                             onPressed: () {
-                              showConfirmationDialog(
-                                context: context,
-                                question: getTextWithPlaceholder(context,
-                                    key: 'endOne',
-                                    string: sessions[index].peer.metadata.name),
-                                primaryCtaText: getText(context, key: 'end'),
-                                secondaryCtaText:
-                                    getText(context, key: 'cancel'),
-                                secondaryOnPress: () => Get.back(),
-                                primaryOnPress: () async {
-                                  try {
-                                    getWalletProvider(context)
-                                        .web3Wallet!
-                                        .disconnectSession(
-                                          topic: sessions[index].topic,
-                                          reason: Errors.getSdkError(
-                                            Errors.USER_DISCONNECTED,
-                                          ),
-                                        )
-                                        .then((value) {
-                                      getWalletProvider(context)
-                                          .web3Wallet!
-                                          .sessions
-                                          .delete(sessions[index].topic);
-                                      setState(() {
-                                        sessions.remove(sessions[index]);
-                                      });
-                                      Get.back();
-                                    });
-                                  } catch (e) {
-                                    log(e.toString());
-                                  }
-                                },
-                              );
+                              try {
+                                getWalletProvider(context)
+                                    .web3Wallet!
+                                    .disconnectSession(
+                                      topic: sessions[index].topic,
+                                      reason: Errors.getSdkError(
+                                        Errors.USER_DISCONNECTED,
+                                      ),
+                                    )
+                                    .then((value) {
+                                  getWalletProvider(context)
+                                      .web3Wallet!
+                                      .sessions
+                                      .delete(sessions[index].topic);
+                                  setState(() {
+                                    sessions.remove(sessions[index]);
+                                  });
+                                });
+                              } catch (e) {
+                                log(e.toString());
+                              }
                             },
                             icon: const Icon(
                               Icons.close,

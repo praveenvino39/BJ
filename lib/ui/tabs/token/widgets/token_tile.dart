@@ -34,12 +34,25 @@ class _TokenTileState extends State<TokenTile> {
         imageUrl: widget.imageUrl,
       ),
       title: Text(
-        widget.balance.toStringAsFixed(6),
-        style: const TextStyle(fontSize: 16),
+        widget.symbol,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          fontSize: 16,
+        ),
       ),
-      subtitle: Text(
-        "\$${widget.balanceInFiat.toStringAsFixed(6)}",
-        style: const TextStyle(fontSize: 12, color: Colors.black),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.balance.toStringAsFixed(6),
+            style: const TextStyle(fontSize: 12),
+          ),
+          Text(
+            "\$${widget.balanceInFiat.toStringAsFixed(6)}",
+            style: const TextStyle(fontSize: 10, color: Colors.black),
+          ),
+        ],
       ),
       trailing: const Icon(
         Icons.arrow_forward_ios,

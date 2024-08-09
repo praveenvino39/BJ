@@ -49,7 +49,7 @@ class AvatarWidget extends StatelessWidget {
                 )
           : Jazzicon.getIconWidget(
               Jazzicon.getJazziconData(160, address: address),
-              size: radius / 1.3),
+              size: radius),
     );
   }
 }

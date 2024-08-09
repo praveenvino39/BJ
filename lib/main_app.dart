@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
@@ -36,8 +35,7 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   String locale = "";
   final fss = const FlutterSecureStorage();
-  final networkProvider =
-      NetworkProvider(infuraKey: dotenv.env['INFURAKEY'] ?? "");
+  final networkProvider = NetworkProvider();
 
   @override
   void initState() {

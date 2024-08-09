@@ -479,14 +479,6 @@ class WalletProvider extends ChangeNotifier {
         value: EtherAmount.fromUnitAndValue(
             EtherUnit.wei, BigInt.from(value * pow(10, 18))),
         nonce: nonce,
-        maxPriorityFeePerGas: activeNetwork.supportsEip1559
-            ? EtherAmount.fromUnitAndValue(
-                EtherUnit.wei, (selectedPriority * pow(10, 9)).toInt())
-            : null,
-        maxFeePerGas: activeNetwork.supportsEip1559
-            ? EtherAmount.fromUnitAndValue(
-                EtherUnit.wei, (selectedMaxFee * pow(10, 9)).toInt())
-            : null,
         maxGas: gasLimit,
       );
       String transactionHash = await web3client.sendTransaction(
@@ -532,52 +524,8 @@ class WalletProvider extends ChangeNotifier {
 
   Future<void> init() async {
     await web3Wallet!.init();
-    // final methods = [
-    //   "eth_accounts",
-    //   "eth_requestAccounts",
-    //   "eth_sendRawTransaction",
-    //   "eth_sign",
-    //   "eth_signTransaction",
-    //   "eth_signTypedData",
-    //   "eth_signTypedData_v3",
-    //   "eth_signTypedData_v4",
-    //   "eth_sendTransaction",
-    //   "personal_sign",
-    //   "wallet_switchEthereumChain",
-    //   "wallet_addEthereumChain",
-    //   "wallet_getPermissions",
-    //   "wallet_requestPermissions",
-    //   "wallet_registerOnboarding",
-    //   "wallet_watchAsset",
-    //   "wallet_scanQRCode",
-    //   "wallet_sendCalls",
-    //   "wallet_getCallsStatus",
-    //   "wallet_showCallsStatus",
-    //   "wallet_getCapabilities",
-    // ];
-    // final events = [
-    //   "chainChanged",
-    //   "accountsChanged",
-    //   "message",
-    //   "disconnect",
-    //   "connect",
-    // ];
-    // final network = activeNetwork;
-    // for (var event in events) {
-    //   web3Wallet?.registerEventEmitter(
-    //       chainId: "${network.nameSpace}:${network.chainId}", event: event);
-    // }
-    // for (var event in events) {
-    //   web3Wallet?.registerEventEmitter(
-    //       chainId: "${network.nameSpace}:${network.chainId}", event: event);
-    // }
-    // for (var method in methods) {
-    //   web3Wallet?.registerRequestHandler(
-    //       chainId: "${network.nameSpace}:${network.chainId}", method: method);
-    // }
-
     for (var network in networks) {
-      initHandlers("eip155", network.chainId.toString());
+      initHandlers(network.nameSpace, network.chainId.toString());
     }
   }
 

@@ -8,14 +8,12 @@ class Network {
   String transactionViewUrl;
   Color dotColor;
   int chainId;
-  String wrappedTokenAddress;
   String etherscanApiBaseUrl;
   bool isMainnet;
   String symbol;
   String apiKey;
   String logo;
   String priceId;
-  bool supportsEip1559;
   String nameSpace;
 
   Network(
@@ -24,7 +22,6 @@ class Network {
       required this.isMainnet,
       required this.currency,
       required this.chainId,
-      required this.wrappedTokenAddress,
       required this.addressViewUrl,
       required this.transactionViewUrl,
       required this.etherscanApiBaseUrl,
@@ -33,6 +30,5 @@ class Network {
       required this.priceId,
       required this.logo,
       required this.symbol,
-      this.supportsEip1559 = false,
       required this.nameSpace});
 }

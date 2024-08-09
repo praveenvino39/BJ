@@ -3,6 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
@@ -50,7 +51,7 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
 
   learnMoreHandler() {
     context.push(() => WebViewScreen(
-        url: getText(context, key: 'learnMore'), title: settings.ppUrl));
+        url: settings.ppUrl, title: getText(context, key: 'learnMore')));
   }
 
   createPasswordHandler() async {
@@ -171,11 +172,12 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
                               TextSpan(
                                   text: getTextWithPlaceholder(context,
                                       key: 'iUnserstandTheRecover',
-                                      string:
-                                          getText(context, key: 'appName'))),
+                                      string: getText(context, key: 'appName')),
+                                  style: GoogleFonts.poppins()),
+                              const TextSpan(text: " "),
                               TextSpan(
                                   text: getText(context, key: 'learnMore'),
-                                  style: const TextStyle(
+                                  style: GoogleFonts.poppins(
                                       fontWeight: FontWeight.bold,
                                       color: kPrimaryColor,
                                       decoration: TextDecoration.underline))

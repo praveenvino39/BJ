@@ -12,7 +12,7 @@ class Translations {
   }
 
   static Translations of(dynamic context) {
-    String locale = getLiveLocalProvider(context).locale;
+    String locale = getLocalProvider(context).locale;
 
     Map<String, dynamic> translations = loadTranslations(locale);
 

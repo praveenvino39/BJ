@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 
@@ -43,11 +44,9 @@ class _WebViewScreenState extends State<WebViewScreen> {
           ),
         ),
       ),
-      // body: WebView(
-      //   onWebViewCreated: (WebViewController webViewController) {},
-      //   initialUrl: widget.url,
-      //   javascriptMode: JavascriptMode.unrestricted,
-      // ),
+      body: InAppWebView(
+        initialUrlRequest: URLRequest(url: WebUri(widget.url)),
+      ),
     );
   }
 }

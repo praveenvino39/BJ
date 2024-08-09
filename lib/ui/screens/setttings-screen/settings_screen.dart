@@ -136,8 +136,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               InkWell(
                   onTap: () {
                     context.push(() => WebViewScreen(
-                        url: getText(context, key: 'about'),
-                        title: settings.about));
+                        url: settings.about,
+                        title: getText(context, key: 'about')));
                   },
                   child: const ListTile(
                       title: WalletText(

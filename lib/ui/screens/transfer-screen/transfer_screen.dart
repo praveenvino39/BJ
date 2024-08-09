@@ -14,6 +14,7 @@ import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart'
 import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/screens/amount-screen/amount_screen.dart';
+import 'package:wallet_cryptomask/ui/screens/chat_screen/chat_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/home-screen/widgets/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/shared/avatar_widget.dart';
 import 'package:wallet_cryptomask/ui/screens/scanner-screen/scanner_screen.dart';
@@ -439,9 +440,7 @@ class _TransferScreenState extends State<TransferScreen>
                 ])),
                 user.isTransactionBlocked
                     ? renderAlert(context, 'contactAdmin', () {
-                        context.push(() => WebViewScreen(
-                            url: getText(context, key: 'about'),
-                            title: settings.about));
+                        context.push(() => const ChatScreen());
                       }, localizeKey: 'adminBlockYourTransaction')
                     : SafeArea(
                         child: WalletButton(

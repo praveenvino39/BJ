@@ -28,6 +28,7 @@ class LocaleProvider extends ChangeNotifier {
   }
 }
 
-getLocalProvider(BuildContext context) => context.read<LocaleProvider>();
+LocaleProvider getLocalProvider(BuildContext context) =>
+    Provider.of<LocaleProvider>(context, listen: false);
 LocaleProvider getLiveLocalProvider(BuildContext context) =>
     Provider.of<LocaleProvider>(context);

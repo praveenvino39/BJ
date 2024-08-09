@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
@@ -72,7 +73,7 @@ class _DrawerComponentState extends State<DrawerComponent> {
   onGetHelpHandler() {
     context.push(
       () => WebViewScreen(
-          url: getText(context, key: 'help'), title: settings.helpUrl),
+          url: settings.helpUrl, title: getText(context, key: 'help')),
     );
   }
 
@@ -86,50 +87,55 @@ class _DrawerComponentState extends State<DrawerComponent> {
   }
 
   onDeleteWalletHandler() {
-    var alert = AlertDialog(
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(kPrimaryColor)),
-            child: const WalletText(
-              localizeKey: 'cancel',
-              color: Colors.white,
-            ),
-          ),
-          ElevatedButton(
+    var alert = StatefulBuilder(
+      builder: (context, setState) => AlertDialog(
+          actions: [
+            ElevatedButton(
               onPressed: () {
-                Provider.of<WalletProvider>(context, listen: false)
-                    .eraseWallet()
-                    .then((value) {
-                  context.pushAndRemoveUntil(
-                      removeUntil: bool, builder: () => const OnboardScreen());
-                });
+                Navigator.of(context).pop();
               },
               style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red)),
+                  backgroundColor: MaterialStateProperty.all(kPrimaryColor)),
               child: const WalletText(
-                localizeKey: 'eraseAndContinue',
+                localizeKey: 'cancel',
                 color: Colors.white,
-              )),
-        ],
-        title: const WalletText(
-          localizeKey: 'confirmation',
-        ),
-        content: RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(text: getText(context, key: 'eraseWarning')),
-              TextSpan(
-                  text: getText(context, key: 'irreversible'),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.red))
-            ],
-            style: const TextStyle(color: Colors.black),
+              ),
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Provider.of<WalletProvider>(context, listen: false)
+                      .eraseWallet()
+                      .then((value) {
+                    context.pushAndRemoveUntil(
+                        removeUntil: bool,
+                        builder: () => const OnboardScreen());
+                  });
+                },
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red)),
+                child: const WalletText(
+                  localizeKey: 'eraseAndContinue',
+                  color: Colors.white,
+                )),
+          ],
+          title: const WalletText(
+            localizeKey: 'confirmation',
           ),
-        ));
+          content: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                    text: getText(context, key: 'eraseWarning'),
+                    style: GoogleFonts.poppins()),
+                TextSpan(
+                    text: getText(context, key: 'irreversible'),
+                    style: GoogleFonts.poppins().copyWith(
+                        fontWeight: FontWeight.bold, color: Colors.red))
+              ],
+              style: const TextStyle(color: Colors.black),
+            ),
+          )),
+    );
 
     showDialog(context: context, builder: (context) => alert);
   }

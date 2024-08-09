@@ -56,9 +56,8 @@ showConfirmationDialog({
   required Function() primaryOnPress,
   required Function() secondaryOnPress,
 }) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
+  final alert = StatefulBuilder(
+    builder: (context, setState) => AlertDialog(
       backgroundColor: Colors.white,
       content: SizedBox(
         width: context.width,
@@ -94,6 +93,8 @@ showConfirmationDialog({
       ),
     ),
   );
+
+  showDialog(context: context, builder: (context) => alert);
 }
 
 Future<TransactionReceipt> getTransactionReceiptFromHash(

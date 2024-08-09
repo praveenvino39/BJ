@@ -77,13 +77,6 @@ class _ImportAccountScreenState extends State<ImportAccountScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             addHeight(SpacingSize.l),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: WalletText(
-                localizeKey: 'privateKey',
-              ),
-            ),
-            addHeight(SpacingSize.s),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: WalletTextField(

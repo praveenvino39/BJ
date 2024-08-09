@@ -15,7 +15,7 @@ onBoardScreenContent(BuildContext context) {
       image: Center(
         child: Image.asset(
           "assets/images/logo.png",
-          height: 100,
+          height: 250,
         ),
       ),
     ),

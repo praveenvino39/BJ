@@ -137,6 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         kPrimaryColor)),
                                 child: const WalletText(
                                   localizeKey: "cancel",
+                                  color: Colors.white,
                                 )),
                             ElevatedButton(
                                 onPressed: () {
@@ -153,6 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         MaterialStateProperty.all(Colors.red)),
                                 child: const WalletText(
                                   localizeKey: 'eraseAndContinue',
+                                  color: Colors.white,
                                 )),
                           ],
                           title: const WalletText(
@@ -178,6 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const WalletText(
                       localizeKey: 'resetWallet',
                       bold: true,
+                      color: Colors.red,
                       underline: true,
                       center: true,
                     ),

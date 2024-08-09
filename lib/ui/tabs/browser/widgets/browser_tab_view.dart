@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet_cryptomask/constant.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
 import 'package:wallet_cryptomask/ui/tabs/browser/widgets/browser_view.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 

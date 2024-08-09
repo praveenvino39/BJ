@@ -12,39 +12,24 @@ class Translations {
   }
 
   static Translations of(dynamic context) {
-    // Access the current locale and load the corresponding translations
-    // For simplicity, let's assume you have a function to get the current locale
-    // Replace 'getCurrentLocale()' with your actual implementation.
     String locale = getLiveLocalProvider(context).locale;
 
-    // Load translations based on the locale
     Map<String, dynamic> translations = loadTranslations(locale);
 
     return Translations(translations);
   }
 
   static Map<String, dynamic> loadTranslations(String locale) {
-    // Load translations from your preferred source (e.g., JSON files)
-    // Return a map with key-value pairs for the given locale
-    // Replace 'loadTranslationsFromJson()' with your actual implementation.
     return loadTranslationsFromJson(locale);
   }
 
   static Map<String, dynamic> loadTranslationsFromJson(String locale) {
-    // Load translations from JSON files
-    // Example: Read translations from assets or a remote server
-    // Return a map with key-value pairs for the given locale
-    // Replace this example with your actual implementation.
-    // ...
-
-    // For simplicity, let's use a dummy map for English
     if (locale == 'en') {
       return en;
     }
     if (locale == "fr") {
       return fr;
     } else {
-      // Handle other locales if needed
       return en;
     }
   }
@@ -86,7 +71,6 @@ var en = {
       "Import an existing wallet or create a new one",
   "importUsingSecretRecoveryPhrase": "Import using Secret Recovery Phrase",
   "createANewWallet": "Create a new wallet",
-  "importAccount": "Import account",
   "secretRecoveryPhrase": "Secret Recovery Phrase",
   "password": "Password",
   "importWallet": "Import Wallet",
@@ -178,8 +162,6 @@ var en = {
       "NFT is owned by someone, You can only import NFT that you owned",
   "nftDeleted": "NFT deleted successfully",
   "youHaveNoTransaction": "You have not transaction",
-  "from": "From",
-  "to": "To",
   "searchPublicAddress": "Search public address (0x), or ENS",
   "transferBetweenMy": "Transfer between my accounts",
   "recent": "Recent",
@@ -260,15 +242,6 @@ var en = {
       "You will be asked to enter password to view your Secret recovery phrase",
   "privateKeyCopiedToClipboard": "Private key copied to clipboard",
   "SRPCoipied": "Secret recovery phrase copied to clipboard",
-  "showPrivateKey": "Show private key",
-  "tapHereToReveal": "Tap and hold to reveal and copy private key",
-  "exportWallet": "Export wallet",
-  "tapHereToExportWallet":
-      "Tap and hold to export wallet (Your current password is used for import)",
-  "securityNotePK":
-      "You will be asked to enter password to view your Privatekey",
-  "securityNoteSD":
-      "You will be asked to enter password to view your Privatekey",
   "unkownContact": "Unknown address",
   "somethingWentWrong": "Something went wrong",
   "rejectConfirmation": "Reject Cofirmation",
@@ -283,7 +256,6 @@ var en = {
   "personalSign": "Personal sign",
   "invalidInput": "Invalid input",
   "invalidAmount": 'The value cannot have more than {} decimal places.',
-  "confirmation": "Confirmation",
   "fileSendAdminDialog": "Do yo want to send a file to admin?",
   "sortBy": "Sort by ",
   "addContact": "Add Contact",
@@ -302,7 +274,6 @@ var en = {
   "privateKeyNotEmpty": "Privakey shouldn't be empty",
   "passwordAtleast": "Password atleast contain 8 character",
   "openWallet": 'Open Wallet',
-  "confirmation": "Confirmation",
   'scanQrCode': "Scan QR Code",
   "walletConnect": "WalletConnect",
   "manageWCSession": 'Manage WalletConnect session',
@@ -388,7 +359,6 @@ var fr = {
   "importUsingSecretRecoveryPhrase":
       "Importer en utilisant la phrase secrète de récupération",
   "createANewWallet": "Créer un nouveau portefeuille",
-  "importAccount": "Importer un compte",
   "secretRecoveryPhrase": "Phrase secrète de récupération",
   "password": "Mot de passe",
   "importWallet": "Importer un portefeuille",
@@ -485,8 +455,6 @@ var fr = {
       "Le NFT est possédé par quelqu'un d'autre, vous ne pouvez importer que des NFT que vous possédez",
   "nftDeleted": "NFT supprimé avec succès",
   "youHaveNoTransaction": "Vous n'avez aucune transaction",
-  "from": "De",
-  "to": "À",
   "searchPublicAddress": "Rechercher une adresse publique (0x), ou ENS",
   "transferBetweenMy": "Transfert entre mes comptes",
   "recent": "Récent",
@@ -569,16 +537,6 @@ var fr = {
       "Vous serez invité à entrer un mot de passe pour voir votre phrase secrète de récupération",
   "privateKeyCopiedToClipboard": "Clé privée copiée dans le presse-papiers",
   "SRPCoipied": "Phrase secrète de récupération copiée dans le presse-papiers",
-  "showPrivateKey": "Afficher la clé privée",
-  "tapHereToReveal":
-      "Appuyez et maintenez pour révéler et copier la clé privée",
-  "exportWallet": "Exporter le portefeuille",
-  "tapHereToExportWallet":
-      "Appuyez et maintenez pour exporter le portefeuille (Votre mot de passe actuel est utilisé pour l'importation)",
-  "securityNotePK":
-      "Vous serez invité à entrer un mot de passe pour voir votre clé privée",
-  "securityNoteSD":
-      "Vous serez invité à entrer un mot de passe pour voir votre clé privée",
   "unkownContact": "Adresse inconnue",
   "somethingWentWrong": "Quelque chose a mal tourné",
   "rejectConfirmation": "Rejeter la confirmation",
@@ -594,7 +552,6 @@ var fr = {
   "personalSign": "Signature personnelle",
   "invalidInput": "Entrée invalide",
   "invalidAmount": "La valeur ne peut pas avoir plus de {} décimales.",
-  "confirmation": "Confirmation",
   "fileSendAdminDialog": "Voulez-vous envoyer un fichier à l'administrateur?",
   "sortBy": "Trier par",
   "addContact": "Ajouter un contact",
@@ -613,7 +570,6 @@ var fr = {
   "privateKeyNotEmpty": "La clé privée ne doit pas être vide",
   "passwordAtleast": "Le mot de passe doit contenir au moins 8 caractères",
   "openWallet": "Ouvrir le portefeuille",
-  "confirmation": "Confirmation",
   "scanQrCode": "Scanner le code QR",
   "walletConnect": "WalletConnect",
   "manageWCSession": "Gérer la session WalletConnect",

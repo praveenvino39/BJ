@@ -9,6 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:dio/dio.dart' as dio_library;
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/core/model/coin_gecko_token_model.dart';
 import 'package:wallet_cryptomask/core/model/gas_tracker_api.dart';
 import 'package:wallet_cryptomask/core/model/message.dart';
@@ -23,9 +24,6 @@ import 'package:wallet_cryptomask/core/remote/response-model/settings_response.d
 import 'package:wallet_cryptomask/core/remote/response-model/transaction_log_result.dart';
 
 final dio = Dio();
-
-// const baseUrl = "http://127.0.0.1:3001";
-const baseUrl = "http://192.168.29.226:3001";
 
 class RemoteServer {
   static Future<ResigterUserResponse> registerUser(

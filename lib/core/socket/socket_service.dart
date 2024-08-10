@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
+import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/core/model/message.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 
@@ -21,7 +22,7 @@ class SocketService {
 
   void connect() {
     _socket = io.io(
-        'http://192.168.29.226:3001',
+        baseUrl,
         io.OptionBuilder()
             .setExtraHeaders({'authorization': token})
             .setTransports(['websocket']) // for Flutter or Dart VM

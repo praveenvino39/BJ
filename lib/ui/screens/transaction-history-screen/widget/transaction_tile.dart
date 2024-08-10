@@ -137,25 +137,16 @@ class _TransactionTileState extends State<TransactionTile> {
                                 children: [
                                   AvatarWidget(
                                       radius: 30, address: widget.data.from),
-                                  addWidth(SpacingSize.s),
+                                  addWidth(SpacingSize.xs),
                                   Text(showEllipse(widget.data.from),
                                       style: const TextStyle(fontSize: 12)),
                                 ],
                               ),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1, color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: const Icon(
-                                    Icons.arrow_forward,
-                                    color: Colors.grey,
-                                  )),
                               Row(
                                 children: [
                                   AvatarWidget(
                                       radius: 30, address: widget.data.to),
-                                  addWidth(SpacingSize.s),
+                                  addWidth(SpacingSize.xs),
                                   Text(showEllipse(widget.data.to),
                                       style: const TextStyle(fontSize: 12)),
                                 ],

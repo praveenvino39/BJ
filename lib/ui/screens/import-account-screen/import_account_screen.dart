@@ -193,7 +193,7 @@ class _ImportAccountScreenState extends State<ImportAccountScreen> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
                                 child: WalletTextField(
-                                  textFieldType: TextFieldType.input,
+                                  textFieldType: TextFieldType.password,
                                   textEditingController: _password,
                                   validator: (String? string) {
                                     if (string!.isEmpty) {

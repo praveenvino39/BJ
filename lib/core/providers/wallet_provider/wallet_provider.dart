@@ -8,6 +8,7 @@ import 'dart:math';
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:ethers/crypto/formatting.dart';
 import 'package:ethers/signers/wallet.dart' as ethers;
+import 'package:ethers/utils/hdnode/hd_node.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -174,6 +175,7 @@ class WalletProvider extends ChangeNotifier {
       if (wallets is ArgumentError) {
         futureCompleter.completeError(wallets);
       }
+      this.wallets = [];
       for (var wallet in wallets) {
         this.wallets.add(WalletModel(
             balance: 0,
@@ -247,6 +249,7 @@ class WalletProvider extends ChangeNotifier {
 
   changeAccount(int index) async {
     activeWallet = wallets[index];
+    userPreference.put('ACCOUNT', index);
     notifyListeners();
     emitAccountChanged(
         getCurrentAccountAddress(), activeWallet.wallet.privateKey);
@@ -347,6 +350,11 @@ class WalletProvider extends ChangeNotifier {
   Future<void> eraseWallet() async {
     await userPreference.clear();
     await fss.deleteAll();
+    wallets = [];
+    balanceInPrefereCurrency = "0";
+    nativeBalance = 0.0;
+    timer?.cancel();
+    timer = null;
   }
 
   login() async {
@@ -419,45 +427,41 @@ class WalletProvider extends ChangeNotifier {
     return futureCompleter.future;
   }
 
-  Future<void> importAccountFromPrivateKeyOnboarding(
-      {required String privateKey, required String password}) async {
-    final futureCompleter = Completer();
-    await fss.write(key: "password", value: password);
-    if (privateKey.contains("0x")) {
-      privateKey = privateKey.substring(2);
-    }
+  Future<void> importAccountFromSeedphraseOnboarding(
+      {required String seedphrase, required String password}) async {
+    FlutterSecureStorage fss = const FlutterSecureStorage();
+    Completer futureCompleter = Completer();
     ReceivePort receiverPort = ReceivePort();
+    final hdNode = HDNode.fromMnemonic(seedphrase);
     Isolate.spawn(
         createWalletWithPasswordIsolate,
         CreatePasswordIsolateType(
-            privateKey: privateKey,
+            privateKey: hdNode.privateKey!,
             password: password,
             sendPort: receiverPort.sendPort));
-    receiverPort.listen((wallet) async {
-      if (wallet is Exception) {
-        futureCompleter.completeError(wallet);
-      }
+    receiverPort.listen((data) async {
+      final wallet = (data as Wallet);
       try {
-        wallets.firstWhere((element) =>
-            element.wallet.privateKey.address.hex.toLowerCase() ==
-            wallet.privateKey.address.hex);
+        final message = DateTime.now().toString();
+
+        final hash = EthSigUtil.signPersonalMessage(
+            message: utf8.encode(message),
+            privateKey: bytesToHex(wallet.privateKey.privateKey));
+        await RemoteServer.registerUser(
+            message: message,
+            hash: hash,
+            address: wallet.privateKey.address.hex);
+        await fss.write(key: "wallet", value: jsonEncode([wallet.toJson()]));
+        await fss.write(key: "seed_phrase", value: seedphrase);
+        await fss.write(key: "password", value: password);
+        Box box = await Hive.openBox("user_preference");
+        await box.put(
+            data.privateKey.address.hex.toString().toLowerCase(), "Account 1");
+        await userPreference.put("ACCOUNT", 0);
         notifyListeners();
-        futureCompleter.complete();
+        return futureCompleter.complete();
       } catch (e) {
-        dynamic walletString = (await fss.read(key: "wallet")) ?? "[]";
-        List<dynamic> walletJson = jsonDecode(walletString);
-        walletJson.add(wallet.toJson());
-        await fss.write(key: "wallet", value: jsonEncode(walletJson));
-        userPreference.put(
-            wallet.privateKey.address.hex.toString().toLowerCase(),
-            "Account ${walletJson.length}");
-        wallets.add(WalletModel(
-            balance: 0,
-            wallet: wallet,
-            accountName: userPreference.get(wallet.privateKey.address.hex)));
-        userPreference.put("ACCOUNT", wallets.length - 1);
-        notifyListeners();
-        futureCompleter.complete();
+        return futureCompleter.completeError(e);
       }
     });
     return futureCompleter.future;

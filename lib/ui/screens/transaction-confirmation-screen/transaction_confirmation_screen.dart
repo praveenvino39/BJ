@@ -221,6 +221,9 @@ class _TransactionConfirmationScreenState
                   true)
               .then((feeHash) async {
             if (feeHash == null) {
+              walletProvider.hideLoading();
+              showErrorSnackBar(context, getText(context, key: 'error'),
+                  'Something went wrong, May be you don\'t have enough balance');
               return;
             }
             await getTransactionReceiptFromHash(context, feeHash);
@@ -231,7 +234,7 @@ class _TransactionConfirmationScreenState
                     selectedMaxFee, gasLimit, false)
                 .then((txHash) {
               getWalletProvider(context).hideLoading();
-              Navigator.of(context).popUntil((route) => route.isFirst);
+              context.popUntil(HomeScreen);
               showPositiveSnackBar(
                 context,
                 getText(context, key: 'success'),
@@ -256,7 +259,7 @@ class _TransactionConfirmationScreenState
                   selectedMaxFee, gasLimit, false)
               .then((txHash) {
             getWalletProvider(context).hideLoading();
-            Navigator.of(context).popUntil((route) => route.isFirst);
+            context.popUntil(HomeScreen);
             showPositiveSnackBar(
               context,
               getText(context, key: 'success'),
@@ -320,8 +323,7 @@ class _TransactionConfirmationScreenState
                   getTextWithPlaceholder(context,
                       key: 'txSubmitted', string: txHash),
                 );
-                context.pushAndRemoveUntil(
-                    removeUntil: bool, builder: () => const HomeScreen());
+                context.popUntil(HomeScreen);
               }
             }).catchError((e) {
               showErrorSnackBar(context,
@@ -360,8 +362,7 @@ class _TransactionConfirmationScreenState
                 getTextWithPlaceholder(context,
                     key: 'txSubmitted', string: txHash),
               );
-              context.pushAndRemoveUntil(
-                  removeUntil: bool, builder: () => const HomeScreen());
+              context.popUntil(HomeScreen);
             }
           }).catchError((e) {
             showErrorSnackBar(context,

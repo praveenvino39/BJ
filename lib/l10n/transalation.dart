@@ -50,6 +50,7 @@ var en = {
   'noRecent': "No recent transaction",
   "to": "To",
   "from": "From",
+  "seedphrase": "Seedphrase",
   "accepTermsWarning":
       "You must to accept the terms and condition to use {appName}",
   "passwordConfirmPasswordNotMatch": "Password and confirm password not mached",

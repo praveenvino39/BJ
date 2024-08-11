@@ -56,14 +56,14 @@ class NetworkProvider extends ChangeNotifier {
           currency: "MATIC",
           logo: "assets/images/polygon.png",
           nameSpace: "eip155",
-          chainId: 137,
+          chainId: 80002,
           priceId: "matic-network",
           apiKey: dotenv.env['POLYGON_POLYSCAN_API_KEY'] ?? "",
-          isMainnet: true,
-          addressViewUrl: "https://polygonscan.com/address/",
-          transactionViewUrl: "https://polygonscan.com/tx/",
+          isMainnet: false,
+          addressViewUrl: "https://amoy.polygonscan.com/address/",
+          transactionViewUrl: "https://amoy.polygonscan.com/tx/",
           dotColor: const Color(0xff8247e5),
-          etherscanApiBaseUrl: "https://api.polygonscan.com/"),
+          etherscanApiBaseUrl: "https://api-amoy.polygonscan.com/"),
     ];
   }
 }

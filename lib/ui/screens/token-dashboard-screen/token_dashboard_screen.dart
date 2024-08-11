@@ -73,8 +73,8 @@ class _TokenDashboardScreenState extends State<TokenDashboardScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text(appName,
-                  style: TextStyle(
+              Text(appName,
+                  style: const TextStyle(
                       fontWeight: FontWeight.w200, color: Colors.black)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

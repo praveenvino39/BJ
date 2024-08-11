@@ -17,6 +17,7 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet_cryptomask/config.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/core/model/wallet_model.dart';
 import 'package:wallet_cryptomask/core/model/wc_ethereum_transaction.dart';
@@ -509,11 +510,11 @@ class WalletProvider extends ChangeNotifier {
   setupWalletConnect() {
     web3Wallet = wc.Web3Wallet(
       core: wc.Core(
-        projectId: '3304b720b5bb3ee4918ff6cf62f6262a',
+        projectId: projectId,
       ),
-      metadata: const wc.PairingMetadata(
-        name: 'Example Wallet',
-        description: 'Example Wallet',
+      metadata: wc.PairingMetadata(
+        name: appName,
+        description: appName,
         url: 'https://walletconnect.com/',
         icons: ['https://walletconnect.com/walletconnect-logo.png'],
       ),

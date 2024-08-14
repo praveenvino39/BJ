@@ -9,11 +9,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
 import 'package:wallet_cryptomask/main_app.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/contact_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
+import 'package:wallet_cryptomask/ui/screens/error-screen/error-screen.dart';
 import 'package:wallet_cryptomask/ui/screens/login-screen/login_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/onboarding-screen/onboard_screen.dart';
 
@@ -54,6 +56,10 @@ initHiveAdapter() async {
   }
 }
 
+getAppLocale(Box box) async {
+  return (await box.get("LOCALE")) ?? "en";
+}
+
 loadAppSettings() async {
   try {
     final settingsResponse = await RemoteServer.settings();
@@ -63,11 +69,12 @@ loadAppSettings() async {
   }
 }
 
-getAppLocale(Box box) async {
-  return (await box.get("LOCALE")) ?? "en";
-}
-
 Future<Widget> getInitialWidget() async {
+  try {
+    Get.find<Settings>();
+  } catch (e) {
+    return const ErrorScreen();
+  }
   FlutterSecureStorage fss = const FlutterSecureStorage();
   String? wallet = await fss.read(key: "wallet");
   if (wallet != null) {

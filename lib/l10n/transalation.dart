@@ -320,7 +320,10 @@ var en = {
   "newVersions": "New version of {appName} is available on App Store.",
   "currentVersion": 'Current version: ',
   "improvePerformance": "Improved performance and stability.",
-  "couldNot": 'Could not launch'
+  "couldNot": 'Could not launch',
+  'somethingWentWrongInitial':
+      "Something went wrong, Please check your internet connect",
+  "retry": "Retry"
 };
 
 var fr = {
@@ -618,7 +621,10 @@ var fr = {
   "newVersions": "Nouvelle version de {appName} disponible sur l'App Store.",
   "currentVersion": "Version actuelle : ",
   "improvePerformance": "Amélioration des performances et de la stabilité.",
-  "couldNot": "Impossible de lancer"
+  "couldNot": "Impossible de lancer",
+  'somethingWentWrongInitial':
+      "Quelque chose s'est mal passé, veuillez vérifier votre connexion Internet",
+  "retry": "réessayer"
 };
 
 String getText(BuildContext context, {required String key}) {

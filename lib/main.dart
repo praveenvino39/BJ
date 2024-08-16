@@ -15,7 +15,7 @@ import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/contact_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
-import 'package:wallet_cryptomask/ui/screens/error-screen/error-screen.dart';
+import 'package:wallet_cryptomask/ui/screens/error-screen/error_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/login-screen/login_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/onboarding-screen/onboard_screen.dart';
 

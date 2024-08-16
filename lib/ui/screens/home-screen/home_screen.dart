@@ -15,6 +15,7 @@ import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/core/socket/message_engine.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
+import 'package:wallet_cryptomask/ui/screens/setttings-screen/security_settings_screen/security_settings_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/custom_icon_button.dart';
 import 'package:wallet_cryptomask/ui/tabs/browser/browser_tab.dart';
 import 'package:wallet_cryptomask/ui/screens/home-screen/widgets/account_change_sheet.dart';
@@ -341,6 +342,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                           .hideLoading();
                                                       user.seedPhraseBackedUp =
                                                           true;
+                                                      context.push(() =>
+                                                          const SecuritySettingsScreen());
                                                     },
                                                   );
                                                 },

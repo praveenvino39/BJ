@@ -143,7 +143,7 @@ class _BrowserTabState extends State<BrowserTab> with ClipboardListener {
         newClipboardData.text != null &&
         newClipboardData.text!.startsWith("wc:")) {
       try {
-        if (context.mounted) {
+        if (mounted) {
           handleRequestToWalletConnect(
               context, Uri.parse(newClipboardData.text!));
         }

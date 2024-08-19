@@ -95,7 +95,7 @@ class _DrawerComponentState extends State<DrawerComponent> {
                 Navigator.of(context).pop();
               },
               style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(kPrimaryColor)),
+                  backgroundColor: WidgetStateProperty.all(kPrimaryColor)),
               child: const WalletText(
                 localizeKey: 'cancel',
                 color: Colors.white,
@@ -112,7 +112,7 @@ class _DrawerComponentState extends State<DrawerComponent> {
                   });
                 },
                 style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.red)),
+                    backgroundColor: WidgetStateProperty.all(Colors.red)),
                 child: const WalletText(
                   localizeKey: 'eraseAndContinue',
                   color: Colors.white,

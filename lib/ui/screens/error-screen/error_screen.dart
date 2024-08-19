@@ -22,7 +22,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
     });
     await loadAppSettings();
     final screen = await getInitialWidget();
-    if (context.mounted) {
+    if (mounted) {
       context.pushAndRemoveUntil(
         removeUntil: bool,
         builder: () => screen,

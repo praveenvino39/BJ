@@ -51,7 +51,7 @@ class _ImportAccountScreenState extends State<ImportAccountScreen> {
               seedphrase: _seedphrase.text, password: _password.text)
           .then((value) async {
         await walletProvider.openWallet(password: _password.text);
-        if (context.mounted) {
+        if (mounted) {
           walletProvider.hideLoading();
           context.pushAndRemoveUntil(
               removeUntil: bool, builder: () => const HomeScreen());

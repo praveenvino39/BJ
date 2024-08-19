@@ -133,8 +133,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.of(context).pop();
                                 },
                                 style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        kPrimaryColor)),
+                                    backgroundColor:
+                                        WidgetStateProperty.all(kPrimaryColor)),
                                 child: const WalletText(
                                   localizeKey: "cancel",
                                   color: Colors.white,
@@ -151,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                                 style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all(Colors.red)),
+                                        WidgetStateProperty.all(Colors.red)),
                                 child: const WalletText(
                                   localizeKey: 'eraseAndContinue',
                                   color: Colors.white,

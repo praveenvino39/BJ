@@ -1,6 +1,8 @@
 PODS:
   - clipboard_watcher (0.0.1):
     - Flutter
+  - device_info_plus (0.0.1):
+    - Flutter
   - DKImagePickerController/Core (4.3.9):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
@@ -49,9 +51,6 @@ PODS:
     - Flutter
   - flutter_secure_storage (6.0.0):
     - Flutter
-  - FMDB (2.7.10):
-    - FMDB/standard (= 2.7.10)
-  - FMDB/standard (2.7.10)
   - GoogleDataTransport (9.4.1):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30911.0, >= 2.30908.0)
@@ -132,7 +131,7 @@ PODS:
     - FlutterMacOS
   - sqflite (0.0.3):
     - Flutter
-    - FMDB (>= 2.7.5)
+    - FlutterMacOS
   - SwiftyGif (5.4.5)
   - uni_links (0.0.1):
     - Flutter
@@ -148,6 +147,7 @@ PODS:
 
 DEPENDENCIES:
   - clipboard_watcher (from `.symlinks/plugins/clipboard_watcher/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - document_file_save_plus (from `.symlinks/plugins/document_file_save_plus/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
@@ -161,7 +161,7 @@ DEPENDENCIES:
   - Ramp (from `https://github.com/RampNetwork/ramp-sdk-ios`, tag `4.0.1`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
-  - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/darwin`)
   - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - vibration (from `.symlinks/plugins/vibration/ios`)
@@ -172,7 +172,6 @@ SPEC REPOS:
   trunk:
     - DKImagePickerController
     - DKPhotoGallery
-    - FMDB
     - GoogleDataTransport
     - GoogleMLKit
     - GoogleToolboxForMac
@@ -192,6 +191,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   clipboard_watcher:
     :path: ".symlinks/plugins/clipboard_watcher/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   document_file_save_plus:
     :path: ".symlinks/plugins/document_file_save_plus/ios"
   file_picker:
@@ -220,7 +221,7 @@ EXTERNAL SOURCES:
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sqflite:
-    :path: ".symlinks/plugins/sqflite/ios"
+    :path: ".symlinks/plugins/sqflite/darwin"
   uni_links:
     :path: ".symlinks/plugins/uni_links/ios"
   url_launcher_ios:
@@ -239,6 +240,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   clipboard_watcher: 86fb70421aca6f4944e0591a8292605da7784666
+  device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   document_file_save_plus: 913d440d8b611ae19add4522ed578e3ed1483a2f
@@ -247,14 +249,13 @@ SPEC CHECKSUMS:
   flutter_inappwebview_ios: 97215cf7d4677db55df76782dbd2930c5e1c1ea0
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
-  FMDB: eae540775bf7d0c87a5af926ae37af69effe5a19
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleMLKit: 2bd0dc6253c4d4f227aad460f69215a504b2980e
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
   GoogleUtilities: d053d902a8edaa9904e1bd00c37535385b8ed152
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
-  image_picker_ios: b545a5f16c0fa88e3ecbbce3ed4de45567a8ec18
+  image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   MLImage: 7bb7c4264164ade9bf64f679b40fb29c8f33ee9b
   MLKitBarcodeScanning: 04e264482c5f3810cb89ebc134ef6b61e67db505
   MLKitCommon: c1b791c3e667091918d91bda4bba69a91011e390
@@ -263,19 +264,19 @@ SPEC CHECKSUMS:
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
-  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   Ramp: 3f843fb75cac12ad40842afa3226bae36dc93521
   SDWebImage: dfe95b2466a9823cf9f0c6d01217c06550d7b29a
   share_plus: c3fef564749587fc939ef86ffb283ceac0baf9f5
-  shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
-  sqflite: 50a33e1d72bd59ee092a519a35d107502757ebed
+  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
+  sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
-  url_launcher_ios: bbd758c6e7f9fd7b5b1d4cde34d2b95fcce5e812
+  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
   vibration: 7d883d141656a1c1a6d8d238616b2042a51a1241
   video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
-  webview_flutter_wkwebview: be0f0d33777f1bfd0c9fdcb594786704dbf65f36
+  webview_flutter_wkwebview: 2a23822e9039b7b1bc52e5add778e5d89ad488d1
 
 PODFILE CHECKSUM: c488d4da63e3daa990f8bef0bae9d6a035ad2b71
 

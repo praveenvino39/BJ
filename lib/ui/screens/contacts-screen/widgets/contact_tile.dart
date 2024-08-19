@@ -82,9 +82,8 @@ class _ContactTileState extends State<ContactTile> {
               },
               style: ButtonStyle(
                   splashFactory: NoSplash.splashFactory,
-                  foregroundColor: MaterialStateProperty.all(kPrimaryColor),
-                  backgroundColor:
-                      MaterialStateProperty.all(Colors.transparent)),
+                  foregroundColor: WidgetStateProperty.all(kPrimaryColor),
+                  backgroundColor: WidgetStateProperty.all(Colors.transparent)),
               child: const WalletText(
                 localizeKey: 'send',
               ),
@@ -100,9 +99,8 @@ class _ContactTileState extends State<ContactTile> {
               },
               style: ButtonStyle(
                   splashFactory: NoSplash.splashFactory,
-                  foregroundColor: MaterialStateProperty.all(kPrimaryColor),
-                  backgroundColor:
-                      MaterialStateProperty.all(Colors.transparent)),
+                  foregroundColor: WidgetStateProperty.all(kPrimaryColor),
+                  backgroundColor: WidgetStateProperty.all(Colors.transparent)),
               child: const WalletText(
                 localizeKey: 'update',
               ),
@@ -166,9 +164,8 @@ class _ContactTileState extends State<ContactTile> {
               },
               style: ButtonStyle(
                   splashFactory: NoSplash.splashFactory,
-                  foregroundColor: MaterialStateProperty.all(kPrimaryColor),
-                  backgroundColor:
-                      MaterialStateProperty.all(Colors.transparent)),
+                  foregroundColor: WidgetStateProperty.all(kPrimaryColor),
+                  backgroundColor: WidgetStateProperty.all(Colors.transparent)),
               child: const WalletText(
                 localizeKey: 'delete',
               ),

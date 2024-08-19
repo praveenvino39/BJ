@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routerino/routerino.dart';
@@ -20,48 +21,51 @@ class ImportAccountScreen extends StatefulWidget {
 }
 
 class _ImportAccountScreenState extends State<ImportAccountScreen> {
-  final TextEditingController _password = TextEditingController();
+  final TextEditingController _password =
+      TextEditingController(text: kDebugMode ? "11111111" : "");
   final GlobalKey<FormState> _privateKeyFormKey = GlobalKey();
   final TextEditingController _privateKey = TextEditingController();
-  final TextEditingController _seedphrase = TextEditingController();
+  final TextEditingController _seedphrase = TextEditingController(
+      text: kDebugMode
+          ? "gospel balcony arrest panda creek steel cute two timber machine travel iron"
+          : "");
 
-  onImportAccountHandlerWithPK() {
+  onImportAccountHandlerWithPK() async {
     final walletProvider = getWalletProvider(context);
     if (_privateKeyFormKey.currentState!.validate()) {
       walletProvider.showLoading();
-      walletProvider
-          .importAccountFromPrivateKey(privateKey: _privateKey.text)
-          .then((value) {
+      try {
+        await walletProvider.importAccountFromPrivateKey(
+            privateKey: _privateKey.text);
         walletProvider.hideLoading();
-        Navigator.of(context).pop();
-      }).catchError((e) {
+        if (!mounted) return;
+        Navigator.pop(context);
+      } catch (e) {
         walletProvider.hideLoading();
         showErrorSnackBar(
             context, getText(context, key: 'error'), e.toString());
-      });
+      }
     }
   }
 
-  onImportAccountHandlerWithSeedphrase() {
+  onImportAccountHandlerWithSeedphrase() async {
     final walletProvider = getWalletProvider(context);
     if (_privateKeyFormKey.currentState!.validate()) {
       walletProvider.showLoading();
-      walletProvider
-          .importAccountFromSeedphraseOnboarding(
-              seedphrase: _seedphrase.text, password: _password.text)
-          .then((value) async {
+      try {
+        await walletProvider.importAccountFromSeedphraseOnboarding(
+            seedphrase: _seedphrase.text, password: _password.text);
         await walletProvider.openWallet(password: _password.text);
-        if (context.mounted) {
-          walletProvider.hideLoading();
-          context.pushAndRemoveUntil(
-              removeUntil: bool, builder: () => const HomeScreen());
-        }
-      }).catchError((e) {
         walletProvider.hideLoading();
+        if (!mounted) return;
+        context.pushAndRemoveUntil(
+            removeUntil: bool, builder: () => const HomeScreen());
+      } catch (e) {
+        walletProvider.hideLoading();
+        if (!mounted) return;
         showErrorSnackBar(
             context, getText(context, key: 'error'), e.toString());
-      });
-      return;
+      }
     }
   }
 

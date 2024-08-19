@@ -139,6 +139,7 @@ class _BrowserTabState extends State<BrowserTab> with ClipboardListener {
   void onClipboardChanged() async {
     ClipboardData? newClipboardData =
         await Clipboard.getData(Clipboard.kTextPlain);
+    if (!mounted) return null;
     if (newClipboardData != null &&
         newClipboardData.text != null &&
         newClipboardData.text!.startsWith("wc:")) {

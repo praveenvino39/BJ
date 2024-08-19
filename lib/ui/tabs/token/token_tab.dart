@@ -39,10 +39,9 @@ class _TokenTabState extends State<TokenTab> {
             .address
             .hex,
         network: getWalletProvider(context).activeNetwork);
-    if (context.mounted) {
-      getWalletProvider(context)
-          .changeFiatBalance(tokens[0].balanceInFiat.toStringAsFixed(5));
-    }
+    if (!mounted) return null;
+    getWalletProvider(context)
+        .changeFiatBalance(tokens[0].balanceInFiat.toStringAsFixed(5));
   }
 
   onTokenPressHandler(Token token) {

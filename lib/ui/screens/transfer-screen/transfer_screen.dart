@@ -167,7 +167,7 @@ class _TransferScreenState extends State<TransferScreen>
             TextButton(
               onPressed: onCancelHandler,
               style: ButtonStyle(
-                overlayColor: MaterialStateColor.resolveWith(
+                overlayColor: WidgetStateColor.resolveWith(
                     (states) => kPrimaryColor.withAlpha(30)),
               ),
               child:

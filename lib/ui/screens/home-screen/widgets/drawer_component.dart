@@ -79,6 +79,7 @@ class _DrawerComponentState extends State<DrawerComponent> {
 
   onLogoutHandler() {
     Provider.of<WalletProvider>(context, listen: false).logout().then((value) {
+      if (!mounted) return;
       context.pushAndRemoveUntil(
         removeUntil: bool,
         builder: () => const LoginScreen(),
@@ -95,24 +96,24 @@ class _DrawerComponentState extends State<DrawerComponent> {
                 Navigator.of(context).pop();
               },
               style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(kPrimaryColor)),
+                  backgroundColor: WidgetStateProperty.all(kPrimaryColor)),
               child: const WalletText(
                 localizeKey: 'cancel',
                 color: Colors.white,
               ),
             ),
             ElevatedButton(
-                onPressed: () {
-                  Provider.of<WalletProvider>(context, listen: false)
-                      .eraseWallet()
-                      .then((value) {
+                onPressed: () async {
+                  await Provider.of<WalletProvider>(context, listen: false)
+                      .eraseWallet();
+                  if (context.mounted) {
                     context.pushAndRemoveUntil(
                         removeUntil: bool,
                         builder: () => const OnboardScreen());
-                  });
+                  }
                 },
                 style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.red)),
+                    backgroundColor: WidgetStateProperty.all(Colors.red)),
                 child: const WalletText(
                   localizeKey: 'eraseAndContinue',
                   color: Colors.white,

@@ -163,7 +163,7 @@ class _AmountScreenState extends State<AmountScreen> {
           actions: [
             TextButton(
               style: ButtonStyle(
-                overlayColor: MaterialStateColor.resolveWith(
+                overlayColor: WidgetStateColor.resolveWith(
                     (states) => kPrimaryColor.withAlpha(30)),
               ),
               onPressed: onCancelHandler,

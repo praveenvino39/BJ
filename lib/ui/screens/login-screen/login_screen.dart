@@ -48,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
           .then((value) {
         walletProvider.hideLoading();
         final user = Get.find<User>();
+        if (!mounted) return null;
         if (user.isDeactivated) {
           return context.pushAndRemoveUntil(
               removeUntil: bool, builder: () => const DeactivatedScreen());
@@ -56,6 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
             removeUntil: bool, builder: () => const HomeScreen());
       }).catchError((e) {
         walletProvider.hideLoading();
+        if (!mounted) return null;
         showErrorSnackBar(context, getText(context, key: 'error'),
             getText(context, key: 'passwordIncorrect'));
         return e;
@@ -133,25 +135,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.of(context).pop();
                                 },
                                 style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        kPrimaryColor)),
+                                    backgroundColor:
+                                        WidgetStateProperty.all(kPrimaryColor)),
                                 child: const WalletText(
                                   localizeKey: "cancel",
                                   color: Colors.white,
                                 )),
                             ElevatedButton(
-                                onPressed: () {
-                                  getWalletProvider(context)
-                                      .eraseWallet()
-                                      .then((value) {
+                                onPressed: () async {
+                                  await Provider.of<WalletProvider>(context,
+                                          listen: false)
+                                      .eraseWallet();
+                                  if (context.mounted) {
                                     context.pushAndRemoveUntil(
                                         removeUntil: bool,
                                         builder: () => const OnboardScreen());
-                                  });
+                                  }
                                 },
                                 style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all(Colors.red)),
+                                        WidgetStateProperty.all(Colors.red)),
                                 child: const WalletText(
                                   localizeKey: 'eraseAndContinue',
                                   color: Colors.white,

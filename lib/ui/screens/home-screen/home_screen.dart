@@ -351,8 +351,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                     'youHaventBackedup',
                                               )
                                             : addHeight(SpacingSize.s),
-                                        InkWell(
-                                          splashFactory: NoSplash.splashFactory,
+                                        GestureDetector(
                                           onTap: onAccountChangeHandler,
                                           child: Column(
                                             crossAxisAlignment:

@@ -351,6 +351,10 @@ class WalletProvider extends ChangeNotifier {
   Future<void> eraseWallet() async {
     await userPreference.clear();
     await fss.deleteAll();
+    final List<SessionData> sessions = web3Wallet?.sessions.getAll() ?? [];
+    for (var session in sessions) {
+      await web3Wallet?.sessions.delete(session.topic);
+    }
     wallets = [];
     balanceInPrefereCurrency = "0";
     nativeBalance = 0.0;

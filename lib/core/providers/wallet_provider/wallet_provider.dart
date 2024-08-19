@@ -356,6 +356,14 @@ class WalletProvider extends ChangeNotifier {
     nativeBalance = 0.0;
     timer?.cancel();
     timer = null;
+    List<SessionData> sessions = web3Wallet?.sessions.getAll() ?? [];
+    try {
+      for (var session in sessions) {
+        await web3Wallet?.sessions.delete(session.topic);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   login() async {

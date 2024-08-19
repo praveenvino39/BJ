@@ -97,7 +97,8 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
               context,
               key: 'createWalletGreet',
             ));
-        await context.push(() => const HomeScreen());
+        await context.pushAndRemoveUntil(
+            removeUntil: bool, builder: () => const HomeScreen());
       } catch (e) {
         setState(() {
           isLoading = false;

@@ -166,15 +166,11 @@ class WalletProvider extends ChangeNotifier {
   Future<void> loadWallets(dynamic walletJson, String password) async {
     Completer futureCompleter = Completer();
     ReceivePort receivePort = ReceivePort();
-    Isolate.spawn(
-        loadWalletIsolate,
-        LoadWalletIsolateType(
-            walletJson: walletJson,
-            password: password,
-            sendPort: receivePort.sendPort));
-    receivePort.listen((wallets) {
-      if (wallets is ArgumentError) {
-        futureCompleter.completeError(wallets);
+    if (kIsWeb) {
+      List<Wallet> wallets = [];
+      for (var element in walletJson) {
+        Wallet wallet = Wallet.fromJson(element, password);
+        wallets.add(wallet);
       }
       this.wallets = [];
       for (var wallet in wallets) {
@@ -187,7 +183,30 @@ class WalletProvider extends ChangeNotifier {
       activeWallet = this.wallets[activeAccountIndex];
       notifyListeners();
       futureCompleter.complete();
-    });
+    } else {
+      Isolate.spawn(
+          loadWalletIsolate,
+          LoadWalletIsolateType(
+              walletJson: walletJson,
+              password: password,
+              sendPort: receivePort.sendPort));
+      receivePort.listen((wallets) {
+        if (wallets is ArgumentError) {
+          futureCompleter.completeError(wallets);
+        }
+        this.wallets = [];
+        for (var wallet in wallets) {
+          this.wallets.add(WalletModel(
+              balance: 0,
+              wallet: wallet,
+              accountName: userPreference
+                  .get(wallet.privateKey.address.hex.toLowerCase())));
+        }
+        activeWallet = this.wallets[activeAccountIndex];
+        notifyListeners();
+        futureCompleter.complete();
+      });
+    }
     return futureCompleter.future;
   }
 

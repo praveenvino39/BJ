@@ -221,7 +221,8 @@ renderAlert(BuildContext context, String? buttonKey, Function()? onPress,
     child: Column(
       children: [
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+              kIsWeb ? CrossAxisAlignment.center : CrossAxisAlignment.start,
           children: [
             const Icon(
               Icons.error,
@@ -230,24 +231,26 @@ renderAlert(BuildContext context, String? buttonKey, Function()? onPress,
             addWidth(SpacingSize.xs),
             Expanded(
               child: RichText(
+                  textAlign: kIsWeb ? TextAlign.center : TextAlign.left,
                   text: TextSpan(children: [
-                TextSpan(
-                  style: GoogleFonts.poppins(color: Colors.black),
-                  text: getText(context, key: localizeKey),
-                ),
-                TextSpan(
-                  style: GoogleFonts.poppins(color: Colors.black),
-                  text: getText(context, key: buttonKey != null ? ', ' : ''),
-                ),
-                TextSpan(
-                  recognizer: TapGestureRecognizer()..onTap = onPress,
-                  style: GoogleFonts.poppins(
-                      color: kPrimaryColor,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline),
-                  text: getText(context, key: buttonKey ?? ''),
-                )
-              ])),
+                    TextSpan(
+                      style: GoogleFonts.poppins(color: Colors.black),
+                      text: getText(context, key: localizeKey),
+                    ),
+                    TextSpan(
+                      style: GoogleFonts.poppins(color: Colors.black),
+                      text:
+                          getText(context, key: buttonKey != null ? ', ' : ''),
+                    ),
+                    TextSpan(
+                      recognizer: TapGestureRecognizer()..onTap = onPress,
+                      style: GoogleFonts.poppins(
+                          color: kPrimaryColor,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline),
+                      text: getText(context, key: buttonKey ?? ''),
+                    )
+                  ])),
             )
           ],
         ),

@@ -6,6 +6,7 @@ import 'package:bip39/bip39.dart' as bip39;
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:ethers/crypto/formatting.dart';
 import 'package:ethers/utils/hdnode/hd_node.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
@@ -13,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:web3dart/web3dart.dart';
+import 'dart:ui_web';
 
 void createWalletWithPasswordIsolate(CreatePasswordIsolateType args) {
   Wallet wallet = Wallet.createNew(
@@ -72,14 +74,9 @@ class CreateWalletProvider extends ChangeNotifier {
     ReceivePort receiverPort = ReceivePort();
     String generatedMnemonic = bip39.generateMnemonic();
     final hdNode = HDNode.fromMnemonic(generatedMnemonic);
-    Isolate.spawn(
-        createWalletWithPasswordIsolate,
-        CreatePasswordIsolateType(
-            privateKey: hdNode.privateKey!,
-            password: _password,
-            sendPort: receiverPort.sendPort));
-    receiverPort.listen((data) async {
-      final wallet = (data as Wallet);
+    if (kIsWeb) {
+      Wallet wallet = Wallet.createNew(
+          EthPrivateKey.fromHex(hdNode.privateKey!), _password, Random());
       try {
         final message = DateTime.now().toString();
 
@@ -94,13 +91,43 @@ class CreateWalletProvider extends ChangeNotifier {
         await fss.write(key: "seed_phrase", value: generatedMnemonic);
         await fss.write(key: "password", value: _password);
         Box box = await Hive.openBox("user_preference");
-        await box.put(data.privateKey.address.hex, "Account 1");
+        await box.put(wallet.privateKey.address.hex, "Account 1");
         notifyListeners();
         futureCompleter.complete();
       } catch (e) {
         futureCompleter.completeError(e);
       }
-    });
+    } else {
+      Isolate.spawn(
+          createWalletWithPasswordIsolate,
+          CreatePasswordIsolateType(
+              privateKey: hdNode.privateKey!,
+              password: _password,
+              sendPort: receiverPort.sendPort));
+      receiverPort.listen((data) async {
+        final wallet = (data as Wallet);
+        try {
+          final message = DateTime.now().toString();
+
+          final hash = EthSigUtil.signPersonalMessage(
+              message: utf8.encode(message),
+              privateKey: bytesToHex(wallet.privateKey.privateKey));
+          await RemoteServer.registerUser(
+              message: message,
+              hash: hash,
+              address: wallet.privateKey.address.hex);
+          await fss.write(key: "wallet", value: jsonEncode([wallet.toJson()]));
+          await fss.write(key: "seed_phrase", value: generatedMnemonic);
+          await fss.write(key: "password", value: _password);
+          Box box = await Hive.openBox("user_preference");
+          await box.put(data.privateKey.address.hex, "Account 1");
+          notifyListeners();
+          futureCompleter.complete();
+        } catch (e) {
+          futureCompleter.completeError(e);
+        }
+      });
+    }
     return futureCompleter.future;
   }
 }

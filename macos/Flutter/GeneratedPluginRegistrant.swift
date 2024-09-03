@@ -8,7 +8,7 @@ import Foundation
 import clipboard_watcher
 import device_info_plus
 import file_selector_macos
-import flutter_inappwebview_macos
+import flutter_inappwebview
 import flutter_secure_storage_macos
 import mobile_scanner
 import package_info_plus

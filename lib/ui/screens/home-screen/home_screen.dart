@@ -448,6 +448,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 ),
                               ]),
                   BrowserTab(index: index)
+                  // const SizedBox()
                 ],
               ),
             )),

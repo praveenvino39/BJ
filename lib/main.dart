@@ -30,6 +30,7 @@ void main() async {
 
   Box box = await Hive.openBox("user_preference");
 
+  runApp(const MaterialApp(home: MyWidget()));
   runApp(
     MainApp(
       locale: await getAppLocale(box),
@@ -37,6 +38,19 @@ void main() async {
       userPreferenceBox: box,
     ),
   );
+}
+
+class MyWidget extends StatelessWidget {
+  const MyWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Welcome"),
+      ),
+    );
+  }
 }
 
 initHiveAdapter() async {

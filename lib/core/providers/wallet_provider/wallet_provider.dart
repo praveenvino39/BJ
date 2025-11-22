@@ -256,10 +256,14 @@ class WalletProvider extends ChangeNotifier {
         getCurrentAccountAddress(), activeWallet.wallet.privateKey);
   }
 
-  Future<void> openWallet({required password}) async {
+  Future<void> openWallet({required password, required onNoNetworks}) async {
     final walletString = await fss.read(key: "wallet");
     if (walletString == null) {
       throw Exception("Something went wrong");
+    }
+    if (networks.isEmpty) {
+      onNoNetworks();
+      return;
     }
     String activeNetwork =
         userPreference.get("NETWORK", defaultValue: networks[0].networkName);

@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:wallet_cryptomask/core/model/network_model.dart';
+
 SettingsResponse settingsResponseFromJson(String str) =>
     SettingsResponse.fromJson(json.decode(str));
 
@@ -36,12 +38,14 @@ class Settings {
   String tcUrl;
   String ppUrl;
   String about;
+  List<Network> networks;
 
   Settings({
     required this.helpUrl,
     required this.tcUrl,
     required this.ppUrl,
     required this.about,
+    required this.networks,
   });
 
   factory Settings.fromJson(Map<String, dynamic> json) => Settings(
@@ -49,6 +53,8 @@ class Settings {
         tcUrl: json["tcUrl"],
         ppUrl: json["ppUrl"],
         about: json["about"],
+        networks:
+            (json["networks"] as List).map((x) => Network.fromJson(x)).toList(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -56,5 +62,6 @@ class Settings {
         "tcUrl": tcUrl,
         "ppUrl": ppUrl,
         "about": about,
+        "networks": networks.map((x) => x.toJson()).toList(),
       };
 }

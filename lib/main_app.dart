@@ -7,11 +7,12 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:routerino/routerino_home.dart';
 import 'package:wallet_cryptomask/core/providers/contact_provider/contact_provider.dart';
+import 'package:wallet_cryptomask/core/providers/create_wallet_provider/create_wallet_provider.dart';
+import 'package:wallet_cryptomask/core/providers/locale_provider/locale_provider.dart';
 import 'package:wallet_cryptomask/core/providers/network_provider/network_provider.dart';
 import 'package:wallet_cryptomask/core/providers/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/core/providers/create_wallet_provider/create_wallet_provider.dart';
-import 'package:wallet_cryptomask/core/providers/locale_provider/locale_provider.dart';
+import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
 import 'package:wallet_cryptomask/core/socket/message_engine.dart';
 
 import 'constant.dart';
@@ -35,11 +36,13 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   String locale = "";
   final fss = const FlutterSecureStorage();
-  final networkProvider = NetworkProvider();
+  final settings = Get.find<Settings>();
+  final networkProvider = NetworkProvider([]);
 
   @override
   void initState() {
     super.initState();
+    networkProvider.networks = settings.networks;
     setState(() {
       locale = widget.locale;
     });

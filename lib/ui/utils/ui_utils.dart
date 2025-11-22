@@ -13,8 +13,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:routerino/routerino.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
+import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/screens/setttings-screen/security_settings_screen/security_settings_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
@@ -209,8 +209,8 @@ showErrorSnackBar(BuildContext context, String errorTitle, String error) {
   ));
 }
 
-renderAlert(BuildContext context, String? buttonKey, Function()? onPress,
-    {required String localizeKey}) {
+renderAlert(BuildContext context,
+    {String? buttonKey, Function()? onPress, required String localizeKey}) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
     margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),

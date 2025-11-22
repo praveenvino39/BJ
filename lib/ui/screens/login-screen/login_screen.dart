@@ -15,8 +15,8 @@ import 'package:wallet_cryptomask/ui/screens/onboarding-screen/onboard_screen.da
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
-import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
+import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 import 'package:wallet_cryptomask/utils/update_utils.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -44,7 +44,13 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       walletProvider.showLoading();
       walletProvider
-          .openWallet(password: passwordController.text)
+          .openWallet(
+              password: passwordController.text,
+              onNoNetworks: () {
+                walletProvider.hideLoading();
+                showErrorSnackBar(context, getText(context, key: 'error'),
+                    getText(context, key: 'noNetworks'));
+              })
           .then((value) {
         walletProvider.hideLoading();
         final user = Get.find<User>();

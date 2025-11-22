@@ -55,7 +55,13 @@ class _ImportAccountScreenState extends State<ImportAccountScreen> {
       try {
         await walletProvider.importAccountFromSeedphraseOnboarding(
             seedphrase: _seedphrase.text, password: _password.text);
-        await walletProvider.openWallet(password: _password.text);
+        await walletProvider.openWallet(
+            password: _password.text,
+            onNoNetworks: () {
+              walletProvider.hideLoading();
+              showErrorSnackBar(context, getText(context, key: 'error'),
+                  getText(context, key: 'noNetworks'));
+            });
         walletProvider.hideLoading();
         if (!mounted) return;
         context.pushAndRemoveUntil(

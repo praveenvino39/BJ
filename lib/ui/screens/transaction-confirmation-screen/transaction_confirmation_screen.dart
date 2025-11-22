@@ -9,14 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/providers/token_provider/token_provider.dart';
-import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/providers/token_provider/token_provider.dart';
+import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
-import 'package:wallet_cryptomask/ui/shared/avatar_widget.dart';
 import 'package:wallet_cryptomask/ui/screens/home-screen/home_screen.dart';
+import 'package:wallet_cryptomask/ui/shared/avatar_widget.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
@@ -150,7 +150,7 @@ class _TransactionConfirmationScreenState
         if (widget.token !=
             Provider.of<WalletProvider>(context, listen: false)
                 .activeNetwork
-                .currency) {
+                .symbol) {
           setState(() {
             isNative = false;
           });
@@ -641,7 +641,7 @@ class _TransactionConfirmationScreenState
                                     localizeKey: 'total',
                                     fontWeight: FontWeight.bold),
                                 Text(
-                                  "${widget.token != null && widget.token != Provider.of<WalletProvider>(context).activeNetwork.currency ? '${widget.value + platformFeeForToken} ${selectedToken?.symbol} + ' : ''} ${totalAmount.toStringAsFixed(6)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
+                                  "${widget.token != null && widget.token != Provider.of<WalletProvider>(context).activeNetwork.symbol ? '${widget.value + platformFeeForToken} ${selectedToken?.symbol} + ' : ''} ${totalAmount.toStringAsFixed(6)} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}",
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -652,7 +652,9 @@ class _TransactionConfirmationScreenState
                         ),
                       ),
                 manualEstimation != null
-                    ? renderAlert(context, null, null,
+                    ? renderAlert(context,
+                        buttonKey: null,
+                        onPress: null,
                         localizeKey: 'failedToEstimated')
                     : const SizedBox(),
                 const Expanded(child: SizedBox()),

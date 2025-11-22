@@ -6,17 +6,17 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/providers/create_wallet_provider/create_wallet_provider.dart';
+import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/screens/home-screen/home_screen.dart';
+import 'package:wallet_cryptomask/ui/screens/web-view-screen/web_view_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text_field.dart';
-import 'package:wallet_cryptomask/ui/screens/web-view-screen/web_view_screen.dart';
-import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
+import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 
 class CreatePasswordScreen extends StatefulWidget {
   static const route = "create_password_screen";
@@ -86,7 +86,18 @@ class _CreatePasswordCmpState extends State<CreatePasswordScreen> {
         final walletProvider = getWalletProvider(context);
         await createWalletProvider.setPassword(passwordEditingControl.text);
         await createWalletProvider.createWallet();
-        await walletProvider.openWallet(password: passwordEditingControl.text);
+        await walletProvider.openWallet(
+            password: passwordEditingControl.text,
+            onNoNetworks: () {
+              setState(() {
+                isLoading = false;
+              });
+              showErrorSnackBar(
+                context,
+                getText(context, key: 'error'),
+                getText(context, key: 'noNetworks'),
+              );
+            });
         setState(() {
           isLoading = false;
         });

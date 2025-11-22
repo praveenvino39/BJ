@@ -37,6 +37,7 @@ class Translations {
 
 var en = {
   "appName": appName,
+  "noNetworks": "Currently no networks available",
   "importAccount": "Import Account",
   "addressCopied": "Public address copied to clipboard",
   "success": "Success",

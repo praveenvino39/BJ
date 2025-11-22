@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
+import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/shared/avatar_widget.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
@@ -161,7 +161,7 @@ class _ConnectSheetState extends State<ConnectSheet>
                                 style: const TextStyle(fontSize: 16),
                               ),
                               Text(
-                                  "${getText(context, key: 'balance')}: ${Provider.of<WalletProvider>(context).activeWallet.balance} ${Provider.of<WalletProvider>(context).activeNetwork.currency}"),
+                                  "${getText(context, key: 'balance')}: ${Provider.of<WalletProvider>(context).activeWallet.balance} ${Provider.of<WalletProvider>(context).activeNetwork.symbol}"),
                             ],
                           ),
                         ),

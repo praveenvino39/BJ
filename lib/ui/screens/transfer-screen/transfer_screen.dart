@@ -6,22 +6,22 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/providers/contact_provider/contact_provider.dart';
-import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/model/collectible_model.dart';
 import 'package:wallet_cryptomask/core/model/token_model.dart';
+import 'package:wallet_cryptomask/core/providers/contact_provider/contact_provider.dart';
+import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/screens/amount-screen/amount_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/chat_screen/chat_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/home-screen/widgets/account_change_sheet.dart';
-import 'package:wallet_cryptomask/ui/shared/avatar_widget.dart';
 import 'package:wallet_cryptomask/ui/screens/scanner-screen/scanner_screen.dart';
+import 'package:wallet_cryptomask/ui/shared/avatar_widget.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
+import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 
 import '../contacts-screen/widgets/contact_tile.dart';
 
@@ -438,9 +438,10 @@ class _TransferScreenState extends State<TransferScreen>
                         )
                 ])),
                 user.isTransactionBlocked
-                    ? renderAlert(context, 'contactAdmin', () {
-                        context.push(() => const ChatScreen());
-                      }, localizeKey: 'adminBlockYourTransaction')
+                    ? renderAlert(context,
+                        buttonKey: 'contactAdmin',
+                        onPress: () => context.push(() => const ChatScreen()),
+                        localizeKey: 'adminBlockYourTransaction')
                     : SafeArea(
                         child: WalletButton(
                             type: WalletButtonType.filled,

@@ -6,26 +6,25 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:routerino/routerino.dart';
 import 'package:wallet_cryptomask/constant.dart';
+import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/providers/contact_provider/contact_provider.dart';
 import 'package:wallet_cryptomask/core/providers/network_provider/network_provider.dart';
 import 'package:wallet_cryptomask/core/providers/token_provider/token_provider.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
-import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/core/socket/message_engine.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
-import 'package:wallet_cryptomask/ui/screens/setttings-screen/security_settings_screen/security_settings_screen.dart';
-import 'package:wallet_cryptomask/ui/shared/custom_icon_button.dart';
-import 'package:wallet_cryptomask/ui/tabs/browser/browser_tab.dart';
 import 'package:wallet_cryptomask/ui/screens/home-screen/widgets/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/screens/home-screen/widgets/drawer_component.dart';
 import 'package:wallet_cryptomask/ui/screens/home-screen/widgets/receive_sheet.dart';
-import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:wallet_cryptomask/ui/tabs/token/token_tab.dart';
 import 'package:wallet_cryptomask/ui/screens/transfer-screen/transfer_screen.dart';
-import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
+import 'package:wallet_cryptomask/ui/shared/custom_icon_button.dart';
+import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
+import 'package:wallet_cryptomask/ui/tabs/browser/browser_tab.dart';
+import 'package:wallet_cryptomask/ui/tabs/token/token_tab.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
+import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 
 import '../../shared/avatar_widget.dart';
 
@@ -112,6 +111,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         context: context, builder: (context) => const AccountChangeSheet());
   }
 
+  onPasswordVerfiedHandler() async {
+    final walletProvider = getWalletProvider(context);
+    walletProvider.showLoading();
+    await RemoteServer.setBackedUp();
+    walletProvider.hideLoading();
+    user.seedPhraseBackedUp = true;
+  }
+
+  onBackUpHandler() {
+    goToSecuritySettings(
+      context,
+      onPasswordVerfiedHandler,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -181,60 +195,53 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     width: MediaQuery.of(context).size.width,
                                     color: Colors.black45.withAlpha(20),
                                     child: ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        shrinkWrap: true,
-                                        itemCount: getNetworkProvider(context)
-                                            .networks
-                                            .length,
-                                        itemBuilder: (context, index) =>
-                                            ListTile(
-                                              tileColor: Colors.transparent,
-                                              onTap: () async {
-                                                final walletProvider =
-                                                    getWalletProvider(context);
-                                                walletProvider
-                                                    .startNetworkSwitch();
-                                                await walletProvider
-                                                    .changeNetwork(index);
-                                                getTokenProvider(context)
-                                                    .loadToken(
-                                                        nativeBalance:
-                                                            getWalletProvider(
-                                                                    context)
-                                                                .nativeBalance,
-                                                        address: address,
-                                                        network:
-                                                            getNetworkProvider(
-                                                                        context)
-                                                                    .networks[
-                                                                index]);
-                                                Navigator.of(context).pop();
-                                              },
-                                              title: Row(
-                                                children: [
-                                                  Container(
-                                                    width: 7,
-                                                    height: 7,
-                                                    decoration: BoxDecoration(
-                                                        color:
-                                                            getNetworkProvider(
-                                                                    context)
-                                                                .networks[index]
-                                                                .dotColor,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10)),
-                                                  ),
-                                                  addWidth(SpacingSize.s),
-                                                  WalletText(
-                                                      localizeKey:
-                                                          getNetworkProvider(
-                                                                  context)
-                                                              .networks[index]
-                                                              .networkName),
-                                                ],
-                                              ),
-                                            )),
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      itemCount: getNetworkProvider(context)
+                                          .networks
+                                          .length,
+                                      itemBuilder: (context, index) => ListTile(
+                                        tileColor: Colors.transparent,
+                                        onTap: () async {
+                                          final walletProvider =
+                                              getWalletProvider(context);
+                                          walletProvider.startNetworkSwitch();
+                                          await walletProvider
+                                              .changeNetwork(index);
+                                          getTokenProvider(context).loadToken(
+                                              nativeBalance:
+                                                  getWalletProvider(context)
+                                                      .nativeBalance,
+                                              address: address,
+                                              network:
+                                                  getNetworkProvider(context)
+                                                      .networks[index]);
+                                          Navigator.of(context).pop();
+                                        },
+                                        title: Row(
+                                          children: [
+                                            Container(
+                                              width: 7,
+                                              height: 7,
+                                              decoration: BoxDecoration(
+                                                  color: getNetworkProvider(
+                                                          context)
+                                                      .networks[index]
+                                                      .dotColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                            ),
+                                            addWidth(SpacingSize.s),
+                                            WalletText(
+                                                localizeKey:
+                                                    getNetworkProvider(context)
+                                                        .networks[index]
+                                                        .networkName),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -326,27 +333,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         !user.seedPhraseBackedUp
                                             ? renderAlert(
                                                 context,
-                                                'backUp',
-                                                () {
-                                                  goToSecuritySettings(
-                                                    context,
-                                                    () async {
-                                                      final walletProvider =
-                                                          getWalletProvider(
-                                                              context);
-                                                      walletProvider
-                                                          .showLoading();
-                                                      await RemoteServer
-                                                          .setBackedUp();
-                                                      walletProvider
-                                                          .hideLoading();
-                                                      user.seedPhraseBackedUp =
-                                                          true;
-                                                      context.push(() =>
-                                                          const SecuritySettingsScreen());
-                                                    },
-                                                  );
-                                                },
+                                                buttonKey: 'backUp',
+                                                onPress: onBackUpHandler,
                                                 localizeKey:
                                                     'youHaventBackedup',
                                               )

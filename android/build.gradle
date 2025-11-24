@@ -1,7 +1,5 @@
-plugins {
-    id "com.android.application" version "7.1.2" apply false
-    id "org.jetbrains.kotlin.android" version "1.8.0" apply false
-}
+import groovy.xml.XmlSlurper
+
 
 allprojects {
     repositories {
@@ -14,10 +12,74 @@ rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
-subprojects {
+
+
+subprojects { subproject ->
     project.evaluationDependsOn(':app')
 }
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
+}
+
+gradle.beforeProject { project ->
+    project.afterEvaluate {        
+
+        // Find and update all Kotlin compile tasks
+        project.tasks.matching { it.name.contains("Kotlin") }.all { task ->
+            if (task.hasProperty("kotlinOptions")) {
+                task.kotlinOptions.jvmTarget = "17"
+            }
+        }
+        if (project.extensions.findByName("android") != null) {
+            project.android.buildTypes.all { buildType ->
+                buildType.minifyEnabled = false
+            }
+            def androidExt = project.extensions.getByName("android")
+
+            if (androidExt.hasProperty("compileSdk")) {
+                androidExt.compileSdk = 34
+            }
+
+            // Force Java 17 for all subprojects
+            androidExt.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
+            androidExt.compileOptions.targetCompatibility = JavaVersion.VERSION_17
+
+
+            // Skip if namespace already exists
+            if (androidExt.hasProperty("namespace") && androidExt.namespace != null) {
+                return
+            }
+
+            // Try reading the package name from AndroidManifest.xml
+            def manifestFile = project.file("src/main/AndroidManifest.xml")
+
+            if (manifestFile.exists()) {
+                try {
+                    def manifest = new XmlSlurper().parse(manifestFile)
+                    def manifestPackage = manifest.@package.text()
+
+                    if (manifestPackage) {
+                        androidExt.namespace = manifestPackage
+                        println("⚠ Set namespace '${manifestPackage}' for project ${project.name} (from AndroidManifest)")
+                    } else {
+                        // fallback if manifest has no package attribute
+                        def fallbackNs = "com.auto." + project.name.replace('-', '_')
+                        androidExt.namespace = fallbackNs
+                        println("⚠ Namespace missing in manifest; using fallback '${fallbackNs}' for ${project.name}")
+                    }
+                } catch (ignored) {
+                    // fallback if parsing fails
+                    def fallbackNs = "com.auto." + project.name.replace('-', '_')
+                    androidExt.namespace = fallbackNs
+                    println("⚠ Error reading manifest; using fallback '${fallbackNs}' for ${project.name}")
+                }
+            } else {
+                // if no manifest found at all
+                def fallbackNs = "com.auto." + project.name.replace('-', '_')
+                androidExt.namespace = fallbackNs
+                println("⚠ No AndroidManifest found; using fallback '${fallbackNs}' for ${project.name}")
+            }
+        }
+    }
 }

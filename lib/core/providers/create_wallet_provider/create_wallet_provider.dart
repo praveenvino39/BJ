@@ -2,16 +2,17 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 import 'dart:math';
+
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:ethers/crypto/formatting.dart';
 import 'package:ethers/utils/hdnode/hd_node.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
+import 'package:wallet_cryptomask/storage.dart';
 import 'package:web3dart/web3dart.dart';
 
 void createWalletWithPasswordIsolate(CreatePasswordIsolateType args) {
@@ -26,9 +27,8 @@ CreateWalletProvider getCreateWalletProvider(BuildContext context) =>
 class CreateWalletProvider extends ChangeNotifier {
   String _password = '';
   List<String> _passphrase = [];
-  FlutterSecureStorage fss;
 
-  CreateWalletProvider(this.fss);
+  CreateWalletProvider();
 
   setPassword(String password) {
     _password = password;
@@ -53,11 +53,10 @@ class CreateWalletProvider extends ChangeNotifier {
             password: password,
             sendPort: receiverPort.sendPort));
     receiverPort.listen((data) async {
-      FlutterSecureStorage fss = const FlutterSecureStorage();
-      await fss.write(
+      await storage.write(
           key: "wallet", value: jsonEncode([(data as Wallet).toJson()]));
-      await fss.write(key: "seed_phrase", value: passphrase);
-      await fss.write(key: "password", value: password);
+      await storage.write(key: "seed_phrase", value: passphrase);
+      await storage.write(key: "password", value: password);
       Box box = await Hive.openBox("user_preference");
       await box.put(data.privateKey.address.hex, "Account 1");
       notifyListeners();
@@ -67,7 +66,6 @@ class CreateWalletProvider extends ChangeNotifier {
   }
 
   Future<void> createWallet() async {
-    FlutterSecureStorage fss = const FlutterSecureStorage();
     Completer futureCompleter = Completer();
     ReceivePort receiverPort = ReceivePort();
     String generatedMnemonic = bip39.generateMnemonic();
@@ -90,9 +88,10 @@ class CreateWalletProvider extends ChangeNotifier {
             message: message,
             hash: hash,
             address: wallet.privateKey.address.hex);
-        await fss.write(key: "wallet", value: jsonEncode([wallet.toJson()]));
-        await fss.write(key: "seed_phrase", value: generatedMnemonic);
-        await fss.write(key: "password", value: _password);
+        await storage.write(
+            key: "wallet", value: jsonEncode([wallet.toJson()]));
+        await storage.write(key: "seed_phrase", value: generatedMnemonic);
+        await storage.write(key: "password", value: _password);
         Box box = await Hive.openBox("user_preference");
         await box.put(data.privateKey.address.hex, "Account 1");
         notifyListeners();

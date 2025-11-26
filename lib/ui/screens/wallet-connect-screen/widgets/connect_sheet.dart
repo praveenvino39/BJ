@@ -15,6 +15,7 @@ import 'package:wallet_cryptomask/ui/utils/spaces.dart';
 import 'package:wallet_cryptomask/ui/utils/ui_utils.dart';
 
 class ConnectSheet extends StatefulWidget {
+  bool isScam = false;
   final Function(List<String>) onApprove;
   List<Network>? requestedNetworks;
   final Function() onReject;
@@ -26,7 +27,8 @@ class ConnectSheet extends StatefulWidget {
       required this.onReject,
       required this.connectingOrgin,
       required this.imageUrl,
-      this.requestedNetworks});
+      this.requestedNetworks,
+      this.isScam = false});
 
   @override
   State<ConnectSheet> createState() => _ConnectSheetState();
@@ -54,6 +56,26 @@ class _ConnectSheetState extends State<ConnectSheet>
             ),
             child: Column(
               children: [
+                addHeight(SpacingSize.m),
+                if (widget.isScam)
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.red.withValues(alpha: 0.1),
+                      border: Border.all(color: Colors.red),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.warning, color: Colors.red),
+                        SizedBox(width: 8),
+                        Text('This connection may be unsafe',
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
                 addHeight(SpacingSize.m),
                 Container(
                   clipBehavior: Clip.hardEdge,

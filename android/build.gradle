@@ -5,6 +5,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -38,7 +39,7 @@ gradle.beforeProject { project ->
             def androidExt = project.extensions.getByName("android")
 
             if (androidExt.hasProperty("compileSdk")) {
-                androidExt.compileSdk = 34
+                androidExt.compileSdk = 36
             }
 
             // Force Java 17 for all subprojects

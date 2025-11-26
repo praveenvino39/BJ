@@ -57,7 +57,7 @@ class _MainAppState extends State<MainApp> {
           create: (context) => MessageEngine(messages: []),
         ),
         ChangeNotifierProvider(
-          create: (ctx) => CreateWalletProvider(fss),
+          create: (ctx) => CreateWalletProvider(),
         ),
         ChangeNotifierProvider(
           create: (ctx) => ContactProvider(box: widget.userPreferenceBox),

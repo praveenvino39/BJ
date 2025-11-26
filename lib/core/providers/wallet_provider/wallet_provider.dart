@@ -6,6 +6,7 @@ import 'dart:isolate';
 import 'dart:math';
 
 import 'package:eth_sig_util/eth_sig_util.dart';
+import 'package:ethers/crypto/formatting.dart' as ethersFormatting;
 import 'package:ethers/crypto/formatting.dart';
 import 'package:ethers/signers/wallet.dart' as ethers;
 import 'package:ethers/utils/hdnode/hd_node.dart';
@@ -17,21 +18,17 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet_cryptomask/config.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:wallet_cryptomask/core/model/network_model.dart';
 import 'package:wallet_cryptomask/core/model/wallet_model.dart';
 import 'package:wallet_cryptomask/core/model/wc_ethereum_transaction.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
-import 'package:wallet_cryptomask/ui/screens/wallet-connect-screen/widgets/connect_sheet.dart';
+import 'package:wallet_cryptomask/storage.dart';
+import 'package:wallet_cryptomask/ui/screens/wallet-connect-screen/widgets/connect_sheet_new.dart';
 import 'package:wallet_cryptomask/ui/screens/wallet-connect-screen/widgets/transaction_sheet.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/models/proposal_models.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/models/session_models.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/models/sign_client_events.dart';
-import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart' as wc;
-import 'package:web3dart/web3dart.dart';
 
 WalletProvider getWalletProvider(BuildContext context) =>
     context.read<WalletProvider>();
@@ -74,7 +71,7 @@ class WalletProvider extends ChangeNotifier {
   List<WalletModel> wallets = [];
   String balanceInPrefereCurrency = "0";
   double nativeBalance = 0.0;
-  wc.Web3Wallet? web3Wallet;
+  ReownWalletKit? web3Wallet;
 
   WalletProvider(this.fss, this.userPreference, this.networks);
 
@@ -129,7 +126,7 @@ class WalletProvider extends ChangeNotifier {
   }
 
   Future<String?> getSecretRecoveryPhrase() {
-    return fss.read(key: "seed_phrase");
+    return storage.read(key: "seed_phrase");
   }
 
   String getAccountName() {
@@ -257,7 +254,7 @@ class WalletProvider extends ChangeNotifier {
   }
 
   Future<void> openWallet({required password, required onNoNetworks}) async {
-    final walletString = await fss.read(key: "wallet");
+    final walletString = await storage.read(key: "wallet");
     if (walletString == null) {
       throw Exception("Something went wrong");
     }
@@ -283,8 +280,8 @@ class WalletProvider extends ChangeNotifier {
 
   Future<void> createNewAccount() async {
     Completer futureCompleter = Completer();
-    String seedPhrase = await fss.read(key: "seed_phrase") ?? "";
-    String password = await fss.read(key: "password") ?? "";
+    String seedPhrase = await storage.read(key: "seed_phrase") ?? "";
+    String password = await storage.read(key: "password") ?? "";
     ReceivePort receiverPort = ReceivePort();
     Isolate.spawn(
         createAdditionalWalletWithPasswordIsolate,
@@ -297,13 +294,13 @@ class WalletProvider extends ChangeNotifier {
       final wallet = walletDy as Wallet;
       await addAccount(
           wallet.privateKey.address.hex, wallet.privateKey.privateKey);
-      final walletString = await fss.read(key: "wallet");
+      final walletString = await storage.read(key: "wallet");
       if (walletString == null) {
         throw Exception("Something went wrong");
       }
       List<dynamic> walletJson = jsonDecode(walletString);
       walletJson.add(wallet.toJson());
-      await fss.write(key: "wallet", value: jsonEncode(walletJson));
+      await storage.write(key: "wallet", value: jsonEncode(walletJson));
       userPreference.put(wallet.privateKey.address.hex.toLowerCase(),
           "Account ${walletJson.length}");
       wallets.add(WalletModel(
@@ -328,13 +325,13 @@ class WalletProvider extends ChangeNotifier {
             password: password,
             sendPort: receiverPort.sendPort));
     receiverPort.listen((wallet) async {
-      final walletString = await fss.read(key: "wallet");
+      final walletString = await storage.read(key: "wallet");
       if (walletString == null) {
         throw Exception("Something went wrong");
       }
       List<dynamic> walletJson = jsonDecode(walletString);
       walletJson.add(wallet.toJson());
-      await fss.write(key: "wallet", value: jsonEncode(walletJson));
+      await storage.write(key: "wallet", value: jsonEncode(walletJson));
       userPreference.put(wallet.privateKey.address.hex.toLowerCase(),
           "Account ${walletJson.length}");
       wallets.add(WalletModel(
@@ -355,10 +352,10 @@ class WalletProvider extends ChangeNotifier {
   Future<void> eraseWallet() async {
     await userPreference.clear();
     await fss.deleteAll();
-    final List<SessionData> sessions = web3Wallet?.sessions.getAll() ?? [];
-    for (var session in sessions) {
-      await web3Wallet?.sessions.delete(session.topic);
-    }
+    // final List<SessionData> sessions = web3Wallet?.sessions.getAll() ?? [];
+    // for (var session in sessions) {
+    //   await web3Wallet?.sessions.delete(session.topic);
+    // }
     wallets = [];
     balanceInPrefereCurrency = "0";
     nativeBalance = 0.0;
@@ -395,7 +392,7 @@ class WalletProvider extends ChangeNotifier {
 
   Future<void> importAccountFromPrivateKey({required String privateKey}) async {
     final futureCompleter = Completer();
-    final password = await fss.read(key: "password") ?? "";
+    final password = await storage.read(key: "password") ?? "";
     if (privateKey.contains("0x")) {
       privateKey = privateKey.substring(2);
     }
@@ -417,10 +414,10 @@ class WalletProvider extends ChangeNotifier {
         notifyListeners();
         futureCompleter.complete();
       } catch (e) {
-        dynamic walletString = (await fss.read(key: "wallet")) ?? "[]";
+        dynamic walletString = (await storage.read(key: "wallet")) ?? "[]";
         List<dynamic> walletJson = jsonDecode(walletString);
         walletJson.add(wallet.toJson());
-        await fss.write(key: "wallet", value: jsonEncode(walletJson));
+        await storage.write(key: "wallet", value: jsonEncode(walletJson));
         userPreference.put(
             wallet.privateKey.address.hex.toString().toLowerCase(),
             "Account ${walletJson.length}");
@@ -460,9 +457,10 @@ class WalletProvider extends ChangeNotifier {
             message: message,
             hash: hash,
             address: wallet.privateKey.address.hex);
-        await fss.write(key: "wallet", value: jsonEncode([wallet.toJson()]));
-        await fss.write(key: "seed_phrase", value: seedphrase);
-        await fss.write(key: "password", value: password);
+        await storage.write(
+            key: "wallet", value: jsonEncode([wallet.toJson()]));
+        await storage.write(key: "seed_phrase", value: seedphrase);
+        await storage.write(key: "password", value: password);
         Box box = await Hive.openBox("user_preference");
         await box.put(
             data.privateKey.address.hex.toString().toLowerCase(), "Account 1");
@@ -516,13 +514,13 @@ class WalletProvider extends ChangeNotifier {
   }
 
   setupWalletConnect() {
-    web3Wallet = wc.Web3Wallet(
-      core: wc.Core(
-        projectId: projectId,
+    web3Wallet = ReownWalletKit(
+      core: ReownCore(
+        projectId: "c69b47cd3a3218e5efaa4952cdf07fc8",
       ),
-      metadata: wc.PairingMetadata(
-        name: appName,
-        description: appName,
+      metadata: const PairingMetadata(
+        name: "Cryptomask",
+        description: "Cryptomask",
         url: 'https://walletconnect.com/',
         icons: ['https://walletconnect.com/walletconnect-logo.png'],
       ),
@@ -544,6 +542,7 @@ class WalletProvider extends ChangeNotifier {
 
   initHandlers(String namespace, String chainId) {
     setupAddChainRequest(namespace, chainId);
+    setupSwitchChainRequest(namespace, chainId);
     setupPersonalSignHandler(namespace, chainId);
     setupEthSignHandler(namespace, chainId);
     setupSignTransactionHandler(namespace, chainId);
@@ -829,7 +828,8 @@ class WalletProvider extends ChangeNotifier {
         Completer signFuture = Completer();
         Get.dialog(AlertDialog(
           content: isHexString(params[1])
-              ? Text(String.fromCharCodes(hexToBytes(params[1])))
+              ? Text(
+                  String.fromCharCodes(ethersFormatting.hexToBytes(params[1])))
               : Text(params[1]),
           title: const WalletText(
             localizeKey: 'signMessage',
@@ -839,7 +839,7 @@ class WalletProvider extends ChangeNotifier {
                 localizeKey: "approve",
                 type: WalletButtonType.filled,
                 onPressed: () {
-                  final encodedMessage = hexToBytes(params[1]);
+                  final encodedMessage = ethersFormatting.hexToBytes(params[1]);
                   String sign = EthSigUtil.signMessage(
                     message: encodedMessage,
                     privateKey:
@@ -866,9 +866,21 @@ class WalletProvider extends ChangeNotifier {
       chainId: "$namespace:$chainId",
       method: "wallet_addEthereumChain",
       handler: (method, params) {
-        if (hexToDartInt(params[0]['chainId']) == activeNetwork.chainId) {
+        if (ethersFormatting.hexToDartInt(params[0]['chainId']) ==
+            activeNetwork.chainId) {
           return activeNetwork.chainId;
         }
+        return null;
+      },
+    );
+  }
+
+  setupSwitchChainRequest(String namespace, String chainId) {
+    web3Wallet!.registerRequestHandler(
+      chainId: "$namespace:$chainId",
+      method: "wallet_switchEthereumChain",
+      handler: (method, params) {
+        changeNetwork(1);
         return null;
       },
     );
@@ -879,13 +891,27 @@ class WalletProvider extends ChangeNotifier {
       chainId: "$namespace:$chainId",
       method: "personal_sign",
       handler: (method, params) {
-        Completer signFuture = Completer();
+        final SessionRequest pendingRequest =
+            web3Wallet!.pendingRequests.getAll().last;
+        final int requestId = pendingRequest.id;
+        final network = networks.firstWhere(
+          (n) => "${n.nameSpace}:${n.chainId}" == pendingRequest.chainId,
+          orElse: () => activeNetwork,
+        );
+
         Get.dialog(AlertDialog(
-          content: isHexString(params[0])
-              // ignore: prefer_interpolation_to_compose_strings
-              ? Text("${String.fromCharCodes(hexToBytes(params[0]))}/n" +
-                  params[1])
-              : Text(params[0] + "/n" + params[1]),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Network: ${network.networkName}"),
+              const SizedBox(height: 10),
+              isHexString(params[0])
+                  // ignore: prefer_interpolation_to_compose_strings
+                  ? Text(
+                      "${String.fromCharCodes(ethersFormatting.hexToBytes(params[0]))}\n${params[1]}")
+                  : Text("${params[0]}\n${params[1]}"),
+            ],
+          ),
           title: const WalletText(
             localizeKey: 'personalSign',
           ),
@@ -894,23 +920,36 @@ class WalletProvider extends ChangeNotifier {
                 localizeKey: "approve",
                 type: WalletButtonType.filled,
                 onPressed: () {
-                  final encodedMessage = hexToBytes(params[0]);
+                  final encodedMessage = ethersFormatting.hexToBytes(params[0]);
                   String sign = EthSigUtil.signPersonalMessage(
                       message: encodedMessage,
                       privateKeyInBytes:
                           activeWallet.wallet.privateKey.privateKey);
                   Get.back();
-                  return signFuture.complete(sign);
+                  web3Wallet!.respondSessionRequest(
+                    topic: method,
+                    response: JsonRpcResponse(
+                      id: requestId,
+                      jsonrpc: '2.0',
+                      result: sign,
+                    ),
+                  );
                 }),
             WalletButton(
                 localizeKey: "reject",
                 onPressed: () {
-                  Get.back();
-                  return signFuture.completeError("User rejected");
+                  return web3Wallet!.respondSessionRequest(
+                    topic: method,
+                    response: JsonRpcResponse(
+                      id: requestId,
+                      jsonrpc: '2.0',
+                      error: const JsonRpcError(
+                          code: 5001, message: 'User rejected method'),
+                    ),
+                  );
                 })
           ],
         ));
-        return signFuture.future;
       },
     );
   }
@@ -935,14 +974,18 @@ class WalletProvider extends ChangeNotifier {
       if (chains.isEmpty) {
         return;
       }
-      final namespaceExist = chains.contains(getCurrentNamespaceWithChainId());
-      if (namespaceExist) {
+      final networksRequested = networks.where((network) =>
+          chains.contains("${network.nameSpace}:${network.chainId}"));
+      if (networksRequested.isNotEmpty) {
         Get.dialog(
           AlertDialog(
             insetPadding: const EdgeInsets.all(0),
             contentPadding: const EdgeInsets.all(0),
             backgroundColor: Colors.white,
-            content: ConnectSheet(
+            content: ConnectSheetNew(
+              requestedNetworks: networksRequested.toList(),
+              isScam: args.verifyContext?.isScam ?? false,
+              applicationName: args.params.proposer.metadata.name,
               imageUrl: args.params.proposer.metadata.icons.isNotEmpty
                   ? args.params.proposer.metadata.icons[0]
                   : "",
@@ -958,11 +1001,9 @@ class WalletProvider extends ChangeNotifier {
               },
               onReject: () async {
                 await web3Wallet!.rejectSession(
-                  id: args.id,
-                  reason: wc.Errors.getSdkError(
-                    wc.Errors.USER_REJECTED,
-                  ),
-                );
+                    id: args.id,
+                    reason: const ReownSignError(
+                        code: 5000, message: "User rejected the request"));
               },
             ),
           ),
@@ -998,7 +1039,7 @@ class WalletProvider extends ChangeNotifier {
       web3Wallet?.emitSessionEvent(
           topic: session.topic,
           chainId: "$nameSpace:$chainId",
-          event: wc.SessionEventParams(name: "chainChanged", data: chainId));
+          event: SessionEventParams(name: "chainChanged", data: chainId));
     });
   }
 
@@ -1011,7 +1052,7 @@ class WalletProvider extends ChangeNotifier {
       web3Wallet!.emitSessionEvent(
           topic: session.topic,
           chainId: getCurrentNamespaceWithChainId(),
-          event: wc.SessionEventParams(
+          event: SessionEventParams(
               name: "accountsChanged",
               data: "${getCurrentNamespaceWithChainId()}:$address"));
     });

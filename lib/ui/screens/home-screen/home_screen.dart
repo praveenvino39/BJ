@@ -15,9 +15,11 @@ import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/register_user.dart';
 import 'package:wallet_cryptomask/core/socket/message_engine.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
+import 'package:wallet_cryptomask/link.dart';
 import 'package:wallet_cryptomask/ui/screens/home-screen/widgets/account_change_sheet.dart';
 import 'package:wallet_cryptomask/ui/screens/home-screen/widgets/drawer_component.dart';
 import 'package:wallet_cryptomask/ui/screens/home-screen/widgets/receive_sheet.dart';
+import 'package:wallet_cryptomask/ui/screens/scanner-screen/scanner_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/transfer-screen/transfer_screen.dart';
 import 'package:wallet_cryptomask/ui/shared/custom_icon_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
@@ -61,7 +63,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       getContactProvider(context).loadContacts();
     });
     getWalletProvider(context).setupWalletConnect();
-    getWalletProvider(context).init();
+    getWalletProvider(context).init().then((e) {
+      appLinks.uriLinkStream.listen((uri) {
+        if (uri.host == "wallet_connect") {
+          final url = uri.queryParameters['uri'];
+          if (url != null && url.contains("wc")) {
+            getWalletProvider(context).web3Wallet?.pair(uri: Uri.parse(url));
+          }
+        }
+      });
+    });
     messageEngine.connect();
     super.initState();
   }
@@ -293,10 +304,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       actions: [
                           IconButton(
                             splashColor: Colors.transparent,
-                            onPressed: () {},
+                            onPressed: () {
+                              // _scafoldKey.currentState?.showBottomSheet(
+                              //     (context) => ConnectSheetNew(
+                              //         requestedNetworks:
+                              //             getLiveNetworkProvider(context)
+                              //                 .networks,
+                              //         isScam: true,
+                              //         onApprove: (networks) {},
+                              //         onReject: () {},
+                              //         connectingOrgin: "example.com",
+                              //         imageUrl: "https://example.com/image.png",
+                              //         applicationName: "React App"));
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ScannerScreen(
+                                    onQrDecode: (data) {
+                                      Navigator.of(context).pop();
+                                      getWalletProvider(context)
+                                          .web3Wallet
+                                          ?.pair(
+                                            uri: Uri.parse(data),
+                                          );
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
                             splashRadius: 1,
-                            icon: const Icon(Icons.chat),
-                            color: Colors.transparent,
+                            icon: const Icon(Icons.qr_code_scanner),
+                            color: Colors.black,
                           ),
                         ])
                   : null,

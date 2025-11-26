@@ -5,7 +5,6 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,6 +14,7 @@ import 'package:wallet_cryptomask/core/model/token_model.dart';
 import 'package:wallet_cryptomask/core/remote/http.dart';
 import 'package:wallet_cryptomask/core/remote/response-model/settings_response.dart';
 import 'package:wallet_cryptomask/main_app.dart';
+import 'package:wallet_cryptomask/storage.dart';
 import 'package:wallet_cryptomask/ui/screens/error-screen/error_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/login-screen/login_screen.dart';
 import 'package:wallet_cryptomask/ui/screens/onboarding-screen/onboard_screen.dart';
@@ -75,8 +75,7 @@ Future<Widget> getInitialWidget() async {
   } catch (e) {
     return const ErrorScreen();
   }
-  FlutterSecureStorage fss = const FlutterSecureStorage();
-  String? wallet = await fss.read(key: "wallet");
+  String? wallet = await storage.read(key: "wallet");
   if (wallet != null) {
     return const LoginScreen();
   } else {

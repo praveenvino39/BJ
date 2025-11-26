@@ -33,10 +33,11 @@ class _ScannerScreenState extends State<ScannerScreen> {
               height: 300,
               child: MobileScanner(
                 controller: _mobileScannerController,
-                onDetect: (barcodes) {
+                onDetect: (barcodes) async {
                   if (barcodes.barcodes[0].rawValue == null) {
                     debugPrint('Failed to scan Barcode');
                   } else {
+                    await _mobileScannerController.stop();
                     widget.onQrDecode(barcodes.barcodes[0].rawValue.toString());
                   }
                 },

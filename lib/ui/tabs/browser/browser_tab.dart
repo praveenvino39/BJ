@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use, must_be_immutable
 
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:clipboard_watcher/clipboard_watcher.dart';
 import 'package:flutter/foundation.dart';
@@ -74,10 +73,10 @@ class _BrowserTabState extends State<BrowserTab> with ClipboardListener {
 
   @override
   void initState() {
-    if (Platform.isIOS) {
-      clipboardWatcher.addListener(this);
-      clipboardWatcher.start();
-    }
+    // if (Platform.isIOS) {
+    clipboardWatcher.addListener(this);
+    clipboardWatcher.start();
+    // }
 
     tabs.add(BrowserView(
         webViewModel: BrowserProvider(

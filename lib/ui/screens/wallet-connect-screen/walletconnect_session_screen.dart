@@ -1,16 +1,14 @@
 // ignore_for_file: empty_catches, use_build_context_synchronously
 
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
 import 'package:wallet_cryptomask/ui/utils/spaces.dart';
-import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
+// import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
 
 class WalletConnectSessionScreen extends StatefulWidget {
   static const route = "WALLETCONNECT_SESSIONS";
@@ -34,7 +32,7 @@ class _WalletConnectSessionScreenState
 
   init() async {
     setState(() {
-      sessions = getWalletProvider(context).web3Wallet?.sessions.getAll() ?? [];
+      // sessions = getWalletProvider(context).web3Wallet?.sessions.getAll() ?? [];
       isLoading = false;
     });
   }
@@ -90,20 +88,20 @@ class _WalletConnectSessionScreenState
                                 onPressed: () async {
                                   try {
                                     for (var session in sessions) {
-                                      await getWalletProvider(context)
-                                          .web3Wallet
-                                          ?.disconnectSession(
-                                            topic: session.topic,
-                                            reason: Errors.getSdkError(
-                                              Errors.USER_DISCONNECTED,
-                                            ),
-                                          );
-                                      await getWalletProvider(context)
-                                          .web3Wallet
-                                          ?.sessions
-                                          .delete(
-                                            session.topic,
-                                          );
+                                      // await getWalletProvider(context)
+                                      //     .web3Wallet
+                                      //     ?.disconnectSession(
+                                      //       topic: session.topic,
+                                      //       reason: Errors.getSdkError(
+                                      //         Errors.USER_DISCONNECTED,
+                                      //       ),
+                                      //     );
+                                      // await getWalletProvider(context)
+                                      //     .web3Wallet
+                                      //     ?.sessions
+                                      //     .delete(
+                                      //       session.topic,
+                                      //     );
                                     }
                                   } catch (e) {
                                     log(e.toString());
@@ -174,29 +172,29 @@ class _WalletConnectSessionScreenState
                                                 localizeKey: 'end',
                                                 onPressed: () async {
                                                   try {
-                                                    getWalletProvider(context)
-                                                        .web3Wallet!
-                                                        .disconnectSession(
-                                                          topic: sessions[index]
-                                                              .topic,
-                                                          reason: Errors
-                                                              .getSdkError(
-                                                            Errors
-                                                                .USER_DISCONNECTED,
-                                                          ),
-                                                        )
-                                                        .then((value) {
-                                                      getWalletProvider(context)
-                                                          .web3Wallet!
-                                                          .sessions
-                                                          .delete(
-                                                              sessions[index]
-                                                                  .topic);
-                                                      setState(() {
-                                                        sessions.remove(
-                                                            sessions[index]);
-                                                      });
-                                                    });
+                                                    // getWalletProvider(context)
+                                                    //     .web3Wallet!
+                                                    //     .disconnectSession(
+                                                    //       topic: sessions[index]
+                                                    //           .topic,
+                                                    //       reason: Errors
+                                                    //           .getSdkError(
+                                                    //         Errors
+                                                    //             .USER_DISCONNECTED,
+                                                    //       ),
+                                                    //     )
+                                                    //     .then((value) {
+                                                    //   getWalletProvider(context)
+                                                    //       .web3Wallet!
+                                                    //       .sessions
+                                                    //       .delete(
+                                                    //           sessions[index]
+                                                    //               .topic);
+                                                    //   setState(() {
+                                                    //     sessions.remove(
+                                                    //         sessions[index]);
+                                                    //   });
+                                                    // });
                                                   } catch (e) {
                                                     log(e.toString());
                                                   }

@@ -7,8 +7,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/route_manager.dart';
 import 'package:wallet_cryptomask/constant.dart';
-import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/core/providers/browser_provider/browser_provider.dart';
+import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 
 class BrowserView extends StatefulWidget {
   final BrowserProvider webViewModel;
@@ -66,7 +66,9 @@ class _BrowserViewState extends State<BrowserView> {
               log("HTTP ERROR OCCURED ===> ${errorResponse.statusCode}");
             },
             shouldOverrideUrlLoading: (controller, navigationAction) async {
-              if (navigationAction.request.url.toString().contains("wc:")) {
+              if (navigationAction.request.url
+                  .toString()
+                  .startsWith("cryptomask://wallet_connect/wc?")) {
                 handleRequestToWalletConnect(
                     context, navigationAction.request.url!.uriValue);
                 return NavigationActionPolicy.CANCEL;
@@ -128,15 +130,18 @@ class _BrowserViewState extends State<BrowserView> {
   }
 }
 
-void handleRequestToWalletConnect(BuildContext context, url) async {
-  if (url.queryParameters["symKey"] != null) {
-    try {
-      await getWalletProvider(context).web3Wallet!.pair(uri: url);
-    } catch (e) {
-      Get.dialog(AlertDialog(
-        title: const Text("Error in connection"),
-        content: Text(e.toString()),
-      ));
+void handleRequestToWalletConnect(BuildContext context, Uri url) async {
+  try {
+    final uriParam = url.queryParameters['uri'];
+    if (uriParam != null) {
+      await getWalletProvider(context)
+          .web3Wallet!
+          .pair(uri: Uri.parse(uriParam));
     }
+  } catch (e) {
+    Get.dialog(AlertDialog(
+      title: const Text("Error in connection"),
+      content: Text(e.toString()),
+    ));
   }
 }

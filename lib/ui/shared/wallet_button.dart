@@ -9,6 +9,7 @@ enum WalletButtonType { outline, filled }
 
 enum WalletButtonSize { small, medium, large }
 
+// ignore: must_be_immutable
 class WalletButton extends StatefulWidget {
   final Function()? onPressed;
   final WalletButtonType type;
@@ -16,13 +17,15 @@ class WalletButton extends StatefulWidget {
   final bool fullWidth;
   final double textSize;
   final WalletButtonSize buttonSize;
-  const WalletButton(
+  EdgeInsetsGeometry? padding;
+  WalletButton(
       {Key? key,
       required this.onPressed,
       this.textSize = 14,
       this.buttonSize = WalletButtonSize.medium,
       this.fullWidth = true,
       this.localizeKey,
+      this.padding,
       this.type = WalletButtonType.outline})
       : super(key: key);
 
@@ -44,14 +47,18 @@ class _WalletButtonState extends State<WalletButton> {
                     ? Colors.white
                     : Colors.grey
                 : kPrimaryColor,
-            padding: kIsWeb || Platform.isMacOS
-                ? widget.buttonSize == WalletButtonSize.small
-                    ? const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10)
-                    : const EdgeInsets.symmetric(horizontal: 17.0, vertical: 22)
-                : widget.buttonSize == WalletButtonSize.small
-                    ? const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10)
-                    : const EdgeInsets.symmetric(
-                        horizontal: 17.0, vertical: 10),
+            padding: widget.padding ??
+                (kIsWeb || Platform.isMacOS
+                    ? widget.buttonSize == WalletButtonSize.small
+                        ? const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 10)
+                        : const EdgeInsets.symmetric(
+                            horizontal: 17.0, vertical: 22)
+                    : widget.buttonSize == WalletButtonSize.small
+                        ? const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 10)
+                        : const EdgeInsets.symmetric(
+                            horizontal: 17.0, vertical: 10)),
             backgroundColor: widget.type == WalletButtonType.filled
                 ? widget.onPressed != null
                     ? kPrimaryColor

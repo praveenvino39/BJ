@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
+import 'package:wallet_cryptomask/core/providers/wallet_provider/wallet_provider.dart';
 import 'package:wallet_cryptomask/l10n/transalation.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_button.dart';
 import 'package:wallet_cryptomask/ui/shared/wallet_text.dart';
@@ -32,7 +33,7 @@ class _WalletConnectSessionScreenState
 
   init() async {
     setState(() {
-      // sessions = getWalletProvider(context).web3Wallet?.sessions.getAll() ?? [];
+      sessions = getWalletProvider(context).web3Wallet?.sessions.getAll() ?? [];
       isLoading = false;
     });
   }
@@ -88,21 +89,17 @@ class _WalletConnectSessionScreenState
                                 onPressed: () async {
                                   try {
                                     for (var session in sessions) {
-                                      // await getWalletProvider(context)
-                                      //     .web3Wallet
-                                      //     ?.disconnectSession(
-                                      //       topic: session.topic,
-                                      //       reason: Errors.getSdkError(
-                                      //         Errors.USER_DISCONNECTED,
-                                      //       ),
-                                      //     );
-                                      // await getWalletProvider(context)
-                                      //     .web3Wallet
-                                      //     ?.sessions
-                                      //     .delete(
-                                      //       session.topic,
-                                      //     );
+                                      await getWalletProvider(context)
+                                          .web3Wallet
+                                          ?.disconnectSession(
+                                            topic: session.topic,
+                                            reason: const ReownSignError(
+                                              code: 0,
+                                              message: Errors.USER_DISCONNECTED,
+                                            ),
+                                          );
                                     }
+                                    init();
                                   } catch (e) {
                                     log(e.toString());
                                   }
@@ -172,36 +169,23 @@ class _WalletConnectSessionScreenState
                                                 localizeKey: 'end',
                                                 onPressed: () async {
                                                   try {
-                                                    // getWalletProvider(context)
-                                                    //     .web3Wallet!
-                                                    //     .disconnectSession(
-                                                    //       topic: sessions[index]
-                                                    //           .topic,
-                                                    //       reason: Errors
-                                                    //           .getSdkError(
-                                                    //         Errors
-                                                    //             .USER_DISCONNECTED,
-                                                    //       ),
-                                                    //     )
-                                                    //     .then((value) {
-                                                    //   getWalletProvider(context)
-                                                    //       .web3Wallet!
-                                                    //       .sessions
-                                                    //       .delete(
-                                                    //           sessions[index]
-                                                    //               .topic);
-                                                    //   setState(() {
-                                                    //     sessions.remove(
-                                                    //         sessions[index]);
-                                                    //   });
-                                                    // });
+                                                    await getWalletProvider(
+                                                            context)
+                                                        .web3Wallet!
+                                                        .disconnectSession(
+                                                          topic: sessions[index]
+                                                              .topic,
+                                                          reason:
+                                                              const ReownSignError(
+                                                            code: 0,
+                                                            message: Errors
+                                                                .USER_DISCONNECTED,
+                                                          ),
+                                                        );
+                                                    init();
                                                   } catch (e) {
                                                     log(e.toString());
                                                   }
-                                                  setState(() {
-                                                    sessions.remove(
-                                                        sessions[index]);
-                                                  });
                                                   Get.back();
                                                 },
                                                 type: WalletButtonType.filled,

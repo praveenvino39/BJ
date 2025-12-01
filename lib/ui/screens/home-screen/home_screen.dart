@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
@@ -41,6 +43,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  StreamSubscription<dynamic>? walletConnectSubscription;
+  StreamSubscription<dynamic>? uriSubscription;
+
   InAppWebViewController? webViewController;
   final TextEditingController nameEditingController = TextEditingController();
   final user = Get.find<User>();
@@ -64,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
     getWalletProvider(context).setupWalletConnect();
     getWalletProvider(context).init().then((e) {
-      appLinks.uriLinkStream.listen((uri) {
+      uriSubscription = appLinks.uriLinkStream.listen((uri) {
         if (uri.host == "wallet_connect") {
           final url = uri.queryParameters['uri'];
           if (url != null && url.contains("wc")) {
@@ -74,7 +79,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       });
     });
     messageEngine.connect();
+    addWalletConnectListener();
     super.initState();
+  }
+
+  addWalletConnectListener() {
+    final walletProvider = getWalletProvider(context);
+    walletConnectSubscription = walletProvider.walletConnectEventEmitter.stream
+        .asBroadcastStream()
+        .listen((event) {
+      final method = event['method'] as String;
+      if (method == "personal_sign") {
+        getWalletProvider(context).personalMessageHandler(context, event);
+      }
+      if (method == "eth_signTypedData_v4") {
+        getWalletProvider(context).signTypedDataHandler(context, event);
+      }
+      if (method == "eth_sendTransaction") {
+        getWalletProvider(context).sendTransactionHandler(context, event);
+      }
+    });
   }
 
   onAddressTapHandler() {
@@ -135,6 +159,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       context,
       onPasswordVerfiedHandler,
     );
+  }
+
+  @override
+  void dispose() {
+    uriSubscription?.cancel();
+    walletConnectSubscription?.cancel();
+    super.dispose();
   }
 
   @override
